@@ -10,6 +10,7 @@ export default function Navbar() {
     const isLandingPage = location.pathname === '/' || location.pathname === '/landing';
 
     const { branding } = useSelector((state) => state.landing);
+    const logoInitial = branding?.name ? branding.name.charAt(0).toUpperCase() : 'U';
 
     const handleScroll = (e, id) => {
         e.preventDefault();
