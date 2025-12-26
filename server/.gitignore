@@ -1,0 +1,77 @@
+# -------------------------------------------------------------------
+# 1. DEPENDENCIES AND BUILD ARTIFACTS
+# -------------------------------------------------------------------
+
+# Node.js
+node_modules
+/npm-debug.log
+/yarn-error.log
+/package-lock.json      # Only if you are using npm < 7
+/yarn.lock              # Only if you are using npm >= 7 or using Yarn
+
+# Build outputs (Frontend & Backend)
+/dist
+/build
+/out
+
+# Next.js/Create React App (if applicable)
+/.next
+/out
+
+# -------------------------------------------------------------------
+# 2. ENVIRONMENT AND SECRETS
+# -------------------------------------------------------------------
+
+# Environment variable files (CRITICAL: Contains API Keys and DB URI)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# Additional secret files
+secrets/
+config/secrets.js
+
+# API Key Storage (For external SDKs that might create temp key files)
+*.pem
+*.key
+
+# -------------------------------------------------------------------
+# 3. LOGS, CACHE, AND TEMP FILES
+# -------------------------------------------------------------------
+
+# Logs
+logs
+*.log
+/log
+/tmp
+
+# Development/Editor cache files
+.cache
+.vscode/*
+!.vscode/settings.json    # Keep settings if shared
+!.vscode/extensions.json
+.vscode/launch.json
+.vscode/tasks.json
+.idea/
+
+# Thumbnails and system files
+.DS_Store
+Thumbs.db
+
+# -------------------------------------------------------------------
+# 4. UPLOADS AND FILE PROCESSING
+# -------------------------------------------------------------------
+
+# Files generated during the SOP review process
+# (Temporary storage for uploaded PDFs, DOCXs, etc.)
+/uploads
+/temp
+
+# -------------------------------------------------------------------
+# 5. TEST/COVERAGE REPORTS
+# -------------------------------------------------------------------
+
+/coverage

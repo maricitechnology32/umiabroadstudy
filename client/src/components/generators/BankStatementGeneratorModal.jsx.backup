@@ -1,0 +1,913 @@
+import { Calculator, Download, FileText, Plus, X, Landmark, FileCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getHolidays } from '../../features/holidays/holidaySlice';
+import { getTemplate, getTemplateList } from '../../config/bankTemplates';
+
+export default function BankStatementGeneratorModal({ isOpen, onClose, student }) {
+    if (!isOpen || !student) return null;
+
+    const dispatch = useDispatch();
+
+    // 1. Fetch Global Holidays from Redux
+    const { holidays: globalHolidays } = useSelector((state) => state.holidays) || { holidays: [] };
+
+    // --- HELPERS ---
+    const formatDisplayDate = (dateObj) => {
+        if (!dateObj) return '';
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const d = new Date(dateObj);
+        return `${d.getDate().toString().padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+    };
+
+    const formatMoney = (amount) => {
+        return new Intl.NumberFormat('en-NP', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+    };
+
+    const formatMoneyNoSymbol = (amount) => {
+        return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+    }
+
+    // ✅ Robust Date String Generator (YYYY-MM-DD)
+    const toSimpleDateString = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    // Turn Number to Words (Millions logic)
+    const numberToWords = (n) => {
+        if (n < 0) return "Minus " + numberToWords(-n);
+        if (n === 0) return "Zero";
+
+        // Split integer and decimal
+        const parts = n.toString().split('.');
+        const integerPart = parseInt(parts[0]);
+        const decimalPart = parts[1] ? parts[1].substring(0, 2) : "00";
+
+        // Using a more robust simple function for millions
+        const units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+        function convert(num) {
+            if (num === 0) return "";
+            if (num < 20) return units[num] + " ";
+            if (num < 100) return tens[Math.floor(num / 10)] + " " + convert(num % 10);
+            if (num < 1000) return units[Math.floor(num / 100)] + " Hundred " + convert(num % 100);
+            if (num < 1000000) return convert(Math.floor(num / 1000)) + "Thousand " + convert(num % 1000);
+            // Supports up to 999 Million
+            if (num < 1000000000) return convert(Math.floor(num / 1000000)) + "Million " + convert(num % 1000000);
+            return "";
+        }
+
+        let words = convert(integerPart).trim();
+        if (decimalPart && parseInt(decimalPart) > 0) {
+            return `${words} And ${decimalPart}/100 Only`;
+        }
+        return `${words} Only`;
+    };
+
+    // --- STATE ---
+    const [activeTab, setActiveTab] = useState('config'); // config, holidays, certificate, preview
+    const [selectedTemplate, setSelectedTemplate] = useState('sarbeshwor'); // NEW: Template selector
+    const template = getTemplate(selectedTemplate); // NEW: Get current template
+    const templateList = getTemplateList(); // NEW: Get template list for dropdown
+
+    const [config, setConfig] = useState({
+        // Bank Details (will be auto-filled from template)
+        bankName: template.name,
+        branch: template.location,
+        accountName: `Mr. ${student.familyInfo?.fatherName || ''}`,
+        accountNo: "0210017502882",
+        currency: "NPR",
+        startDate: "2024-07-28",
+        endDate: new Date().toISOString().split('T')[0],
+        openingBalance: 2319840.90,
+        targetBalance: 3600000.00,
+        minTxn: 5000,
+        maxTxn: 80000,
+
+        // Dynamic Generation Params
+        targetTxnCount: 45, // Target number of transactions
+        interestRate: '8',  // %
+        taxRate: '5',       // %
+
+        // Balance Certificate Specifics
+        accountAddress: 'Sainamaina-3, Rupandehi, Lumbini Province, Nepal',
+        accountOpeningDate: '24th July 2019',
+        accountType: 'Saving Account',
+        exchangeRate: '140.60',
+        managerName: 'Sapana Khanal'
+    });
+
+    // Local Holidays (User added for this specific statement)
+    const [localHolidays, setLocalHolidays] = useState([]);
+    const [newHoliday, setNewHoliday] = useState('');
+
+    // Combined List (Global + Local) used for logic
+    const [allHolidays, setAllHolidays] = useState([]);
+
+    // Nepali Quarterly Interest Dates (Approx: mid-Oct, mid-Jan, mid-April, mid-July)
+    // MM-DD format
+    const interestDates = ["10-17", "01-14", "04-14", "07-16"];
+
+    const [transactions, setTransactions] = useState([]);
+    const [totals, setTotals] = useState({ debit: 0, credit: 0, balance: 0 });
+    const [previewMode, setPreviewMode] = useState('statement'); // 'statement' | 'certificate'
+
+    // --- EFFECTS ---
+
+    // 2. Load Global Holidays on Mount
+    useEffect(() => {
+        dispatch(getHolidays());
+    }, [dispatch]);
+
+    // 3. Sync Global + Local whenever they change
+    useEffect(() => {
+        const globalDates = globalHolidays?.map(h => h.date) || [];
+        // Combine and remove duplicates
+        const merged = Array.from(new Set([...globalDates, ...localHolidays]));
+        setAllHolidays(merged);
+    }, [globalHolidays, localHolidays]);
+
+
+    // --- HANDLERS ---
+    const handleConfigChange = (e) => setConfig({ ...config, [e.target.name]: e.target.value });
+
+    // Calendar Visuals
+    const tileClassName = ({ date, view }) => {
+        if (view === 'month') {
+            const dateStr = toSimpleDateString(date);
+            if (date.getDay() === 6) return 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-50'; // Saturday
+
+            // Check if Global or Local
+            const isGlobal = globalHolidays?.some(h => h.date === dateStr);
+            if (isGlobal) return 'bg-purple-100 text-purple-700 font-bold'; // Global = Purple
+
+            if (localHolidays.includes(dateStr)) return 'bg-red-100 text-red-600 font-bold'; // Local = Red
+        }
+    };
+
+    // Toggle Holiday
+    const handleDateClick = (date) => {
+        if (date.getDay() === 6) return;
+        const dateStr = toSimpleDateString(date);
+
+        // If Global, warn user (read-only)
+        const isGlobal = globalHolidays?.some(h => h.date === dateStr);
+        if (isGlobal) {
+            toast.info("This is a Global Holiday managed by Admin.");
+            return;
+        }
+
+        // Toggle Local
+        if (localHolidays.includes(dateStr)) {
+            setLocalHolidays(localHolidays.filter(h => h !== dateStr));
+        } else {
+            setLocalHolidays([...localHolidays, dateStr]);
+        }
+    };
+
+    const addManualHoliday = () => {
+        if (newHoliday && !allHolidays.includes(newHoliday)) {
+            setLocalHolidays([...localHolidays, newHoliday].sort());
+            setNewHoliday('');
+            toast.success("Local holiday added!");
+        }
+    };
+
+    const removeLocalHoliday = (date) => {
+        setLocalHolidays(localHolidays.filter(h => h !== date));
+    };
+
+    // --- GENERATOR ALGORITHM (Daily Product Basis) ---
+    const generateStatement = () => {
+        // 1. Setup & Parsing
+        let currentBal = parseFloat(config.openingBalance) || 0;
+        let start = new Date(config.startDate);
+        const end = new Date(config.endDate);
+        const targetBal = parseFloat(config.targetBalance) || 0;
+
+        const intRate = parseFloat(config.interestRate) || 0;
+        const taxRate = parseFloat(config.taxRate) || 0;
+        const targetTxnCount = parseInt(config.targetTxnCount) || 40;
+        const minTxn = parseFloat(config.minTxn.toString().replace(/,/g, '')) || 1000;
+        const maxTxn = parseFloat(config.maxTxn.toString().replace(/,/g, '')) || 50000;
+
+        const rows = [];
+        let totalDebit = 0;
+        let totalCredit = 0;
+
+        // Initial Row
+        rows.push({
+            date: formatDisplayDate(start),
+            desc: "Balance B/F",
+            ref: "TRANSFER",
+            debit: "",
+            credit: "",
+            balance: currentBal
+        });
+
+        // 2. Interest Dates (Quarterly Endings) & Helpers
+        // Common Nepali Qtrs: Ashoj (mid-Oct), Poush (mid-Jan), Chaitra (mid-Apr), Asar (mid-July)
+        // We will approximate these dates
+        const qtrEnds = ["10-17", "01-14", "04-14", "07-16"];
+
+        const isInterestDate = (d) => {
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return qtrEnds.includes(`${m}-${day}`);
+        };
+
+        const isHoliday = (d) => {
+            if (d.getDay() === 6) return true; // Saturday
+            const dStr = toSimpleDateString(d);
+            return allHolidays.includes(dStr);
+        };
+
+        // 3. Generate Random Transaction Schedule
+        // We want 'targetTxnCount' valid transactions spread over the period.
+        const totalTime = end.getTime() - start.getTime();
+        const totalDays = Math.ceil(totalTime / (1000 * 60 * 60 * 24));
+        const generatedTxns = [];
+
+        // Simple approach: Pick N random dates between start and end
+        for (let i = 0; i < targetTxnCount; i++) {
+            const randomDays = Math.floor(Math.random() * totalDays);
+            const txDate = new Date(start);
+            txDate.setDate(txDate.getDate() + randomDays);
+
+            // Adjust if holiday
+            while (isHoliday(txDate) && txDate < end) {
+                txDate.setDate(txDate.getDate() + 1);
+            }
+
+            if (txDate >= end) continue; // Skip if pushed past end
+
+            // Determine Amount & Type
+            let isDeposit = Math.random() > 0.4;
+            // Bias: If trending too far from target, correct course?
+            // (Leaving simple random for now as interest logic is complex enough)
+
+            let amount = Math.floor(Math.random() * (maxTxn - minTxn) + minTxn);
+            amount = Math.ceil(amount / 100) * 100; // Round to 100
+            if (amount < minTxn) amount = Math.ceil(minTxn / 100) * 100; // HARD CLAMP
+
+            // Use template-specific transaction descriptions
+            const depositDescs = template.transactionDescriptions.deposits;
+            const withdrawDescs = template.transactionDescriptions.withdrawals;
+
+            const desc = isDeposit
+                ? depositDescs[Math.floor(Math.random() * depositDescs.length)]
+                : withdrawDescs[Math.floor(Math.random() * withdrawDescs.length)];
+
+            generatedTxns.push({
+                date: txDate,
+                dateStr: toSimpleDateString(txDate),
+                isDeposit,
+                amount,
+                desc,
+                ref: Math.floor(Math.random() * 9000000 + 1000000).toString()
+            });
+        }
+
+        // Sort Txs by date
+        generatedTxns.sort((a, b) => a.date - b.date);
+
+        // 4. Time Walk (Day by Day)
+        let cursorDate = new Date(start);
+        let dailyProductSum = 0;
+        let txnIndex = 0;
+
+        while (cursorDate <= end) {
+            const dateStr = toSimpleDateString(cursorDate);
+
+            // A. Process Transactions for this Day
+            // Note: If multiple txns on same day, we process them sequentially
+            while (txnIndex < generatedTxns.length && generatedTxns[txnIndex].dateStr === dateStr) {
+                const tx = generatedTxns[txnIndex];
+
+                // Logic Check: Don't withdraw below 0
+                if (!tx.isDeposit && currentBal - tx.amount < 0) {
+                    // Skip or flip to deposit? Let's skip to be safe
+                    txnIndex++;
+                    continue;
+                }
+
+                if (tx.isDeposit) {
+                    currentBal += tx.amount;
+                    totalCredit += tx.amount;
+                    rows.push({
+                        date: formatDisplayDate(cursorDate),
+                        desc: tx.desc,
+                        ref: tx.ref,
+                        debit: "",
+                        credit: tx.amount,
+                        balance: currentBal
+                    });
+                } else {
+                    currentBal -= tx.amount;
+                    totalDebit += tx.amount;
+                    rows.push({
+                        date: formatDisplayDate(cursorDate),
+                        desc: tx.desc,
+                        ref: tx.ref,
+                        debit: tx.amount,
+                        credit: "",
+                        balance: currentBal
+                    });
+                }
+                txnIndex++;
+            }
+
+            // B. Add Closing Balance to Product (For Interest)
+            // Daily Product = End of Day Balance
+            if (currentBal > 0) {
+                dailyProductSum += currentBal;
+            }
+
+            // C. Check Interest Posting (End of Day)
+            if (isInterestDate(cursorDate)) {
+                // Calculate Interest on Daily Product
+                // Formula: (Sum of Daily Balances * Rate) / (365 * 100)
+                const interestAccrued = (dailyProductSum * intRate) / (36500);
+
+                if (interestAccrued > 0) {
+                    const taxAmt = interestAccrued * (taxRate / 100);
+                    const netInterest = interestAccrued - taxAmt; // If showing separate... usually Credit Int then Debit Tax
+
+                    // 1. Credit Interest
+                    currentBal += interestAccrued;
+                    totalCredit += interestAccrued;
+                    rows.push({
+                        date: formatDisplayDate(cursorDate),
+                        desc: template.transactionDescriptions.interest,
+                        ref: "INTEREST",
+                        debit: "",
+                        credit: interestAccrued,
+                        balance: currentBal
+                    });
+
+                    // 2. Debit Tax
+                    currentBal -= taxAmt;
+                    totalDebit += taxAmt;
+                    rows.push({
+                        date: formatDisplayDate(cursorDate),
+                        desc: template.transactionDescriptions.tax,
+                        ref: "TAX",
+                        debit: taxAmt,
+                        credit: "",
+                        balance: currentBal
+                    });
+
+                    // Reset Product
+                    dailyProductSum = 0;
+                }
+            }
+
+            // Move Next Day
+            cursorDate.setDate(cursorDate.getDate() + 1);
+        }
+
+        // 5. Final Adjustment (To hit exact target)
+        // We do this on the End Date
+        const diff = targetBal - currentBal;
+        if (Math.abs(diff) > 1) {
+            const finalDate = formatDisplayDate(end);
+            if (diff > 0) {
+                currentBal += diff;
+                totalCredit += diff;
+                rows.push({
+                    date: finalDate,
+                    desc: "Cash Deposit (Final Adjust)",
+                    ref: "ADJUST",
+                    debit: "",
+                    credit: diff,
+                    balance: currentBal
+                });
+            } else {
+                currentBal -= Math.abs(diff);
+                totalDebit += Math.abs(diff);
+                rows.push({
+                    date: finalDate,
+                    desc: "Withdrawal (Final Adjust)",
+                    ref: "ADJUST",
+                    debit: Math.abs(diff),
+                    credit: "",
+                    balance: currentBal
+                });
+            }
+        }
+
+        setTransactions(rows);
+        setTotals({ debit: totalDebit, credit: totalCredit, balance: currentBal });
+        setActiveTab('preview');
+        toast.success(`Generated Statement v2 with ${rows.length} rows!`);
+    };
+
+    // --- WORD EXPORT ---
+    const generateWordDoc = () => {
+        const rowsHtml = transactions.map(t => `
+        <tr>
+            <td style="padding:3pt; border:1pt solid #ccc;">${t.date}</td>
+            <td style="padding:3pt; border:1pt solid #ccc;">${t.desc}</td>
+            <td style="padding:3pt; border:1pt solid #ccc; text-align:center;">${t.ref}</td>
+            <td style="padding:3pt; border:1pt solid #ccc; text-align:right;">${t.debit ? formatMoney(t.debit) : ''}</td>
+            <td style="padding:3pt; border:1pt solid #ccc; text-align:right;">${t.credit ? formatMoney(t.credit) : ''}</td>
+            <td style="padding:3pt; border:1pt solid #ccc; text-align:right; font-weight:bold;">${formatMoney(t.balance)}</td>
+        </tr>
+      `).join('');
+
+        // Calculated Values
+        const usdBalance = (config.targetBalance / parseFloat(config.exchangeRate)).toFixed(2);
+        const balanceInWords = numberToWords(config.targetBalance);
+        const usdInWords = numberToWords(usdBalance);
+
+        const content = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset="utf-8"><title>Bank Statement</title>
+        <style>
+            @page { size: A4; margin: 0.5in; }
+            body { font-family: 'Arial', sans-serif; font-size: 9pt; }
+            
+            /* STATEMENT STYLES */
+            .header { text-align: center; margin-bottom: 15px; }
+            .bank-title { font-size: 16pt; font-weight: bold; color: #003366; }
+            .meta-table { width: 100%; margin-bottom: 10px; font-size: 9pt; }
+            .txn-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 20px; }
+            .txn-table th { background-color: #f0f0f0; border: 1pt solid #999; padding: 4pt; text-align:left; }
+            .txn-table td { border: 1pt solid #ccc; padding: 3pt; }
+
+            /* SUMMARY STYLES */
+            .summary-container { width: 100%; border: 1pt solid #000; padding: 10pt; margin-top: 10pt; text-align: center; }
+            .summary-title { font-weight: bold; font-size: 11pt; margin-bottom: 5pt; text-decoration: underline; }
+            .summary-table { width: 100%; text-align: center; font-weight: bold; font-size: 10pt; }
+            
+            /* CERTIFICATE STYLES */
+            .cert-body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.3; padding-top: 10pt; }
+            .cert-header { text-align: center; margin-bottom: 20pt; }
+            .cert-title { font-size: 16pt; font-weight: bold; text-decoration: underline; }
+            .cert-table { width: 100%; margin-bottom: 10pt; border-collapse: collapse; border: none; }
+            .cert-table td { padding: 2pt; vertical-align: top; }
+            .label-col { font-weight: bold; width: 35%; }
+            .val-col { width: 65%; font-weight: bold; }
+            .amount-words { font-weight: bold; font-style: italic; }
+            .footer-sig { margin-top: 40pt; }
+            .sig-line { width: 200pt; padding-top: 5pt; font-weight: bold; }
+        </style>
+        </head>
+        <body>
+            <!-- PAGE 1: STATEMENT -->
+            <div class="header">
+                <div class="bank-title">${config.bankName}</div>
+                <div>${config.branch}</div>
+                <div style="margin-top:5px; font-weight:bold; text-decoration:underline;">STATEMENT OF ACCOUNT</div>
+            </div>
+            
+            <table class="meta-table">
+                <tr><td><strong>Account Name:</strong> ${config.accountName}</td><td style="text-align:right;"><strong>Currency:</strong> ${config.currency}</td></tr>
+                <tr><td><strong>Account No:</strong> ${config.accountNo}</td><td style="text-align:right;"><strong>Date:</strong> ${formatDisplayDate(new Date())}</td></tr>
+            </table>
+            
+            <table class="txn-table">
+                <thead>
+                    <tr>
+                        <th width="12%">Date</th>
+                        <th width="35%">Particulars</th>
+                        <th width="10%">Cheque No</th>
+                        <th width="14%" style="text-align:right;">Debit</th>
+                        <th width="14%" style="text-align:right;">Credit</th>
+                        <th width="15%" style="text-align:right;">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>
+
+            <!-- STATEMENT SUMMARY -->
+            <div style="width: 100%; display: flex; justify-content: center; margin-top: 10pt;">
+                <table style="width: 90%; margin: 0 auto; text-align: center;">
+                    <tr><td colspan="3" style="font-weight: bold; font-size: 10pt; padding-bottom: 5pt;">Statement Summary</td></tr>
+                    <tr style="font-weight: bold;">
+                        <td>Debit Amount</td>
+                        <td style="width: 150pt;"></td>
+                        <td>Current Balance</td>
+                    </tr>
+                    <tr style="font-weight: bold; font-size: 11pt;">
+                        <td>${formatMoneyNoSymbol(totals.debit)}</td>
+                        <td>${formatMoneyNoSymbol(totals.credit)}<br/><span style="font-size: 8pt; font-weight: normal;">(Credit Amount)</span></td>
+                        <td>${formatMoneyNoSymbol(totals.balance)}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <br clear=all style='mso-special-character:line-break;page-break-before:always'>
+
+            <!-- PAGE 2: BALANCE CERTIFICATE -->
+            <div class="cert-body">
+                <div class="cert-header">
+                    <div class="cert-title">Balance Certificate</div>
+                </div>
+
+                <p style="margin-bottom: 20pt;">This is to certify that the balance in the deposit account stands as below.</p>
+
+                <table class="cert-table">
+                    <tr><td class="label-col">Name of Account Holder</td><td style="width: 10pt;">:</td><td class="val-col">${config.accountName}</td></tr>
+                    <tr><td class="label-col">Address of Account Holder</td><td>:</td><td class="val-col">${config.accountAddress}</td></tr>
+                    <tr><td class="label-col">A/C No.</td><td>:</td><td class="val-col">${config.accountNo}</td></tr>
+                    <tr><td class="label-col">Interest Rate</td><td>:</td><td class="val-col">${config.interestRate}</td></tr>
+                    <tr><td class="label-col">Tax Rate</td><td>:</td><td class="val-col">${config.taxRate}</td></tr>
+                    <tr><td class="label-col">Account Opening</td><td>:</td><td class="val-col">${config.accountOpeningDate}</td></tr>
+                    <tr><td class="label-col">Account Type</td><td>:</td><td class="val-col">${config.accountType}</td></tr>
+                    <tr><td class="label-col">Currency</td><td>:</td><td class="val-col">${config.currency}</td></tr>
+                    <tr><td class="label-col">Balance of NPR</td><td>:</td><td class="val-col">${formatMoneyNoSymbol(totals.balance)}</td></tr>
+                </table>
+
+                <p>(In Words, NPR ${balanceInWords})</p>
+                
+                <p style="font-weight: bold; margin-top: 10pt;">Equivalent to US$ ${formatMoneyNoSymbol(usdBalance)}</p>
+                <p>(In Words, ${usdInWords})</p>
+                
+                <p style="font-size: 9pt; margin-top: 10pt;">Note: Conversion has been made @US$ 1= ${config.exchangeRate} NPR</p>
+
+                <p style="margin-top: 20pt;">This certificate has been issued as per the request of the account holder without any obligation on the part of this Co-operative.</p>
+
+                <div class="footer-sig">
+                    <div class="sig-line">
+                        ${config.managerName}<br/>
+                        <span style="font-weight: normal;">Manager</span>
+                    </div>
+                </div>
+            </div>
+
+        </body></html>
+      `;
+
+        const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Statement_${config.accountName.replace(/\s/g, '_')}.doc`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl overflow-hidden flex flex-col max-h-[95vh] md:max-h-[90vh]">
+
+                {/* Header */}
+                <div className="px-4 sm:px-6 py-3 sm:py-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 bg-gray-50">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <FileText className="text-green-600" size={20} /> Smart Bank Statement
+                    </h3>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700"><X size={20} /></button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex border-b bg-gray-50 px-6 pt-2 gap-4">
+                    <button onClick={() => setActiveTab('config')} className={`pb-2 text-sm font-medium ${activeTab === 'config' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500'}`}>1. Statement Config</button>
+                    <button onClick={() => setActiveTab('holidays')} className={`pb-2 text-sm font-medium ${activeTab === 'holidays' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500'}`}>2. Manage Holidays</button>
+                    <button onClick={() => setActiveTab('certificate')} className={`pb-2 text-sm font-medium ${activeTab === 'certificate' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500'}`}>3. Certificate Details</button>
+                    <button onClick={() => setActiveTab('preview')} className={`pb-2 text-sm font-medium ${activeTab === 'preview' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500'}`}>4. Preview & Download</button>
+                </div>
+
+                <div className="p-6 overflow-y-auto flex-1 bg-white">
+
+                    {/* TAB 1: STATEMENT CONFIG */}
+                    {activeTab === 'config' && (
+                        <div className="max-w-3xl mx-auto space-y-6">
+                            {/* BANK TEMPLATE SELECTOR */}
+                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border-2 border-blue-200">
+                                <label className="text-sm font-bold text-gray-700 mb-2 block flex items-center gap-2">
+                                    <Landmark className="w-5 h-5 text-blue-600" />
+                                    Select Bank Template
+                                </label>
+                                <select
+                                    value={selectedTemplate}
+                                    onChange={(e) => {
+                                        const newTemplate = e.target.value;
+                                        setSelectedTemplate(newTemplate);
+                                        const tmpl = getTemplate(newTemplate);
+                                        // Auto-populate bank details from template
+                                        setConfig({
+                                            ...config,
+                                            bankName: tmpl.name,
+                                            branch: tmpl.location
+                                        });
+                                    }}
+                                    className="w-full border-2 border-blue-300 p-3 rounded-lg text-sm font-semibold focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                                >
+                                    {templateList.map(tmpl => (
+                                        <option key={tmpl.value} value={tmpl.value}>
+                                            {tmpl.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="text-xs text-gray-600 mt-2">
+                                    Bank details will be auto-populated. Adjust manually if needed.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="text-xs font-bold text-gray-500">Bank Name</label><input name="bankName" value={config.bankName} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Branch</label><input name="branch" value={config.branch} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Account Name</label><input name="accountName" value={config.accountName} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Account No</label><input name="accountNo" value={config.accountNo} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                            </div>
+                            <hr />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="text-xs font-bold text-gray-500">Start Date</label><input type="date" name="startDate" value={config.startDate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">End Date</label><input type="date" name="endDate" value={config.endDate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Opening Balance</label><input type="number" name="openingBalance" value={config.openingBalance} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-green-600">Target Balance</label><input type="number" name="targetBalance" value={config.targetBalance} onChange={handleConfigChange} className="w-full border-2 border-green-100 p-2 rounded text-sm font-bold" /></div>
+                            </div>
+
+                            <div><label className="text-xs font-bold text-gray-500">Min/Max Txn</label>
+                                <div className="flex gap-2">
+                                    <input type="number" name="minTxn" value={config.minTxn} onChange={handleConfigChange} className="w-1/2 border p-2 rounded text-sm" />
+                                    <input type="number" name="maxTxn" value={config.maxTxn} onChange={handleConfigChange} className="w-1/2 border p-2 rounded text-sm" />
+                                </div>
+                            </div>
+
+                            {/* NEW DYNAMIC FIELDS */}
+                            <div className="pt-2 border-t mt-4">
+                                <label className="text-xs font-bold text-purple-600 uppercase mb-2 block">Generation Settings</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Txn Count (Target)</label>
+                                        <input type="number" name="targetTxnCount" value={config.targetTxnCount} onChange={handleConfigChange} className="w-full border-2 border-purple-100 rounded p-2 text-sm focus:border-purple-500 transition" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Int. Rate %</label>
+                                            <input name="interestRate" value={config.interestRate} onChange={handleConfigChange} className="w-full border rounded p-2 text-sm" placeholder="8" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Tax Rate %</label>
+                                            <input name="taxRate" value={config.taxRate} onChange={handleConfigChange} className="w-full border rounded p-2 text-sm" placeholder="5" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end">
+                                <button onClick={() => setActiveTab('holidays')} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Next: Check Holidays</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB 2: HOLIDAY CALENDAR */}
+                    {activeTab === 'holidays' && (
+                        <div className="flex flex-col md:flex-row gap-8 h-full">
+                            <div className="flex-1">
+                                <h4 className="font-bold text-gray-700 mb-2">Holiday Calendar</h4>
+                                <p className="text-xs text-gray-500 mb-4">
+                                    <span className="inline-block w-3 h-3 bg-purple-100 border border-purple-300 mr-1"></span>Global
+                                    <span className="inline-block w-3 h-3 bg-red-100 border border-red-300 ml-3 mr-1"></span>Local
+                                </p>
+                                <div className="border p-4 rounded-lg shadow-sm bg-white inline-block">
+                                    <Calendar
+                                        onClickDay={handleDateClick}
+                                        tileClassName={tileClassName}
+                                        value={new Date(config.startDate)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="font-bold text-gray-700 mb-2">Skipped Dates ({allHolidays.length})</h4>
+                                <div className="col-span-2">
+                                    <label className="text-xs font-bold mb-1 block">Manual Add (YYYY-MM-DD)</label>
+                                    <div className="flex gap-2 mb-2">
+                                        <input type="date" value={newHoliday} onChange={(e) => setNewHoliday(e.target.value)} className="border p-2 rounded text-sm flex-1" />
+                                        <button onClick={addManualHoliday} className="bg-green-600 text-white px-3 rounded flex items-center"><Plus size={16} /></button>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mb-6 max-h-60 overflow-y-auto border p-2 rounded bg-gray-50">
+                                    {globalHolidays?.map(h => (
+                                        <span key={h._id} className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded border border-purple-200 flex items-center gap-1" title="Global Holiday">
+                                            {h.date}
+                                        </span>
+                                    ))}
+                                    {localHolidays.map(h => (
+                                        <span key={h} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 flex items-center gap-1">
+                                            {h} <button onClick={() => removeLocalHoliday(h)}><X size={10} /></button>
+                                        </span>
+                                    ))}
+                                </div>
+                                <button onClick={generateStatement} className="w-full py-3 bg-green-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-green-700 shadow-md">
+                                    <Calculator size={18} /> Generate Transactions
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB 3: CERTIFICATE CONFIG */}
+                    {activeTab === 'certificate' && (
+                        <div className="max-w-3xl mx-auto space-y-6">
+                            <div className="flex items-center gap-2 mb-4 text-gray-700 bg-yellow-50 p-3 rounded border border-yellow-200">
+                                <Landmark size={20} />
+                                <p className="text-sm font-medium">This information appears on the Balance Certificate page (Page 2).</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2"><label className="text-xs font-bold text-gray-500">Address of Account Holder</label><input name="accountAddress" value={config.accountAddress} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+
+                                <div><label className="text-xs font-bold text-gray-500">Interest Rate</label><input name="interestRate" value={config.interestRate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Tax Rate</label><input name="taxRate" value={config.taxRate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+
+                                <div><label className="text-xs font-bold text-gray-500">Account Opening Date</label><input name="accountOpeningDate" value={config.accountOpeningDate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Account Type</label><input name="accountType" value={config.accountType} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+
+                                <div><label className="text-xs font-bold text-gray-500">USD Exchange Rate (1$ = ?)</label><input name="exchangeRate" value={config.exchangeRate} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                                <div><label className="text-xs font-bold text-gray-500">Manager Name</label><input name="managerName" value={config.managerName} onChange={handleConfigChange} className="w-full border p-2 rounded text-sm" /></div>
+                            </div>
+
+                            <div className="flex justify-end gap-2">
+                                <button onClick={() => setActiveTab('holidays')} className="px-6 py-2 rounded border hover:bg-gray-100">Back</button>
+                                <button onClick={() => setActiveTab('preview')} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Next: Preview</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB 4: PREVIEW */}
+                    {activeTab === 'preview' && (
+                        <div className="flex flex-col h-full">
+                            <div className="flex justify-between mb-4 items-center">
+                                <div className="flex bg-gray-100 p-1 rounded-lg gap-1 border border-gray-200">
+                                    <button
+                                        onClick={() => setPreviewMode('statement')}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${previewMode === 'statement' ? 'bg-white shadow-sm text-green-700 ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}>
+                                        Statement View
+                                    </button>
+                                    <button
+                                        onClick={() => setPreviewMode('certificate')}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${previewMode === 'certificate' ? 'bg-white shadow-sm text-green-700 ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}>
+                                        Certificate View
+                                    </button>
+                                </div>
+
+                                <button onClick={generateWordDoc} className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700 text-sm font-bold shadow-md">
+                                    <Download size={16} /> Download Full Word Doc
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-auto border rounded-xl shadow-inner bg-gray-50/50 p-6 flex justify-center relative">
+                                {transactions.length === 0 ? (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                                        <Calculator size={48} className="mb-2 opacity-50" />
+                                        <p>No transactions generated yet.</p>
+                                        <p className="text-sm">Go to "Manage Holidays" and click Generate.</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {previewMode === 'statement' ? (
+                                            <div className="w-full bg-white shadow-sm rounded-lg overflow-hidden border">
+                                                <div className="bg-gray-50 px-4 py-2 border-b flex justify-between items-center text-xs font-medium text-gray-500">
+                                                    <span>Statement Preview</span>
+                                                    <span>Summary: Debit <span className="text-red-600">{formatMoneyNoSymbol(totals.debit)}</span> | Credit <span className="text-green-600">{formatMoneyNoSymbol(totals.credit)}</span> | Closing <span className="text-black font-bold">{formatMoneyNoSymbol(totals.balance)}</span></span>
+                                                </div>
+                                                <table className="w-full text-sm text-left border-collapse">
+                                                    <thead className="bg-gray-100 sticky top-0 shadow-sm z-10">
+                                                        <tr>
+                                                            {template.statement.table.columns.map((col, idx) => (
+                                                                <th
+                                                                    key={col.key}
+                                                                    className={`p-3 border-b ${idx < template.statement.table.columns.length - 1 ? 'border-r' : ''} text-xs uppercase text-gray-500 text-${col.align}`}
+                                                                >
+                                                                    {col.label}
+                                                                </th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y">
+                                                        {transactions.map((t, idx) => (
+                                                            <tr key={idx} className="hover:bg-blue-50 transition-colors">
+                                                                <td className="p-2 border-r text-xs text-gray-600 font-mono">{t.date}</td>
+                                                                <td className="p-2 border-r text-xs font-medium text-gray-700">{t.desc} <span className="text-[10px] text-gray-400 ml-1">{t.ref === 'INT' || t.ref === 'TAX' ? '' : t.ref}</span></td>
+                                                                <td className="p-2 border-r text-xs text-right text-red-600 font-mono">{t.debit ? formatMoney(parseFloat(t.debit)) : '-'}</td>
+                                                                <td className="p-2 border-r text-xs text-right text-green-600 font-mono">{t.credit ? formatMoney(parseFloat(t.credit)) : '-'}</td>
+                                                                <td className="p-2 text-xs text-right font-bold text-gray-800 font-mono bg-gray-50">{formatMoney(t.balance)}</td>
+                                                            </tr>
+                                                        ))}
+                                                        <tr className="bg-gray-100 font-bold border-t-2 border-gray-300">
+                                                            <td colSpan="2" className="p-3 text-right text-xs uppercase">Total</td>
+                                                            <td className="p-3 text-right text-red-700">{formatMoney(totals.debit)}</td>
+                                                            <td className="p-3 text-right text-green-700">{formatMoney(totals.credit)}</td>
+                                                            <td className="p-3 text-right">{formatMoney(totals.balance)}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ) : (
+                                            <div className="bg-white shadow-2xl p-12 w-[180mm] min-h-[250mm] text-black font-serif text-sm relative scale-95 origin-top">
+                                                {/* Header - Clean (for letterhead printing) */}
+                                                <div className="text-center mb-8 border-b-2 border-gray-300 pb-6">
+                                                    <div className="text-xs text-gray-500 mb-1">Ref. No.: 2082/083/15</div>
+                                                    <h1 className="text-xl font-bold uppercase tracking-wide">{template.certificate.title}</h1>
+                                                    {template.certificate.subtitle && (
+                                                        <h2 className="text-sm font-semibold mt-1 text-gray-700">{template.certificate.subtitle}</h2>
+                                                    )}
+                                                    <div className="text-xs text-gray-500 mt-3">Date: {formatDisplayDate(new Date())}</div>
+                                                </div>
+
+                                                {/* Intro Text */}
+                                                <p className="mb-8 leading-relaxed">{template.certificate.text.intro}</p>
+
+                                                {/* Account Details - Sarbeshwor Style (No Box) */}
+                                                <table className="w-full mb-8 border-none">
+                                                    <tbody>
+                                                        <tr className="h-8">
+                                                            <td className="font-bold w-1/3">{template.certificate.labels.accountHolder}</td>
+                                                            <td className="w-4">:</td>
+                                                            <td className="font-bold">{config.accountName}</td>
+                                                        </tr>
+                                                        <tr className="h-8">
+                                                            <td className="font-bold">{template.certificate.labels.address}</td>
+                                                            <td>:</td>
+                                                            <td className="font-bold">{config.accountAddress}</td>
+                                                        </tr>
+                                                        <tr className="h-8">
+                                                            <td className="font-bold">{template.certificate.labels.accountNo}</td>
+                                                            <td>:</td>
+                                                            <td className="font-bold">{config.accountNo}</td>
+                                                        </tr>
+                                                        {/* Conditionally show Interest/Tax rates if template supports */}
+                                                        {template.certificate.fields.showInterestRate && (
+                                                            <tr className="h-8">
+                                                                <td className="font-bold">{template.certificate.labels.interestRate}</td>
+                                                                <td>:</td>
+                                                                <td className="font-bold">{config.interestRate}%</td>
+                                                            </tr>
+                                                        )}
+                                                        {template.certificate.fields.showTaxRate && (
+                                                            <tr className="h-8">
+                                                                <td className="font-bold">{template.certificate.labels.taxRate}</td>
+                                                                <td>:</td>
+                                                                <td className="font-bold">{config.taxRate}%</td>
+                                                            </tr>
+                                                        )}
+                                                        {template.certificate.fields.showAccountOpening && (
+                                                            <tr className="h-8">
+                                                                <td className="font-bold">{template.certificate.labels.accountOpening}</td>
+                                                                <td>:</td>
+                                                                <td className="font-bold">{config.accountOpeningDate}</td>
+                                                            </tr>
+                                                        )}
+                                                        <tr className="h-8">
+                                                            <td className="font-bold">{template.certificate.labels.accountType}</td>
+                                                            <td>:</td>
+                                                            <td className="font-bold">{config.accountType}</td>
+                                                        </tr>
+                                                        <tr className="h-8">
+                                                            <td className="font-bold">{template.certificate.labels.currency}</td>
+                                                            <td>:</td>
+                                                            <td className="font-bold">{config.currency}</td>
+                                                        </tr>
+                                                        <tr className="h-8">
+                                                            <td className="font-bold">{template.certificate.labels.balance}</td>
+                                                            <td>:</td>
+                                                            <td className="font-bold text-lg">{formatMoneyNoSymbol(totals.balance)}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                {/* Amount in Words */}
+                                                <p className="mb-4 italic font-medium">(In Words, NPR {numberToWords(parseFloat(totals.balance))})</p>
+
+                                                {/* USD Equivalent */}
+                                                <div className="mt-6 mb-2">
+                                                    <div className="font-bold">Equivalent to US$ {formatMoneyNoSymbol(totals.balance / parseFloat(config.exchangeRate))}</div>
+                                                    <div className="italic text-xs">(In Words, {numberToWords((totals.balance / parseFloat(config.exchangeRate)).toFixed(2))})</div>
+                                                </div>
+
+                                                <p className="text-xs mt-4 text-gray-600">Note: Conversion has been made @US$ 1= {config.exchangeRate} NPR</p>
+
+                                                {/* Disclaimer */}
+                                                <p className="mt-8 mb-16 text-xs text-gray-500">{template.certificate.text.disclaimer}</p>
+
+                                                {/* Signature - Template-specific position */}
+                                                <div className={`mt-auto ${template.certificate.layout.signaturePosition === 'right' ? 'text-right' : template.certificate.layout.signaturePosition === 'center' ? 'text-center' : ''}`}>
+                                                    <div className="inline-block">
+                                                        <div className="border-t border-gray-400 pt-2 min-w-[200px]">
+                                                            <div className="font-bold">{template.statement.signature.showName ? config.managerName : 'Authorized Signature'}</div>
+                                                            {template.statement.signature.showTitle && <div className="text-xs">Manager</div>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}

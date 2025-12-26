@@ -1,0 +1,44 @@
+{
+  "name": "japan-visa-saas-backend",
+  "version": "1.0.0",
+  "main": "server.cjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production node server.cjs",
+    "dev": "nodemon server.cjs",
+    "production": "NODE_ENV=production node server.cjs"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [],
+  "author": "KDR Consultancy",
+  "license": "ISC",
+  "description": "Japan Visa SaaS Backend API",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.11",
+    "nodemon": "^3.1.11",
+    "openai": "^6.10.0",
+    "slugify": "^1.6.6",
+    "socket.io": "^4.8.1",
+    "ua-parser-js": "^2.0.7",
+    "xss-clean": "^0.1.4"
+  }
+}
