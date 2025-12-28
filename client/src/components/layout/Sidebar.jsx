@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { fixImageUrl } from '../../utils/imageUtils';
 import { LayoutDashboard, Users, FileText, Settings, LogOut, BookOpen, Info, Mail, Briefcase, Globe, Key } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import ChangePasswordModal from '../auth/ChangePasswordModal';
@@ -58,7 +59,7 @@ const Sidebar = ({ onLogout, isOpen, onClose }) => {
                         {/* Logo or Initial */}
                         {user?.consultancy?.logo ? (
                             <img
-                                src={user.consultancy.logo}
+                                src={fixImageUrl(user.consultancy.logo)}
                                 alt={user.consultancy.name}
                                 className="h-10 w-10 rounded-xl object-cover flex-shrink-0"
                             />

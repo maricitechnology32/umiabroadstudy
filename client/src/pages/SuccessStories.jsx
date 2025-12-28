@@ -1,4 +1,5 @@
 import { Quote, Star } from 'lucide-react';
+import { fixImageUrl } from '../utils/imageUtils';
 
 export default function SuccessStories() {
   const reviews = [
@@ -32,7 +33,7 @@ export default function SuccessStories() {
     <section id="testimonials" className="py-24 bg-white relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
-      
+
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -51,7 +52,7 @@ export default function SuccessStories() {
                   <Star key={i} size={16} className={`${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'fill-slate-200 text-slate-200'}`} />
                 ))}
               </div>
-              
+
               <div className="relative mb-6 flex-grow">
                 <Quote className="absolute -top-2 -left-2 text-green-100 transform -scale-x-100" size={48} />
                 <p className="text-slate-700 relative z-10 leading-relaxed">"{review.content}"</p>
@@ -59,8 +60,8 @@ export default function SuccessStories() {
 
               <div className="flex items-center gap-4 border-t border-slate-100 pt-6">
                 <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
-                   {/* Fallback avatar if image fails */}
-                   <img src={review.image} alt={review.name} className="w-full h-full object-cover" />
+                  {/* Fallback avatar if image fails */}
+                  <img src={fixImageUrl(review.image)} alt={review.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 text-sm">{review.name}</h4>

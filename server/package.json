@@ -4,9 +4,9 @@
   "main": "server.cjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node server.cjs",
+    "start": "NODE_ENV=production node --no-experimental-fetch server.cjs",
     "dev": "nodemon server.cjs",
-    "production": "NODE_ENV=production node server.cjs"
+    "production": "NODE_ENV=production node --no-experimental-fetch server.cjs"
   },
   "engines": {
     "node": ">=18.0.0",

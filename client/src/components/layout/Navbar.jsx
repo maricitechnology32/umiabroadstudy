@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
+import { fixImageUrl } from '../../utils/imageUtils';
 import { useSelector } from 'react-redux';
 import Button from '../ui/Button';
 
@@ -39,7 +40,7 @@ export default function Navbar() {
             <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-2">
                     {branding?.logo ? (
-                        <img src={branding.logo} alt={branding.name} className="w-9 h-9 rounded-md object-cover" />
+                        <img src={fixImageUrl(branding.logo)} alt={branding.name} className="w-9 h-9 rounded-md object-cover" />
                     ) : (
                         <div className="w-9 h-9 bg-primary-600 rounded-md flex items-center justify-center text-white text-base font-semibold">
                             {logoInitial}

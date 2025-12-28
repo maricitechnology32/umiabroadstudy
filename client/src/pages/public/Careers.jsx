@@ -5,7 +5,8 @@ import { fetchJobs, reset } from '../../features/jobs/jobSlice';
 import { Briefcase, MapPin, DollarSign, Calendar, Search, Filter, Loader2, ArrowRight, TrendingUp } from 'lucide-react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import AdBanner from '../../components/ads/AdBanner';
+import BannerAd from '../../components/ads/BannerAd';
+
 
 const Careers = ({ isDashboard }) => {
     const dispatch = useDispatch();
@@ -87,14 +88,7 @@ const Careers = ({ isDashboard }) => {
                     </div>
                 </div>
 
-                {/* Ad Banner - Top */}
-                {!isDashboard && (
-                    <div className="bg-slate-100 py-4">
-                        <div className="container mx-auto px-4 flex justify-center">
-                            <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                        </div>
-                    </div>
-                )}
+
 
                 {/* Main Content with Sidebar */}
                 <div className="container mx-auto px-4 py-12">
@@ -277,39 +271,13 @@ const Careers = ({ isDashboard }) => {
                             )}
                         </div>
 
-                        {/* Sidebar with Ads - Desktop Only */}
-                        {!isDashboard && (
-                            <div className="hidden lg:block w-[300px] shrink-0">
-                                <div className="sticky top-24 space-y-6">
-                                    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                                        <p className="text-xs text-slate-400 mb-2 text-center">Advertisement</p>
-                                        <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                                    </div>
-                                    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                                        <p className="text-xs text-slate-400 mb-2 text-center">Advertisement</p>
-                                        <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+
                     </div>
 
-                    {/* Mobile Ad - Below Content */}
-                    {!isDashboard && (
-                        <div className="lg:hidden flex justify-center py-6">
-                            <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                        </div>
-                    )}
+
                 </div>
 
-                {/* Ad Banner - Bottom */}
-                {!isDashboard && (
-                    <div className="bg-slate-100 py-6 border-t border-slate-200">
-                        <div className="container mx-auto px-4 flex justify-center">
-                            <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                        </div>
-                    </div>
-                )}
+
             </div>
             {!isDashboard && <Footer />}
         </>

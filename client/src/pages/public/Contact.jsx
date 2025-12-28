@@ -8,7 +8,8 @@ import Button from '../../components/ui/Button';
 import { toast } from 'react-toastify';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import AdBanner from '../../components/ads/AdBanner';
+import BannerAd from '../../components/ads/BannerAd';
+
 
 const Contact = () => {
     const dispatch = useDispatch();
@@ -78,12 +79,7 @@ const Contact = () => {
                 </div>
             </div>
 
-            {/* Ad Banner - After Hero */}
-            <div className="bg-slate-100 py-4 relative z-10">
-                <div className="container mx-auto px-4 flex justify-center">
-                    <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                </div>
-            </div>
+
 
             <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-10 relative z-10">
                 <div className="grid lg:grid-cols-3 gap-8">
@@ -267,12 +263,7 @@ const Contact = () => {
                 </div>
             </main>
 
-            {/* Ad Banner */}
-            <div className="bg-slate-100 py-6 border-t border-slate-200">
-                <div className="container mx-auto px-4 flex justify-center">
-                    <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                </div>
-            </div>
+
 
             {/* Apply CTA Section */}
             <div className="max-w-7xl mx-auto px-6 pb-20 relative z-10">

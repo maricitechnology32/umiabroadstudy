@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchSiteContent, updateSiteContent } from '../../features/siteContent/siteContentSlice';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Loader2, Save, LayoutTemplate, Type, Link as LinkIcon, Sparkles, PieChart, Star, List, Plus, Trash2, Upload } from 'lucide-react';
+import { Plus, Trash2, Save, Loader2, Upload, X, LayoutTemplate, List, PieChart, Type, Star, Sparkles, LinkIcon } from 'lucide-react';
+import { fixImageUrl } from '../../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -94,7 +95,7 @@ export default function WebsiteManager() {
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${activeTab === id
                 ? 'bg-white text-secondary-900 shadow-sm ring-1 ring-black/5'
                 : 'text-secondary-500 hover:text-secondary-900 hover:bg-white/50'
-                }`}
+                } `}
         >
             <Icon size={16} />
             {label}
@@ -215,12 +216,12 @@ export default function WebsiteManager() {
                                     <label className="text-xs font-semibold text-secondary-600">Author Image</label>
                                     <div className="flex gap-4 items-center">
                                         {item.image && (
-                                            <img src={item.image} alt="Preview" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+                                            <img src={fixImageUrl(item.image)} alt="Preview" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
                                         )}
                                         <div className="relative">
                                             <input
                                                 type="file"
-                                                id={`upload-${idx}`}
+                                                id={`upload - ${idx} `}
                                                 className="hidden"
                                                 accept="image/*"
                                                 onChange={async (e) => {
@@ -257,20 +258,20 @@ export default function WebsiteManager() {
                                                     }
                                                 }}
                                             />
-                                            <label htmlFor={`upload-${idx}`} className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-secondary-600 hover:bg-slate-50 transition-colors">
+                                            < label htmlFor={`upload-${idx}`} className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-secondary-600 hover:bg-slate-50 transition-colors" >
                                                 <Upload size={16} />
                                                 {item.image ? 'Change Photo' : 'Upload Photo'}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                                            </label >
+                                        </div >
+                                    </div >
+                                </div >
                                 <div className="space-y-1"><label className="text-xs font-semibold text-secondary-600">Quote</label><textarea className="w-full rounded-lg border-slate-200 p-2 text-sm" placeholder="e.g. This software transformed our workflow..." value={item.quote} onChange={(e) => handleArrayChange(idx, 'quote', e.target.value, 'testimonials')} /></div>
-                            </div>
+                            </div >
                         ))}
                         {formData.testimonials.length === 0 && <p className="text-center text-secondary-400 py-8">No testimonials added yet.</p>}
-                    </motion.div>
+                    </motion.div >
                 )}
-            </form>
-        </div>
+            </form >
+        </div >
     );
 }

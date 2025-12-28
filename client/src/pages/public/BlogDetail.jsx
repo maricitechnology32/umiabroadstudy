@@ -6,9 +6,9 @@ import { Calendar, User, Tag, ArrowLeft, Loader2, Share2, Clock, ChevronRight, F
 import Newsletter from '../../components/common/Newsletter';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import AdBanner from '../../components/ads/AdBanner';
-import InContentAd from '../../components/ads/InContentAd';
+import { fixImageUrl, fixImagesInContent } from '../../utils/imageUtils';
 import SEO from '../../components/common/SEO';
+import BannerAd from '../../components/ads/BannerAd';
 
 const BlogDetail = ({ isDashboard }) => {
     const { slug } = useParams();
@@ -60,7 +60,8 @@ const BlogDetail = ({ isDashboard }) => {
     const { title, content, author, category, tags, imageUrl, featuredImage, createdAt, readTime } = currentBlog;
 
     const authorName = (typeof author === 'object' && author?.name) ? author.name : (author || 'Editorial Team');
-    const displayImage = featuredImage || imageUrl;
+    const displayImage = fixImageUrl(featuredImage || imageUrl);
+    const fixedContent = fixImagesInContent(content);
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -139,10 +140,9 @@ const BlogDetail = ({ isDashboard }) => {
                         </div>
                     )}
 
-                    {/* Ad Banner - After Hero Image */}
-                    <div className="mb-12 flex justify-center">
-                        <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                    </div>
+                    {/* Banner Ad */}
+                    <BannerAd className="mb-10" />
+
 
                     {/* Content Section - Flex layout for proper sidebar width */}
                     <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
@@ -176,7 +176,7 @@ const BlogDetail = ({ isDashboard }) => {
                                 prose-li:text-slate-600
                                 first-letter:text-7xl first-letter:font-bold first-letter:text-slate-900 first-letter:mr-3 first-letter:float-left first-letter:leading-[0.8]
                             ">
-                                <InContentAd content={content} adKey="012f82fd8efee1c8aa29d03593d4de8c" paragraphInterval={3} />
+                                <div dangerouslySetInnerHTML={{ __html: fixedContent }} />
                             </div>
 
                             {/* Tags Footer */}
@@ -215,26 +215,14 @@ const BlogDetail = ({ isDashboard }) => {
                             </div>
                         </div>
 
-                        {/* Sidebar with Ads - Desktop */}
-                        <div className="hidden lg:block w-[320px] shrink-0">
-                            {/* Ad banner in sidebar */}
-                            <div className="sticky top-32">
-                                <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                            </div>
-                        </div>
+
 
                     </div>
 
-                    {/* Mobile Ad - Below Content */}
-                    <div className="lg:hidden flex justify-center py-6">
-                        <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                    </div>
+
                 </article>
 
-                {/* Ad Banner - Before Newsletter */}
-                <div className="py-8 flex justify-center border-t border-slate-100">
-                    <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                </div>
+
 
                 {/* Newsletter / CTA */}
                 <Newsletter />

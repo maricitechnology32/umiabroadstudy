@@ -5,7 +5,9 @@ import { fetchAboutUs, reset } from '../../features/aboutUs/aboutUsSlice';
 import { Target, Eye, Heart, Users, Award, Globe, Loader2, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import AdBanner from '../../components/ads/AdBanner';
+import { fixImageUrl } from '../../utils/imageUtils';
+import BannerAd from '../../components/ads/BannerAd';
+
 
 const AboutUs = ({ isDashboard }) => {
     const dispatch = useDispatch();
@@ -43,14 +45,7 @@ const AboutUs = ({ isDashboard }) => {
                     </div>
                 </section>
 
-                {/* Ad Banner - After Hero */}
-                {!isDashboard && (
-                    <div className="bg-slate-100 py-4">
-                        <div className="container mx-auto px-4 flex justify-center">
-                            <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                        </div>
-                    </div>
-                )}
+
 
                 {/* Mission & Vision */}
                 <section className="py-10 container mx-auto px-4">
@@ -128,12 +123,7 @@ const AboutUs = ({ isDashboard }) => {
                     </section>
                 )}
 
-                {/* Ad Banner */}
-                <section className="py-6 bg-slate-100">
-                    <div className="container mx-auto px-4 flex justify-center">
-                        <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                    </div>
-                </section>
+
 
                 {/* Team */}
                 {aboutUs.teamMembers && aboutUs.teamMembers.length > 0 && (
@@ -154,7 +144,7 @@ const AboutUs = ({ isDashboard }) => {
                                     <div className="relative w-24 h-24 mx-auto mb-4">
                                         {member.imageUrl ? (
                                             <img
-                                                src={member.imageUrl}
+                                                src={fixImageUrl(member.imageUrl)}
                                                 alt={member.name}
                                                 className="w-full h-full rounded-full object-cover border-4 border-primary-100"
                                             />
@@ -201,12 +191,7 @@ const AboutUs = ({ isDashboard }) => {
                     </section>
                 )}
 
-                {/* Ad Banner - Before CTA */}
-                <section className="py-6 bg-white">
-                    <div className="container mx-auto px-4 flex justify-center">
-                        <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                    </div>
-                </section>
+
 
                 {/* CTA Section */}
                 <section className="py-16 bg-slate-100">

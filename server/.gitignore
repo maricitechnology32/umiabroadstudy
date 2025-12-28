@@ -29,6 +29,8 @@ node_modules
 .env.production
 .env.development
 .env.test
+production.env
+*.backup
 
 # Additional secret files
 secrets/

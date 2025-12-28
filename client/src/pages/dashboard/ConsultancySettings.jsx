@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import Button from '../../components/ui/Button';
+import { fixImageUrl } from '../../utils/imageUtils';
 import { Card } from '../../components/ui/Card';
 import api from '../../utils/api';
 import { updateUser } from '../../features/auth/authSlice';
@@ -203,7 +204,7 @@ export default function ConsultancySettings() {
                 <div className="w-32 h-32 border-2 border-secondary-200 rounded-xl flex items-center justify-center bg-secondary-50 overflow-hidden">
                   {user?.consultancy?.logo ? (
                     <img
-                      src={user.consultancy.logo}
+                      src={fixImageUrl(user.consultancy.logo)}
                       alt="Consultancy Logo"
                       className="w-full h-full object-contain p-2"
                     />

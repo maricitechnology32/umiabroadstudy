@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAboutUs, reset } from '../../features/aboutUs/aboutUsSlice';
+import { fixImageUrl } from '../../utils/imageUtils';
 import { Users, Target, Eye, Mail, Linkedin, Loader2, ArrowRight } from 'lucide-react';
 
 const DashboardAboutUs = () => {
@@ -139,7 +140,7 @@ const DashboardAboutUs = () => {
                                 <div className="relative aspect-square bg-slate-100 overflow-hidden">
                                     {member.imageUrl ? (
                                         <img
-                                            src={member.imageUrl}
+                                            src={fixImageUrl(member.imageUrl)}
                                             alt={member.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />

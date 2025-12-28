@@ -10,6 +10,7 @@ import {
     reset
 } from '../../features/aboutUs/aboutUsSlice';
 import Button from '../../components/ui/Button';
+import { fixImageUrl } from '../../utils/imageUtils';
 import Input from '../../components/ui/Input';
 import { Plus, Trash2, Save, Users, Upload } from 'lucide-react';
 import api from '../../utils/api';
@@ -283,7 +284,7 @@ const AboutUsManager = () => {
                         {formData.teamMembers.map((member, index) => (
                             <div key={index} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                                 {member.imageUrl && (
-                                    <img src={member.imageUrl} alt={member.name} className="w-full h-32 object-cover rounded-lg mb-2" />
+                                    <img src={fixImageUrl(member.imageUrl)} alt={member.name} className="w-full h-32 object-cover rounded-lg mb-2" />
                                 )}
                                 <h3 className="font-semibold">{member.name}</h3>
                                 <p className="text-sm text-emerald-600">{member.role}</p>
@@ -324,7 +325,7 @@ const AboutUsManager = () => {
                             <div>
                                 <label className="block text-sm text-slate-600 mb-1">Profile Image</label>
                                 <input type="file" accept="image/*" onChange={handleImageUpload} className="text-sm" disabled={uploadingImage} />
-                                {newMember.imageUrl && <img src={newMember.imageUrl} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded" />}
+                                {newMember.imageUrl && <img src={fixImageUrl(newMember.imageUrl)} alt="Preview" className="mt-2 h-20 w-20 object-cover rounded" />}
                             </div>
                         </div>
                         <Button type="button" onClick={handleAddTeamMember} disabled={uploadingImage} size="sm">

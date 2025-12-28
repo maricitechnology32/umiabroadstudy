@@ -7,7 +7,9 @@ import SEO from '../../components/common/SEO';
 import Button from '../../components/ui/Button';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import AdBanner from '../../components/ads/AdBanner';
+import { fixImageUrl } from '../../utils/imageUtils';
+import BannerAd from '../../components/ads/BannerAd';
+
 
 const BlogList = ({ isDashboard }) => {
     const dispatch = useDispatch();
@@ -67,12 +69,8 @@ const BlogList = ({ isDashboard }) => {
                 </div>
             </section>
 
-            {/* Ad Banner - Top */}
-            <div className="bg-slate-100 py-4">
-                <div className="max-w-7xl mx-auto px-6 flex justify-center">
-                    <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                </div>
-            </div>
+            {/* Banner Ad */}
+            <BannerAd className="max-w-7xl mx-auto" />
 
             <div className="max-w-7xl mx-auto px-6 py-12">
                 {/* Filters */}
@@ -126,11 +124,7 @@ const BlogList = ({ isDashboard }) => {
                                             {/* Featured Image */}
                                             <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
                                                 {blog.featuredImage ? (
-                                                    <img
-                                                        src={blog.featuredImage}
-                                                        alt={blog.title}
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                    />
+                                                    <img src={fixImageUrl(blog.featuredImage)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-slate-300">
                                                         <Calendar size={48} />
@@ -206,40 +200,13 @@ const BlogList = ({ isDashboard }) => {
                         )}
                     </div>
 
-                    {/* Sidebar with Ads - Desktop Only */}
-                    {!isDashboard && (
-                        <div className="hidden lg:block w-[300px] shrink-0">
-                            <div className="sticky top-24 space-y-6">
-                                {/* Sidebar Ad 1 */}
-                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                                    <p className="text-xs text-slate-400 mb-2 text-center">Advertisement</p>
-                                    <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                                </div>
 
-                                {/* Sidebar Ad 2 */}
-                                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                                    <p className="text-xs text-slate-400 mb-2 text-center">Advertisement</p>
-                                    <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
-                {/* Mobile Ad - Below Content */}
-                {!isDashboard && (
-                    <div className="lg:hidden flex justify-center py-6">
-                        <AdBanner adKey="012f82fd8efee1c8aa29d03593d4de8c" width={300} height={250} />
-                    </div>
-                )}
+
             </div>
 
-            {/* Ad Banner - Bottom */}
-            <div className="bg-slate-100 py-6 border-t border-slate-200">
-                <div className="max-w-7xl mx-auto px-6 flex justify-center">
-                    <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-                </div>
-            </div>
+
 
             {!isDashboard && <Footer />}
         </div>

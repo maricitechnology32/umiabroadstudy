@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchBlogs, reset } from '../../features/blog/blogSlice';
-import { Calendar, Clock, Eye, Search, Loader2, ArrowRight } from 'lucide-react';
+import { Calendar, Eye, Edit, Trash2 } from 'lucide-react';
+import { fixImageUrl } from '../../utils/imageUtils';
 
 const DashboardBlogList = () => {
     const dispatch = useDispatch();
@@ -92,7 +93,7 @@ const DashboardBlogList = () => {
                             <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
                                 {blog.featuredImage ? (
                                     <img
-                                        src={blog.featuredImage}
+                                        src={fixImageUrl(blog.featuredImage)}
                                         alt={blog.title}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />

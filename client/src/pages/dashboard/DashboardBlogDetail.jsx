@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogBySlug, clearCurrentBlog, reset } from '../../features/blog/blogSlice';
-import { Calendar, Clock, Eye, User, ArrowLeft, Loader2, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Tag, Eye, Edit, Trash2 } from 'lucide-react';
+import { fixImageUrl, fixImagesInContent } from '../../utils/imageUtils';
 
 const DashboardBlogDetail = () => {
     const { slug } = useParams();
@@ -98,7 +99,7 @@ const DashboardBlogDetail = () => {
                 {blog.featuredImage && (
                     <div className="mb-8 rounded-xl overflow-hidden">
                         <img
-                            src={blog.featuredImage}
+                            src={fixImageUrl(blog.featuredImage)}
                             alt={blog.title}
                             className="w-full h-auto"
                         />

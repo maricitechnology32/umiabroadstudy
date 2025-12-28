@@ -159,10 +159,10 @@ router.post('/', protect, uploadLimiter, upload.single('file'), async (req, res)
       });
     }
 
-    // Construct file URL
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const fileUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+    // Construct file URL using static backend URL
+    // Don't use req.protocol/req.host as they can be incorrect with reverse proxies
+    const BACKEND_URL = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+    const fileUrl = `${BACKEND_URL}/uploads/${req.file.filename}`;
 
     // Log successful upload
     console.log(`[UPLOAD SUCCESS] File: ${req.file.filename}, User: ${req.user.id}, IP: ${req.ip}`);

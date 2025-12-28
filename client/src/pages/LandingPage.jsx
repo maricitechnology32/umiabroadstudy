@@ -36,12 +36,14 @@ import { fetchLandingData } from '../features/landing/landingSlice';
 import { fetchBlogs } from '../features/blog/blogSlice';
 import { fetchJobs } from '../features/jobs/jobSlice';
 import Button from '../components/ui/Button';
-import Navbar from '../components/layout/Navbar';
+import { fixImageUrl } from '../utils/imageUtils';
 
 // IMPORT YOUR NEW COMPONENTS
 import SEO from '../components/common/SEO';
 import SuccessStories from './SuccessStories'; // Adjust path as needed
-import AdBanner from '../components/ads/AdBanner';
+import Navbar from '../components/layout/Navbar';
+import BannerAd from '../components/ads/BannerAd';
+
 
 // Icon Mapping Helper
 const DynamicIcon = ({ name, className, size }) => {
@@ -222,6 +224,9 @@ export default function LandingPage() {
                )}
             </motion.div>
          </section>
+
+         {/* Banner Ad */}
+         <BannerAd className="container mx-auto" />
 
          {/* --- DASHBOARD PREVIEW --- */}
          <section className="pb-24 px-4 relative">
@@ -558,7 +563,7 @@ export default function LandingPage() {
                               {item.image && (
                                  <div className="shrink-0">
                                     <img
-                                       src={item.image}
+                                       src={fixImageUrl(item.image)}
                                        alt={item.name}
                                        className="w-12 h-12 rounded-full object-cover bg-slate-200 border border-slate-100"
                                        onError={(e) => { e.target.style.display = 'none'; }}
@@ -596,7 +601,7 @@ export default function LandingPage() {
                         <Link key={blog._id} to={`/blog/${blog.slug}`} className="group bg-white rounded-2xl overflow-hidden border border-slate-200 hover:shadow-xl hover:border-primary-100 transition-all duration-300">
                            <div className="relative aspect-video bg-slate-100 overflow-hidden">
                               {blog.featuredImage ? (
-                                 <img src={blog.featuredImage} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                 <img src={fixImageUrl(blog.featuredImage)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                               ) : (
                                  <div className="w-full h-full flex items-center justify-center text-slate-300 bg-slate-50">
                                     <FileText size={48} />
@@ -728,7 +733,7 @@ export default function LandingPage() {
                <div className="relative h-[400px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-lg">
                   {/* Placeholder for About Image if available, else abstract */}
                   {branding?.logo ? (
-                     <img src={branding.logo} alt="About Us" className="w-full h-full object-contain p-8" />
+                     <img src={fixImageUrl(branding.logo)} alt="About Us" className="w-full h-full object-contain p-8" />
                   ) : (
                      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-slate-100 flex items-center justify-center">
                         <Globe size={120} className="text-primary-200" />
@@ -805,12 +810,7 @@ export default function LandingPage() {
             </motion.div>
          </section>
 
-         {/* --- AD BANNER SECTION --- */}
-         <section className="py-8 bg-slate-50 border-y border-slate-200">
-            <div className="max-w-7xl mx-auto px-6 flex justify-center">
-               <AdBanner adKey="56e9dabb44efce88731345b0c91490dd" width={728} height={90} />
-            </div>
-         </section>
+
 
          {/* --- FOOTER --- */}
          <footer className="bg-white border-t border-secondary-100 pt-20 pb-10">
@@ -818,7 +818,7 @@ export default function LandingPage() {
                <div className="col-span-2 md:col-span-1">
                   <div className="flex items-center gap-2 mb-6">
                      {branding?.logo ? (
-                        <img src={branding.logo} alt={branding.name} className="w-8 h-8 rounded-lg object-cover" />
+                        <img src={fixImageUrl(branding.logo)} alt={branding.name} className="w-8 h-8 rounded-lg object-cover" />
                      ) : (
                         <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-primary-500/30">
                            {branding?.name?.charAt(0) || 'C'}

@@ -38,6 +38,7 @@ import { toast } from 'react-toastify';
 import { bsToAd } from '@sbmdkl/nepali-date-converter';
 import { clearCurrentProfile, getMyProfile, getStudentById, reset, updateProfile, updateStudentStatus } from '../../features/students/studentSlice';
 import api from '../../utils/api';
+import { fixImageUrl } from '../../utils/imageUtils';
 import SEO from '../../components/common/SEO';
 
 // Import Generator Modals
@@ -339,7 +340,7 @@ export default function StudentProfile() {
                                     <div className="h-20 w-20 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-2xl bg-white p-1.5 sm:p-2 shadow-md border-2 border-white">
                                         <div className="h-full w-full rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
                                             {formData.personalInfo.photoUrl ? (
-                                                <img src={formData.personalInfo.photoUrl} alt="Profile" className="h-full w-full object-cover" />
+                                                <img src={fixImageUrl(formData.personalInfo.photoUrl)} alt="Profile" className="h-full w-full object-cover" />
                                             ) : <User size={36} className="text-slate-400 sm:w-12 sm:h-12" />}
                                         </div>
                                     </div>
