@@ -194,7 +194,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
 
         <table class="data-table">
             <thead>
-                <tr style="background-color: #ffffff;">
+                <tr>
                     <th style="width: 50px; text-align: center;">S.N.</th>
                     <th>Occupation</th>
                 </tr>
@@ -408,7 +408,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                   {/* TABLE PREVIEW */}
                   <table className="w-full border-collapse border border-black mb-3 text-left text-[11pt]">
                     <thead>
-                      <tr className="bg-gray-100">
+                      <tr className="">
                         <th className="border border-black px-1 py-0.5 text-center w-12">S.N.</th>
                         <th className="border border-black px-2 py-0.5">Occupation</th>
                       </tr>
@@ -428,7 +428,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                   </p>
 
                   {/* SIGNATURE */}
-                                    <div className="mt-16 text-right">
+                  <div className="mt-16 text-right">
                     <div>......................................</div>
                     <div className="font-bold">{formData.signatoryName}</div>
                     <div>{formData.signatoryDesignation}</div>
@@ -506,7 +506,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                       <input
                         type="range"
                         min="40"
-                        max="120"
+                        max="200"
                         value={formData.logoSize || 80}
                         onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                         className="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"

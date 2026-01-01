@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet-async';
 
 export default function SEO({
     title,
-    description = "Leading consultancy for Japan Visa services.",
-    keywords = "Japan Visa, Student Visa, Work Visa, Consultancy, Nepal",
+    description = "Leading consultancy for Japan Visa services. Powered by Global Flow.",
+    keywords = "Japan Visa, Global Flow, Student Visa, Work Visa, Consultancy, Nepal",
     image = "/logo.png",
     url = window.location.href
 }) {

@@ -19,6 +19,7 @@ import StaffManagement from './StaffManagement';
 import UniversityManager from './UniversityManager';
 import EventManager from './EventManager';
 import ResourceManager from '../../components/dashboard/ResourceManager';
+import DocumentVerificationManager from '../../components/dashboard/DocumentVerificationManager';
 import SEO from '../../components/common/SEO';
 
 export default function ConsultancyDashboard() {
@@ -51,6 +52,7 @@ export default function ConsultancyDashboard() {
     // --- PERMISSIONS ---
     const canManageStaff = user?.role === 'consultancy_admin' || user?.subRole === 'manager';
     const canManageUniversities = canManageStaff || user?.subRole === 'counselor';
+    const canVerifyDocuments = canManageStaff || user?.subRole === 'receptionist' || user?.subRole === 'document_officer';
 
     // --- EFFECTS ---
     useEffect(() => {
@@ -161,9 +163,10 @@ export default function ConsultancyDashboard() {
             {/* Main Tabs */}
             <div className="border-b border-slate-200">
                 <div className="flex gap-8 overflow-x-auto hide-scrollbar">
-                    {['overview', 'students', 'universities', 'staff', 'events', 'resources', 'settings'].map((tab) => {
+                    {['overview', 'students', 'verification', 'universities', 'staff', 'events', 'resources', 'settings'].map((tab) => {
                         if (tab === 'universities' && !canManageUniversities) return null;
                         if ((tab === 'staff' || tab === 'events' || tab === 'settings') && !canManageStaff) return null;
+                        if (tab === 'verification' && !canVerifyDocuments) return null;
 
                         return (
                             <button
@@ -498,6 +501,7 @@ export default function ConsultancyDashboard() {
             {activeTab === 'settings' && canManageStaff && <ConsultancySettings />}
             {activeTab === 'events' && canManageStaff && <EventManager />}
             {activeTab === 'resources' && <ResourceManager />}
+            {activeTab === 'verification' && canVerifyDocuments && <DocumentVerificationManager />}
 
             {/* Invite Modal (Reused) */}
             <Modal

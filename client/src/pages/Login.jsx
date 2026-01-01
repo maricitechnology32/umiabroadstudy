@@ -53,13 +53,13 @@ function Login() {
     <div className="min-h-screen bg-secondary-50 dark:bg-secondary-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="mx-auto h-12 w-12 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-          <span className="text-white font-bold text-xl">JP</span>
+          <span className="text-white font-bold text-xl">GF</span>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-secondary-900 dark:text-secondary-50">
           Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-secondary-600 dark:text-secondary-400">
-          Sign in to Japan Visa Documentation System
+          Sign in to Global Flow
         </p>
       </div>
 

@@ -16,7 +16,7 @@ const studentSchema = new mongoose.Schema({
 
     // --- 1. PERSONAL DETAILS ---
     personalInfo: {
-        title: { type: String, enum: ['Mr.', 'Ms.', 'Mrs.'], default: 'Mr.' },
+        title: { type: String, enum: ['Mr.', 'Ms.', 'Mrs.', 'Miss'], default: 'Mr.' },
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },
         gender: { type: String, enum: ['Male', 'Female', 'Other'] },
@@ -51,7 +51,11 @@ const studentSchema = new mongoose.Schema({
     // --- 3. FAMILY ---
     familyInfo: {
         fatherName: String,
+        fatherPhone: String,
+        fatherEmail: String,
         motherName: String,
+        motherPhone: String,
+        motherEmail: String,
         grandfatherName: String,
         spouseName: String,
 
@@ -136,6 +140,24 @@ const studentSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
+    }],
+
+    // --- 10. APPLICATION DOCUMENTS (VERIFICATION WORKFLOW) ---
+    applicationDocuments: [{
+        type: { type: String, required: true }, // e.g., 'Application Form', 'Financial Statement'
+        status: {
+            type: String,
+            enum: ['Draft', 'Printed', 'Pending Verification', 'Verified', 'Rejected'],
+            default: 'Draft'
+        },
+        originalUrl: String, // The generated/uploaded draft
+        verifiedUrl: String, // The scanned/signed upload
+        universityId: { type: mongoose.Schema.Types.ObjectId, ref: 'University' },
+        generatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Admin who created draft
+        verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Admin who verified signature
+        notes: String,
+        createdAt: { type: Date, default: Date.now },
+        updatedAt: { type: Date, default: Date.now }
     }],
 
     // --- 9. PROCESSING INFO (VISA TRACKING) ---

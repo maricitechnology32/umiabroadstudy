@@ -12,7 +12,7 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
     };
 
     // Fiscal Year Calculation
-    const [startYear, setStartYear] = useState(getDefaultStartYear());
+    const [startYear, setStartYear] = useState(2022); // Default fixed to 2022 as per user request
     const fiscalYearData = getThreeConsecutiveFiscalYears(startYear);
 
     // 1. Initial State
@@ -239,7 +239,7 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
 
         <table class="data-table">
             <thead>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                     <th style="width: 30px;">S.N.</th>
                     <th>Income Headings</th>
                     <th style="width: 75px;">${fiscalYearLabels[0]}</th>
@@ -249,13 +249,13 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
             </thead>
             <tbody>
                 ${tableRows}
-                <tr style="font-weight: bold; background-color: #f5f5f5;">
+                <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt;">Total Amount (NPR)</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[0])}</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[1])}</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[2])}</td>
                 </tr>
-                <tr style="font-weight: bold; background-color: #e8f5e9;">
+                <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt;">Total Amount (US$)</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalUSD[0])}</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalUSD[1])}</td>
@@ -471,7 +471,7 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
                                     {/* TABLE PREVIEW */}
                                     <table className="w-full border-collapse border border-black mb-3 text-right text-[10pt]">
                                         <thead>
-                                            <tr className="bg-gray-100 text-center">
+                                            <tr className="text-center">
                                                 <th className="border border-black p-1 w-8">S.N.</th>
                                                 <th className="border border-black p-1 text-left">Income Headings</th>
                                                 <th className="border border-black p-1">{fiscalYearLabels[0]}</th>
@@ -490,13 +490,13 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
                                                 </tr>
                                             ))}
                                             {/* TOTALS */}
-                                            <tr className="font-bold bg-gray-50">
+                                            <tr className="font-bold">
                                                 <td colSpan="2" className="border border-black p-1 text-right">Total Amount (NPR)</td>
                                                 <td className="border border-black p-1">{formatCurrency(totals.totalNPR[0])}</td>
                                                 <td className="border border-black p-1">{formatCurrency(totals.totalNPR[1])}</td>
                                                 <td className="border border-black p-1">{formatCurrency(totals.totalNPR[2])}</td>
                                             </tr>
-                                            <tr className="font-bold bg-green-50">
+                                            <tr className="font-bold">
                                                 <td colSpan="2" className="border border-black p-1 text-right">Total Amount (US$)</td>
                                                 <td className="border border-black p-1">{formatCurrency(totals.totalUSD[0])}</td>
                                                 <td className="border border-black p-1">{formatCurrency(totals.totalUSD[1])}</td>
@@ -586,23 +586,15 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
 
                             {/* FISCAL YEAR SELECTOR */}
                             <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-sm">
-                                <h4 className="text-xs font-bold text-amber-700 uppercase tracking-wider flex items-center gap-2 mb-3">
-                                    <Calendar size={14} /> Fiscal Year Start
+                                <h4 className="text-xs font-bold text-amber-700 uppercase tracking-wider flex items-center gap-2 mb-2">
+                                    <Calendar size={14} /> Fiscal Years
                                 </h4>
-                                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                                    <select
-                                        value={startYear}
-                                        onChange={(e) => setStartYear(parseInt(e.target.value))}
-                                        className="flex-1 border-amber-300 bg-white rounded-lg px-3 py-2 text-sm font-bold text-amber-800 focus:ring-2 focus:ring-amber-500/20"
-                                    >
-                                        {[2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027].map(year => (
-                                            <option key={year} value={year}>{year}</option>
-                                        ))}
-                                    </select>
-                                    <div className="text-xs text-amber-700">
-                                        → {fiscalYearLabels[0]}, {fiscalYearLabels[1]}, {fiscalYearLabels[2]}
-                                    </div>
+                                <div className="text-sm font-bold text-amber-900 bg-amber-100/50 px-3 py-2 rounded-lg border border-amber-200">
+                                    {fiscalYearLabels[0]}, {fiscalYearLabels[1]}, {fiscalYearLabels[2]}
                                 </div>
+                                <p className="text-[10px] text-amber-700 mt-2 font-medium">
+                                    *Fixed range as per requirements.
+                                </p>
                             </div>
 
                             {/* HEADER DETAILS CARD */}
@@ -616,7 +608,7 @@ export default function AnnualIncomeVerificationModal({ isOpen, onClose, student
                                         <input
                                             type="range"
                                             min="60"
-                                            max="120"
+                                            max="200"
                                             value={formData.logoSize}
                                             onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                                             className="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"

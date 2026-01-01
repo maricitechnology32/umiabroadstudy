@@ -159,8 +159,140 @@ const deleteResource = async (req, res) => {
     }
 };
 
+// @desc    Update resource with filled form (Receptionist/Staff workflow)
+// @route   PUT /api/resources/:id/fill
+// @access  Private (Staff)
+const updateFilledForm = async (req, res) => {
+    try {
+        const { fileUrl } = req.body;
+
+        if (!fileUrl) {
+            return res.status(400).json({ success: false, message: 'Filled form file URL is required' });
+        }
+
+        const resource = await Resource.findById(req.params.id);
+
+        if (!resource) {
+            return res.status(404).json({ success: false, message: 'Resource not found' });
+        }
+
+        // Check ownership
+        if (resource.consultancy.toString() !== req.user.consultancyId.toString()) {
+            return res.status(401).json({ success: false, message: 'Not authorized' });
+        }
+
+        // Only allow updating templates or rejected forms
+        if (resource.workflowStatus !== 'template' && resource.workflowStatus !== 'rejected') {
+            return res.status(400).json({
+                success: false,
+                message: `Cannot update form with status: ${resource.workflowStatus}`
+            });
+        }
+
+        // Preserve original template if not already preserved
+        if (!resource.templateUrl && resource.fileUrl) {
+            resource.templateUrl = resource.fileUrl;
+        }
+
+        // Update with filled version
+        resource.fileUrl = fileUrl;
+        resource.workflowStatus = 'filled';
+
+        await resource.save();
+
+        // Real-time notification to admins
+        const io = req.app.get('io');
+        if (io) {
+            const room = `consultancy_${req.user.consultancyId}`;
+            io.to(room).emit('form_updated', resource);
+            io.to(room).emit('receive_notification', {
+                id: new mongoose.Types.ObjectId(),
+                title: 'Form Filled',
+                message: `${resource.name} has been filled and is ready for verification`,
+                type: 'info',
+                timestamp: new Date()
+            });
+        }
+
+        res.status(200).json({ success: true, data: resource });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// @desc    Verify or reject a filled form (Admin workflow)
+// @route   PUT /api/resources/:id/verify
+// @access  Private (Admin/Manager)
+const verifyForm = async (req, res) => {
+    try {
+        const { status, message } = req.body;
+
+        // Validate status
+        if (!status || !['verified', 'rejected'].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Status must be either "verified" or "rejected"'
+            });
+        }
+
+        const resource = await Resource.findById(req.params.id);
+
+        if (!resource) {
+            return res.status(404).json({ success: false, message: 'Resource not found' });
+        }
+
+        // Check ownership
+        if (resource.consultancy.toString() !== req.user.consultancyId.toString()) {
+            return res.status(401).json({ success: false, message: 'Not authorized' });
+        }
+
+        // Only allow verifying filled forms
+        if (resource.workflowStatus !== 'filled') {
+            return res.status(400).json({
+                success: false,
+                message: `Cannot verify form with status: ${resource.workflowStatus}`
+            });
+        }
+
+        // Update verification details
+        resource.workflowStatus = status;
+        resource.verificationMessage = message || null;
+        resource.verifiedBy = req.user._id;
+        resource.verifiedAt = new Date();
+
+        await resource.save();
+
+        // Populate verifiedBy before sending response
+        await resource.populate('verifiedBy', 'name email');
+
+        // Real-time notification to staff
+        const io = req.app.get('io');
+        if (io) {
+            const room = `consultancy_${req.user.consultancyId}`;
+            io.to(room).emit('form_verified', resource);
+            io.to(room).emit('receive_notification', {
+                id: new mongoose.Types.ObjectId(),
+                title: status === 'verified' ? 'Form Verified' : 'Form Rejected',
+                message: `${resource.name}: ${message || 'No message provided'}`,
+                type: status === 'verified' ? 'success' : 'warning',
+                timestamp: new Date()
+            });
+        }
+
+        res.status(200).json({ success: true, data: resource });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
 module.exports = {
     addResource,
     getResources,
-    deleteResource
+    deleteResource,
+    updateFilledForm,
+    verifyForm
 };

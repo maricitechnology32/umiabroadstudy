@@ -218,7 +218,7 @@ export default function DateOfBirthVerificationModal({
       </div>
 
       ${formData.includeFooter ? `
-      <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 5pt 0; border-top: 2pt solid #DC2626; background: #f8fafc;">
+      <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 5pt 0; border-top: 2pt solid #DC2626; background: white;">
         <span style="font-size: 9pt; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
       </div>
       ` : `<div class="footer-space"></div>`}
@@ -559,7 +559,7 @@ export default function DateOfBirthVerificationModal({
                       <input
                         type="range"
                         min="40"
-                        max="120"
+                        max="200"
                         value={formData.logoSize}
                         onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                         className="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"

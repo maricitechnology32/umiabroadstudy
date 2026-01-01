@@ -18,12 +18,13 @@ import notificationReducer from '../features/notifications/notificationSlice';
 import landingReducer from '../features/landing/landingSlice';
 import subscribeReducer from '../features/subscribe/subscribeSlice';
 import resourceReducer from '../features/resources/resourceSlice';
+import documentReducer from '../features/documents/documentSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,             
-    consultancies: consultancyReducer,  
-    students: studentReducer,       
+    auth: authReducer,
+    consultancies: consultancyReducer,
+    students: studentReducer,
     staff: staffReducer,
     universities: universityReducer,
     holidays: holidayReducer,
@@ -38,7 +39,8 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     notifications: notificationReducer,
     landing: landingReducer,
-    subscribe: subscribeReducer,        
+    subscribe: subscribeReducer,
     resources: resourceReducer,
+    documents: documentReducer,
   },
 });

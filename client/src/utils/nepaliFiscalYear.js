@@ -54,6 +54,18 @@ export const formatGregorianDate = (date) => {
  * @returns {Date} - The Gregorian date of 1st Shrawan
  */
 export const getFiscalYearStartDate = (adYear) => {
+    // Manual overrides for specific fiscal years as per user request
+    const overrides = {
+        2022: '2022-07-17',
+        2023: '2023-07-17',
+        2024: '2024-07-16',
+        2025: '2025-07-17' // Needed to calculate end date of 2024/25
+    };
+
+    if (overrides[adYear]) {
+        return new Date(overrides[adYear]);
+    }
+
     try {
         const bsYear = adYearToBsYear(adYear);
         // 1st Shrawan = BS month 4, day 1

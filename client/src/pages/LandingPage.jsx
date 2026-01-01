@@ -141,7 +141,7 @@ export default function LandingPage() {
    return (
       <div className="min-h-screen bg-white font-sans text-secondary-900 selection:bg-primary-100 overflow-x-hidden">
          <SEO
-            title="Japan Visa SaaS - Automate Your Consultancy"
+            title="Global Flow - Automate Your Consultancy"
             description="The smartest way to move to Japan. Automate COE documents, track applications, and practice with our AI Immigration Officer."
          />
 
@@ -244,8 +244,8 @@ export default function LandingPage() {
                      {/* Sidebar - Primary Theme Color */}
                      <div className="w-16 md:w-56 bg-primary-900 border-r border-primary-800 flex flex-col pt-5 pb-4">
                         <div className="px-4 mb-6 flex items-center gap-3">
-                           <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold text-sm shrink-0">JV</div>
-                           <span className="text-white font-bold hidden md:block">JapanVisa</span>
+                           <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold text-sm shrink-0">GF</div>
+                           <span className="text-white font-bold hidden md:block">GlobalFlow</span>
                         </div>
                         <div className="flex-1 space-y-1 px-2">
                            {[
@@ -401,8 +401,8 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   className="text-center max-w-2xl mx-auto mb-10"
                >
-                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">Everything you need to <span className="text-primary-600">get the visa.</span></h2>
-                  <p className="text-slate-500 text-base leading-relaxed">We've digitized the entire Japanese immigration workflow, eliminating 90% of paperwork.</p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">Everything you need to <span className="text-primary-600">manage your consultancy.</span></h2>
+                  <p className="text-slate-500 text-base leading-relaxed">We've digitized the entire workflow, eliminating 90% of paperwork.</p>
                </motion.div>
 
                <motion.div

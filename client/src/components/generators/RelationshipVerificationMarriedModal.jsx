@@ -179,7 +179,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
 
         <table class="data-table">
             <thead>
-                <tr style="background-color: #f2f2f2;">
+                <tr>
                     <th style="width: 8%; text-align: center;">S.N.</th>
                     <th style="width: 50%;">Name</th>
                     <th style="width: 42%;">Relationship</th>
@@ -378,7 +378,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                                 {/* Table Preview */}
                                 <table className="w-full border-collapse border border-black mb-2 text-left text-[9pt]">
                                     <thead>
-                                        <tr className="bg-gray-50">
+                                        <tr className="">
                                             <th className="border border-black p-1 text-center w-8">S.N.</th>
                                             <th className="border border-black p-1">Name</th>
                                             <th className="border border-black p-1">Relationship</th>
@@ -473,7 +473,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                                     <input
                                         type="range"
                                         min="60"
-                                        max="120"
+                                        max="200"
                                         value={formData.logoSize}
                                         onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                                         className="flex-1 h-2 bg-red-200 rounded-lg appearance-none cursor-pointer accent-red-600"

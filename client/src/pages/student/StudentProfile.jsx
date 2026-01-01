@@ -7,6 +7,7 @@ import {
     ClipboardCheck,
     DollarSign,
     Eye,
+    ExternalLink,
     FileCheck,
     FileText,
     Download,
@@ -37,6 +38,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { bsToAd } from '@sbmdkl/nepali-date-converter';
 import { clearCurrentProfile, getMyProfile, getStudentById, reset, updateProfile, updateStudentStatus } from '../../features/students/studentSlice';
+import { getUniversities } from '../../features/universities/universitySlice';
 import api from '../../utils/api';
 import { fixImageUrl } from '../../utils/imageUtils';
 import SEO from '../../components/common/SEO';
@@ -65,6 +67,7 @@ import StudentExamList from '../../components/student/StudentExamList';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
+import Modal from '../../components/ui/Modal';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 
 export default function StudentProfile() {
@@ -74,6 +77,7 @@ export default function StudentProfile() {
 
     const { currentProfile, isLoading, isSuccess, message } = useSelector((state) => state.students);
     const { user } = useSelector((state) => state.auth);
+    const { universities } = useSelector((state) => state.universities);
 
     const isAdminView = !!studentId;
 
@@ -107,7 +111,7 @@ export default function StudentProfile() {
     const [formData, setFormData] = useState({
         personalInfo: { title: 'Mr.', firstName: '', lastName: '', gender: 'Male', dobAD: '', dobBS: '', email: '', phone: '', citizenshipNo: '', citizenshipDistrict: '', citizenshipDate: '', passportNo: '', passportExpiry: '', passportIssuePlace: '', photoUrl: '' },
         address: { municipality: '', wardNo: '', district: '', province: '', tole: '' },
-        familyInfo: { fatherName: '', motherName: '', grandfatherName: '', spouseName: '', relatives: [] },
+        familyInfo: { fatherName: '', fatherPhone: '', fatherEmail: '', motherName: '', motherPhone: '', motherEmail: '', grandfatherName: '', spouseName: '', relatives: [] },
         academics: [],
         financialInfo: { incomeSources: [], fiscalYears: [], exchangeRate: 134, sponsor: '' },
         documents: { other: [] },
@@ -132,6 +136,18 @@ export default function StudentProfile() {
     const [showLanguageModal, setShowLanguageModal] = useState(false);
     const [showCharacterModal, setShowCharacterModal] = useState(false);
 
+    // New states for document management
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [statusToUpdate, setStatusToUpdate] = useState('');
+    const [showDocModal, setShowDocModal] = useState(false);
+    const [docForm, setDocForm] = useState({ type: '', universityId: '', file: null, notes: '' });
+    const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+
+    // New permission checks
+    const isOwner = user?._id === studentId;
+    const canEdit = isOwner || ['consultancy_admin', 'consultancy_staff', 'counselor'].includes(user?.role);
+    const canManageDocs = ['consultancy_admin', 'manager', 'counselor', 'consultancy_staff'].includes(user?.role) || ['document_officer', 'receptionist'].includes(user?.subRole);
+
     // --- 1. INITIALIZATION ---
     useEffect(() => {
         if (isAdminView) {
@@ -139,6 +155,7 @@ export default function StudentProfile() {
         } else {
             dispatch(getMyProfile());
         }
+        dispatch(getUniversities());
 
         return () => {
             dispatch(reset());
@@ -221,6 +238,21 @@ export default function StudentProfile() {
         } catch (error) {
             console.error("Save failed", error);
             toast.error("Document uploaded but failed to save.");
+        }
+    };
+
+    const handleDocumentDelete = async (fieldKey) => {
+        if (!window.confirm("Are you sure you want to delete this document?")) return;
+
+        const updatedDocuments = { ...formData.documents, [fieldKey]: '' };
+        setFormData(prev => ({ ...prev, documents: updatedDocuments }));
+
+        try {
+            await dispatch(updateProfile({ id: currentProfile._id, data: { ...formData, documents: updatedDocuments } })).unwrap();
+            toast.success("Document deleted.");
+        } catch (error) {
+            console.error("Delete failed", error);
+            toast.error("Failed to delete document.");
         }
     };
 
@@ -375,7 +407,7 @@ export default function StudentProfile() {
                                         ${currentProfile?.profileStatus === 'verified' ? 'bg-primary-50 border-primary-200 text-primary-700' :
                                             currentProfile?.profileStatus === 'lead' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                                                 'bg-slate-50 border-slate-200 text-slate-700'}`}>
-                                        <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full 
+                                        <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full
                                             ${currentProfile?.profileStatus === 'verified' ? 'bg-primary-600' : 'bg-amber-600'}`}></span>
                                         {currentProfile?.profileStatus}
                                     </div>
@@ -448,7 +480,9 @@ export default function StudentProfile() {
 
                         <TabButton id="uploads" label="My Uploads" icon={<Upload size={14} />} active={activeTab} set={setActiveTab} />
 
-                        <TabButton id="documents" label="Notices & Routines" icon={<Bell size={14} />} active={activeTab} set={setActiveTab} />
+                        <TabButton id="notices" label="Notices & Routines" icon={<Bell size={14} />} active={activeTab} set={setActiveTab} />
+
+                        <TabButton id="documents" label="Documents" icon={<FileText size={14} />} active={activeTab} set={setActiveTab} highlight />
 
                         <TabButton id="exams" label="Exams" icon={<BookOpen size={14} />} active={activeTab} set={setActiveTab} color="purple" />
 
@@ -460,7 +494,7 @@ export default function StudentProfile() {
                         )}
 
                         {canViewApplications && !isStudent && (
-                            <TabButton id="applications" label="Apps" icon={<Building2 size={14} />} active={activeTab} set={setActiveTab} highlight />
+                            <TabButton id="applications" label="Apps" icon={<Building2 size={14} />} active={activeTab} set={setActiveTab} />
                         )}
 
                         {isAdminView && canGenerateDocs && (
@@ -490,7 +524,7 @@ export default function StudentProfile() {
                                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                                     <div className="md:col-span-2">
                                         <Select label="Title" value={formData.personalInfo.title} onChange={(e) => updateField('personalInfo', 'title', e.target.value)}>
-                                            <option>Mr.</option><option>Ms.</option><option>Mrs.</option>
+                                            <option>Mr.</option><option>Ms.</option><option>Mrs.</option><option>Miss</option>
                                         </Select>
                                     </div>
                                     <div className="md:col-span-4"><Input label="First Name" value={formData.personalInfo.firstName} onChange={(e) => updateField('personalInfo', 'firstName', e.target.value)} /></div>
@@ -500,6 +534,9 @@ export default function StudentProfile() {
                                             <option>Male</option><option>Female</option><option>Other</option>
                                         </Select>
                                     </div>
+
+                                    <div className="md:col-span-6"><Input label="Email Address" type="email" value={formData.personalInfo.email} onChange={(e) => updateField('personalInfo', 'email', e.target.value)} leftIcon={<Mail size={16} />} /></div>
+                                    <div className="md:col-span-6"><Input label="Phone Number" type="tel" value={formData.personalInfo.phone} onChange={(e) => updateField('personalInfo', 'phone', e.target.value)} leftIcon={<Phone size={16} />} /></div>
 
                                     <div className="md:col-span-6">
                                         <Input
@@ -573,8 +610,25 @@ export default function StudentProfile() {
                             <SectionHeader title="Family Information" subtitle="Required for Birth, Relationship, and Income Verification docs." icon={<User className="text-primary-600" />} />
                             <Card className="p-8 rounded-2xl shadow-sm border border-slate-200 bg-gradient-to-br from-white to-slate-50/50">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <Input label="Father's Full Name" value={formData.familyInfo.fatherName} onChange={(e) => updateField('familyInfo', 'fatherName', e.target.value)} />
-                                    <Input label="Mother's Full Name" value={formData.familyInfo.motherName} onChange={(e) => updateField('familyInfo', 'motherName', e.target.value)} />
+                                    <div className="col-span-full space-y-4">
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <h4 className="font-semibold text-slate-700 mb-3 flex items-center gap-2"><User size={16} /> Father's Details</h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="md:col-span-1"><Input label="Full Name" value={formData.familyInfo.fatherName} onChange={(e) => updateField('familyInfo', 'fatherName', e.target.value)} /></div>
+                                                <div className="md:col-span-1"><Input label="Phone Number" value={formData.familyInfo.fatherPhone} onChange={(e) => updateField('familyInfo', 'fatherPhone', e.target.value)} leftIcon={<Phone size={14} />} /></div>
+                                                <div className="md:col-span-1"><Input label="Email Address" value={formData.familyInfo.fatherEmail} onChange={(e) => updateField('familyInfo', 'fatherEmail', e.target.value)} leftIcon={<Mail size={14} />} /></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <h4 className="font-semibold text-slate-700 mb-3 flex items-center gap-2"><User size={16} /> Mother's Details</h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="md:col-span-1"><Input label="Full Name" value={formData.familyInfo.motherName} onChange={(e) => updateField('familyInfo', 'motherName', e.target.value)} /></div>
+                                                <div className="md:col-span-1"><Input label="Phone Number" value={formData.familyInfo.motherPhone} onChange={(e) => updateField('familyInfo', 'motherPhone', e.target.value)} leftIcon={<Phone size={14} />} /></div>
+                                                <div className="md:col-span-1"><Input label="Email Address" value={formData.familyInfo.motherEmail} onChange={(e) => updateField('familyInfo', 'motherEmail', e.target.value)} leftIcon={<Mail size={14} />} /></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <Input label="Grandfather's Full Name" value={formData.familyInfo.grandfatherName} onChange={(e) => updateField('familyInfo', 'grandfatherName', e.target.value)} />
                                     <Input label="Spouse Name (Optional)" value={formData.familyInfo.spouseName} onChange={(e) => updateField('familyInfo', 'spouseName', e.target.value)} />
                                     <Input label="Father-in-Law Name (Optional)" value={formData.familyInfo.fatherInLawName} onChange={(e) => updateField('familyInfo', 'fatherInLawName', e.target.value)} />
@@ -645,9 +699,9 @@ export default function StudentProfile() {
                         )
                     }
 
-                    {/* NOTICES & ROUTINES TAB (Formerly Documents) */}
+                    {/* NOTICES & ROUTINES TAB (Renamed from documents to notices) */}
                     {
-                        activeTab === 'documents' && (
+                        activeTab === 'notices' && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <SectionHeader title="Notices & Routines" subtitle="Important updates, exam schedules, and resources from your consultancy." icon={<Bell className="text-primary-600" />} />
 
@@ -660,6 +714,236 @@ export default function StudentProfile() {
                                 </div>
                             </div>
                         )
+                    }
+
+                    {/* NEW DOCUMENTS TAB (For Verification Workflow) */}
+                    {activeTab === 'documents' && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex justify-between items-center">
+                                <SectionHeader title="Application Documents" subtitle="Manage official documents for verification." icon={<FileText className="text-primary-600" />} />
+                                {canManageDocs && (
+                                    <Button size="sm" onClick={() => setShowDocModal(true)}>
+                                        <Upload size={16} className="mr-2" /> Add Document
+                                    </Button>
+                                )}
+                            </div>
+
+                            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="bg-slate-50 text-slate-500 font-semibold uppercase text-xs">
+                                        <tr>
+                                            <th className="px-6 py-4">Type</th>
+                                            <th className="px-6 py-4">University</th>
+                                            <th className="px-6 py-4">Status</th>
+                                            <th className="px-6 py-4">Links</th>
+                                            <th className="px-6 py-4 text-right">Uploaded</th>
+                                            {canManageDocs && <th className="px-6 py-4 text-right">Actions</th>}
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {formData.applicationDocuments?.map((doc) => (
+                                            <tr key={doc._id} className="hover:bg-slate-50">
+                                                <td className="px-6 py-4 font-medium">{doc.type}</td>
+                                                <td className="px-6 py-4 text-slate-500 text-xs">
+                                                    {universities.find(u => u._id === doc.universityId)?.name || doc.universityId?.name || '-'}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${doc.status === 'Verified' ? 'bg-emerald-100 text-emerald-700' :
+                                                        doc.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                                                            'bg-orange-100 text-orange-700'
+                                                        }`}>
+                                                        {doc.status}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 flex gap-2">
+                                                    {doc.originalUrl && (
+                                                        <a href={doc.originalUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center">
+                                                            Original <ExternalLink size={10} className="ml-1" />
+                                                        </a>
+                                                    )}
+                                                    {doc.verifiedUrl && (
+                                                        <a href={doc.verifiedUrl} target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline text-xs flex items-center">
+                                                            Signed <CheckCircle size={10} className="ml-1" />
+                                                        </a>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 text-right text-slate-500 text-xs">
+                                                    {new Date(doc.createdAt).toLocaleDateString()}
+                                                </td>
+                                                {canManageDocs && (
+                                                    <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                setDocForm({
+                                                                    _id: doc._id,
+                                                                    type: doc.type,
+                                                                    universityId: doc.universityId,
+                                                                    file: null,
+                                                                    notes: doc.notes || ''
+                                                                });
+                                                                setShowDocModal(true);
+                                                            }}
+                                                            className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2 py-1 rounded transition-colors"
+                                                        >
+                                                            Update
+                                                        </button>
+                                                        <select
+                                                            className="text-xs border rounded p-1 bg-white cursor-pointer hover:border-blue-500 transition-colors w-24"
+                                                            value=""
+                                                            onChange={async (e) => {
+                                                                const newStatus = e.target.value;
+                                                                if (!newStatus) return;
+                                                                if (!window.confirm(`Mark this document as ${newStatus}?`)) return;
+
+                                                                try {
+                                                                    await api.put(`/students/${currentProfile._id}/documents/${doc._id}/status`, { status: newStatus });
+                                                                    toast.success(`Document marked as ${newStatus}`);
+                                                                    dispatch(getStudentById(currentProfile._id));
+                                                                } catch (err) {
+                                                                    toast.error("Failed to update status");
+                                                                    console.error(err);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <option value="">Status...</option>
+                                                            <option value="Verified">Verify</option>
+                                                            <option value="Rejected">Reject</option>
+                                                            <option value="Pending Verification">Reset</option>
+                                                        </select>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))}
+                                        {!formData.applicationDocuments?.length && (
+                                            <tr><td colSpan={canManageDocs ? "5" : "4"} className="text-center py-8 text-slate-400">No documents yet.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Document Upload Modal */}
+                            <Modal isOpen={showDocModal} onClose={() => setShowDocModal(false)} title={docForm._id ? "Update Document" : "Upload Application Document"}>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Document Type</label>
+                                        <select
+                                            className="w-full border rounded-lg p-2"
+                                            value={docForm.type}
+                                            onChange={(e) => setDocForm({ ...docForm, type: e.target.value })}
+                                        >
+                                            <option value="">Select Type</option>
+                                            <option value="Birth Verification">Birth Verification</option>
+                                            <option value="Relationship Certificate">Relationship Certificate</option>
+                                            <option value="Occupation Verification">Occupation Verification</option>
+                                            <option value="Surname Verification">Surname Verification</option>
+                                            <option value="Annual Income Verification">Annual Income Verification</option>
+                                            <option value="Bank Statement">Bank Statement</option>
+                                            <option value="Tax Clearance">Tax Clearance</option>
+                                            <option value="DOB Verification (Married)">DOB Verification (Married)</option>
+                                            <option value="Relationship Certificate (Married)">Relationship Certificate (Married)</option>
+                                            <option value="Japanese Language Certificate">Japanese Language Certificate</option>
+                                            <option value="Character Certificate">Character Certificate</option>
+                                            <option value="Application Form">Application Form</option>
+                                            <option value="Financial Statement">Financial Statement</option>
+                                            <option value="Essay / SOP">Essay / SOP</option>
+                                            <option value="Recommendation Letter">Recommendation Letter</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    {docForm.type === 'Other' && (
+                                        <Input
+                                            label="Specify Document Type"
+                                            placeholder="e.g. Health Certificate"
+                                            value={docForm.customType || ''}
+                                            onChange={(e) => setDocForm({ ...docForm, customType: e.target.value })}
+                                        />
+                                    )}
+                                    <div className="mt-2">
+                                        <label className="block text-sm font-medium mb-1">University (Optional)</label>
+                                        <select
+                                            className="w-full border rounded-lg p-2"
+                                            value={docForm.universityId || ''}
+                                            onChange={(e) => setDocForm({ ...docForm, universityId: e.target.value })}
+                                        >
+                                            <option value="">-- No University --</option>
+                                            {universities.map(uni => (
+                                                <option key={uni._id} value={uni._id}>
+                                                    {uni.name} {uni.country ? `(${uni.country})` : ''}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <Input
+                                        label="File (Draft/Generated)"
+                                        type="file"
+                                        onChange={(e) => setDocForm({ ...docForm, file: e.target.files[0] })}
+                                    />
+                                    <div className="flex justify-end gap-2 pt-4">
+                                        <Button variant="outline" onClick={() => setShowDocModal(false)}>Cancel</Button>
+                                        <Button
+                                            onClick={async () => {
+                                                // For updates, file is optional; for creates, it's required
+                                                if (!docForm._id && !docForm.file) return toast.error("File required for new document");
+                                                if (!docForm.type) return toast.error("Document type required");
+                                                if (docForm.type === 'Other' && !docForm.customType) return toast.error("Please specify the document type");
+
+                                                const finalType = docForm.type === 'Other' ? docForm.customType : docForm.type;
+
+                                                setIsUploadingDoc(true);
+                                                try {
+                                                    let uploadRes = null;
+
+                                                    // 1. Upload File (if provided)
+                                                    if (docForm.file) {
+                                                        const formDataUpload = new FormData();
+                                                        formDataUpload.append('file', docForm.file);
+                                                        uploadRes = await api.post('/upload', formDataUpload, {
+                                                            headers: { 'Content-Type': 'multipart/form-data' }
+                                                        });
+                                                    }
+
+                                                    // 2. Create or Update Doc Record
+                                                    if (docForm._id) {
+                                                        // UPDATE MODE
+                                                        const updatePayload = {
+                                                            universityId: docForm.universityId || null,
+                                                            notes: docForm.notes
+                                                        };
+                                                        if (uploadRes) {
+                                                            updatePayload.originalUrl = uploadRes.data.url;
+                                                        }
+                                                        await api.put(`/students/${currentProfile._id}/documents/${docForm._id}`, updatePayload);
+                                                        toast.success("Document updated!");
+                                                    } else {
+                                                        // CREATE MODE
+                                                        await api.post(`/students/${currentProfile._id}/documents`, {
+                                                            type: finalType,
+                                                            originalUrl: uploadRes.data.url,
+                                                            universityId: docForm.universityId || null,
+                                                            notes: docForm.notes
+                                                        });
+                                                        toast.success("Document added!");
+                                                    }
+
+                                                    setShowDocModal(false);
+                                                    setDocForm({ type: '', universityId: '', file: null, notes: '' });
+                                                    dispatch(getStudentById(currentProfile._id)); // Refresh Profile
+                                                } catch (err) {
+                                                    toast.error("Failed to upload");
+                                                    console.error(err);
+                                                } finally {
+                                                    setIsUploadingDoc(false);
+                                                }
+                                            }}
+                                            disabled={isUploadingDoc}
+                                        >
+                                            {isUploadingDoc ? 'Uploading...' : 'Save Document'}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Modal>
+                        </div>
+                    )
                     }
 
                     {/* EXAMS TAB */}
@@ -684,12 +968,12 @@ export default function StudentProfile() {
                                         Your Uploads (Mandatory)
                                     </h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                        <DocumentUploadCard title="Citizenship (Front)" fieldKey="citizenshipFront" existingUrl={formData.documents?.citizenshipFront} onUpload={handleDocumentUpdate} />
-                                        <DocumentUploadCard title="Citizenship (Back)" fieldKey="citizenshipBack" existingUrl={formData.documents?.citizenshipBack} onUpload={handleDocumentUpdate} />
-                                        <DocumentUploadCard title="Passport (Bio Page)" fieldKey="passportBio" existingUrl={formData.documents?.passportBio} onUpload={handleDocumentUpdate} />
-                                        <DocumentUploadCard title="SLC/SEE Marksheet" fieldKey="slcMarksheet" existingUrl={formData.documents?.slcMarksheet} onUpload={handleDocumentUpdate} />
-                                        <DocumentUploadCard title="SLC/SEE Character" fieldKey="slcCharacter" existingUrl={formData.documents?.slcCharacter} onUpload={handleDocumentUpdate} />
-                                        <DocumentUploadCard title="+2 Transcript" fieldKey="plus2Transcript" existingUrl={formData.documents?.plus2Transcript} onUpload={handleDocumentUpdate} />
+                                        <DocumentUploadCard title="Citizenship (Front)" fieldKey="citizenshipFront" existingUrl={formData.documents?.citizenshipFront} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
+                                        <DocumentUploadCard title="Citizenship (Back)" fieldKey="citizenshipBack" existingUrl={formData.documents?.citizenshipBack} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
+                                        <DocumentUploadCard title="Passport (Bio Page)" fieldKey="passportBio" existingUrl={formData.documents?.passportBio} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
+                                        <DocumentUploadCard title="SLC/SEE Marksheet" fieldKey="slcMarksheet" existingUrl={formData.documents?.slcMarksheet} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
+                                        <DocumentUploadCard title="SLC/SEE Character" fieldKey="slcCharacter" existingUrl={formData.documents?.slcCharacter} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
+                                        <DocumentUploadCard title="+2 Transcript" fieldKey="plus2Transcript" existingUrl={formData.documents?.plus2Transcript} onUpload={handleDocumentUpdate} onDelete={handleDocumentDelete} />
                                     </div>
                                 </Card>
 
@@ -788,7 +1072,17 @@ export default function StudentProfile() {
                                         </h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
                                             <ReviewItem label="Father's Name" value={formData.familyInfo.fatherName} icon={<User size={16} />} />
+                                            <ReviewItem label="Father's Phone" value={formData.familyInfo.fatherPhone} icon={<Phone size={16} />} />
+                                            <ReviewItem label="Father's Email" value={formData.familyInfo.fatherEmail} icon={<Mail size={16} />} />
+
+                                            <div className="col-span-full h-px bg-slate-100 my-2"></div>
+
                                             <ReviewItem label="Mother's Name" value={formData.familyInfo.motherName} icon={<User size={16} />} />
+                                            <ReviewItem label="Mother's Phone" value={formData.familyInfo.motherPhone} icon={<Phone size={16} />} />
+                                            <ReviewItem label="Mother's Email" value={formData.familyInfo.motherEmail} icon={<Mail size={16} />} />
+
+                                            <div className="col-span-full h-px bg-slate-100 my-2"></div>
+
                                             <ReviewItem label="Grandfather's Name" value={formData.familyInfo.grandfatherName} icon={<User size={16} />} />
                                             <ReviewItem label="Spouse's Name" value={formData.familyInfo.spouseName} icon={<User size={16} />} />
                                         </div>
@@ -872,11 +1166,11 @@ export default function StudentProfile() {
                         )
                     }
 
-                </div>
-            </div>
+                </div >
+            </div >
 
             {/* --- MODALS --- */}
-            <SurnameVerificationModal isOpen={showSurnameModal} onClose={() => setShowSurnameModal(false)} student={currentProfile} />
+            < SurnameVerificationModal isOpen={showSurnameModal} onClose={() => setShowSurnameModal(false)} student={currentProfile} />
             <DateOfBirthVerificationModal isOpen={showDobModal} onClose={() => setShowDobModal(false)} student={currentProfile} />
             <RelationshipVerificationModal isOpen={showRelationModal} onClose={() => setShowRelationModal(false)} student={currentProfile} />
             <OccupationVerificationModal isOpen={showOccupationModal} onClose={() => setShowOccupationModal(false)} student={currentProfile} />
@@ -997,7 +1291,7 @@ function TabButton({ id, label, icon, active, set, highlight, color = 'primary' 
     );
 }
 
-function DocumentUploadCard({ title, fieldKey, existingUrl, onUpload }) {
+function DocumentUploadCard({ title, fieldKey, existingUrl, onUpload, onDelete }) {
     const [isUploading, setIsUploading] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const fileInputRef = useRef(null);
@@ -1062,13 +1356,19 @@ function DocumentUploadCard({ title, fieldKey, existingUrl, onUpload }) {
 
                     <div className="flex gap-2 relative z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                         <a href={existingUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                            className="px-4 py-2 bg-white border border-primary-200 rounded-xl text-xs font-bold text-slate-700 hover:text-primary-700 hover:border-primary-400 hover:shadow-md transition-all flex items-center gap-1.5">
-                            <Eye size={14} /> View
+                            className="px-3 py-2 bg-white border border-primary-200 rounded-xl text-xs font-bold text-slate-700 hover:text-primary-700 hover:border-primary-400 hover:shadow-md transition-all flex items-center gap-1.5">
+                            <Eye size={14} />
                         </a>
                         <button onClick={(e) => { e.stopPropagation(); fileInputRef.current.click() }}
-                            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:text-primary-600 hover:border-primary-400 hover:shadow-md transition-all flex items-center gap-1.5">
-                            <Upload size={14} /> Replace
+                            className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:text-primary-600 hover:border-primary-400 hover:shadow-md transition-all flex items-center gap-1.5">
+                            <Upload size={14} />
                         </button>
+                        {onDelete && (
+                            <button onClick={(e) => { e.stopPropagation(); onDelete(fieldKey); }}
+                                className="px-3 py-2 bg-white border border-red-200 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 hover:border-red-400 hover:shadow-md transition-all flex items-center gap-1.5">
+                                <Trash2 size={14} />
+                            </button>
+                        )}
                     </div>
                 </>
             ) : (

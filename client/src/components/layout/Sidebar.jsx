@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { fixImageUrl } from '../../utils/imageUtils';
-import { LayoutDashboard, Users, FileText, Settings, LogOut, BookOpen, Info, Mail, Briefcase, Globe, Key } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, BookOpen, Info, Mail, Briefcase, Globe, Key, Building2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import ChangePasswordModal from '../auth/ChangePasswordModal';
 
@@ -29,6 +29,7 @@ const Sidebar = ({ onLogout, isOpen, onClose }) => {
 
 
     const adminItems = [
+        { name: 'University Manager', path: '/admin/universities', icon: Building2 }, // New Item
         { name: 'About Us Manager', path: '/admin/about-us', icon: Info },
         { name: 'Blog Manager', path: '/admin/blog', icon: BookOpen },
         { name: 'Careers Manager', path: '/admin/careers', icon: Briefcase },

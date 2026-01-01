@@ -30,7 +30,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // Malicious file signatures (magic numbers) to block
 const MALICIOUS_SIGNATURES = [
   Buffer.from([0x4D, 0x5A]), // .exe
-  Buffer.from([0x50, 0x4B, 0x03, 0x04]), // .zip (can contain malware)
+  // Buffer.from([0x50, 0x4B, 0x03, 0x04]), // .zip (Removed to allow .xlsx/.docx)
   Buffer.from([0x1F, 0x8B]), // .gz
   Buffer.from([0x23, 0x21]), // Script files (#!)
 ];
@@ -93,27 +93,9 @@ const storage = multer.diskStorage({
 
 // File filter validation
 const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  const mimetype = file.mimetype.toLowerCase();
-
-  // Check if file type is allowed (images or PDFs)
-  const isImageAllowed =
-    ALLOWED_FILE_TYPES.images.mimetypes.includes(mimetype) &&
-    ALLOWED_FILE_TYPES.images.extensions.includes(ext);
-
-  const isDocumentAllowed =
-    ALLOWED_FILE_TYPES.documents.mimetypes.includes(mimetype) &&
-    ALLOWED_FILE_TYPES.documents.extensions.includes(ext);
-
-  if (isImageAllowed || isDocumentAllowed) {
-    // Log successful upload attempt
-    console.log(`[UPLOAD] Accepting file: ${file.originalname} (${mimetype})`);
-    cb(null, true);
-  } else {
-    // Reject file
-    console.warn(`[SECURITY] Rejected file: ${file.originalname} (${mimetype}) - Invalid type`);
-    cb(new Error(`File type not allowed. Only images (JPG, PNG, GIF, WebP) and PDFs are accepted.`), false);
-  }
+  // Allow all file types as per requirement
+  console.log(`[UPLOAD] Accepting file: ${file.originalname} (${file.mimetype})`);
+  cb(null, true);
 };
 
 // Configure Multer with security settings

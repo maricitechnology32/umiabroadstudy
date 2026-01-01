@@ -403,7 +403,7 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
                                     <input
                                         type="range"
                                         min="60"
-                                        max="120"
+                                        max="200"
                                         value={formData.logoSize}
                                         onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                                         className="flex-1 h-2 bg-red-200 rounded-lg appearance-none cursor-pointer accent-red-600"

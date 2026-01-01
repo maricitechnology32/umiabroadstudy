@@ -12,9 +12,10 @@ import api from './api';
  * Fetches the current USD to NPR selling rate from Nepal Rastra Bank via backend proxy
  * @returns {Promise<{rate: number, date: string, source: string}>}
  */
-export const fetchNRBExchangeRate = async () => {
+export const fetchNRBExchangeRate = async (date) => {
     try {
-        const response = await api.get('/exchange-rate/nrb');
+        const query = date ? `?date=${date}` : '';
+        const response = await api.get(`/exchange-rate/nrb${query}`);
 
         if (response.data?.success && response.data?.data) {
             const rateData = response.data.data;
@@ -36,8 +37,8 @@ export const fetchNRBExchangeRate = async () => {
 
         // Return fallback rate if API fails
         return {
-            rate: 135.00,
-            buyRate: 134.00,
+            rate: 144.10,
+            buyRate: 143.50,
             date: new Date().toISOString().split('T')[0],
             source: 'Fallback (API unavailable)',
             currency: 'USD',

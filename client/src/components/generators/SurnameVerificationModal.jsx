@@ -369,7 +369,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                   </p>
 
                   {/* SIGNATURE */}
-                                    <div className="mt-16 text-right">
+                  <div className="mt-16 text-right">
                     <div>......................................</div>
                     <div className="font-bold">{formData.signatoryName}</div>
                     <div>{formData.signatoryDesignation}</div>
@@ -447,7 +447,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                       <input
                         type="range"
                         min="40"
-                        max="120"
+                        max="200"
                         value={formData.logoSize}
                         onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                         className="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"

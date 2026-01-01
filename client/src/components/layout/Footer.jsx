@@ -16,12 +16,12 @@ const Footer = () => {
                     <div>
                         <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-3">
                             <div className="w-7 h-7 rounded-md bg-primary-600 flex items-center justify-center">
-                                <span className="text-white text-sm">🇯🇵</span>
+                                <span className="text-white text-sm">GF</span>
                             </div>
-                            Japan Visa SaaS
+                            Global Flow
                         </h3>
                         <p className="text-sm max-w-xs text-primary-200 leading-relaxed">
-                            Streamlining visa applications with modern technology. Your gateway to Japan, simplified.
+                            Streamlining visa applications with modern technology. Your gateway to the world, simplified.
                         </p>
 
                         {/* Social Icons */}
@@ -72,7 +72,7 @@ const Footer = () => {
                 {/* Bottom Section */}
                 <div className="flex flex-col md:flex-row items-center justify-between text-sm text-primary-400">
                     <p>
-                        © {currentYear} <span className="text-white">Japan Visa SaaS</span>. All rights reserved.
+                        © {currentYear} <span className="text-white">Global Flow</span>. All rights reserved.
                     </p>
 
                     <div className="flex items-center gap-4 mt-3 md:mt-0">

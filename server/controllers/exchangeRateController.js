@@ -12,38 +12,66 @@
  */
 exports.getNRBExchangeRate = async (req, res) => {
     try {
-        // NRB API requires page, from, and to parameters
+        // Allow client to request a specific date
+        const requestedDateRaw = req.query.date;
         const today = new Date();
-        const dateStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
-        // Also try yesterday in case today's rates aren't published yet
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        // Ensure strictly YYYY-MM-DD format
+        let targetDateObj = today;
+        if (requestedDateRaw) {
+            const parsed = new Date(requestedDateRaw);
+            if (!isNaN(parsed.getTime())) {
+                targetDateObj = parsed;
+            }
+        }
 
-        // Try today first, then yesterday
+        const dateStr = targetDateObj.toISOString().split('T')[0];
+
+        // Also try the day before the requested date in case rates aren't published yet (e.g., holidays/weekends)
+        const dayBefore = new Date(targetDateObj);
+        dayBefore.setDate(dayBefore.getDate() - 1);
+        const dayBeforeStr = dayBefore.toISOString().split('T')[0];
+
+        // Try requested date first, then previous day as fallback
         let data = null;
         let usedDate = dateStr;
+        const datesToTry = [dateStr, dayBeforeStr];
 
-        for (const tryDate of [dateStr, yesterdayStr]) {
+        for (const tryDate of datesToTry) {
             const apiUrl = `https://www.nrb.org.np/api/forex/v1/rates?page=1&per_page=25&from=${tryDate}&to=${tryDate}`;
 
             console.log('Calling NRB API:', apiUrl);
 
-            const response = await fetch(apiUrl);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
 
-            if (!response.ok) {
-                console.log(`NRB API failed for ${tryDate}:`, response.status);
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'application/json'
+                    },
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    console.log(`NRB API failed for ${tryDate}:`, response.status);
+                    continue;
+                }
+
+                const jsonData = await response.json();
+
+                // Check if we got valid data
+                if (jsonData?.status?.code === 200 && jsonData?.data?.payload?.rates?.length > 0) {
+                    data = jsonData;
+                    usedDate = tryDate;
+                    break;
+                }
+            } catch (err) {
+                clearTimeout(timeoutId);
+                console.log(`Fetch failed for ${tryDate}:`, err.message);
                 continue;
-            }
-
-            const jsonData = await response.json();
-
-            // Check if we got valid data
-            if (jsonData?.status?.code === 200 && jsonData?.data?.payload?.rates?.length > 0) {
-                data = jsonData;
-                usedDate = tryDate;
-                break;
             }
         }
 
@@ -95,9 +123,9 @@ exports.getNRBExchangeRate = async (req, res) => {
         res.status(200).json({
             success: true,
             data: {
-                rate: 143.14,
-                buyRate: 142.54,
-                sellRate: 143.14,
+                rate: 144.10,
+                buyRate: 143.50,
+                sellRate: 144.10,
                 date: new Date().toISOString().split('T')[0],
                 source: 'Fallback (NRB API unavailable)',
                 currency: 'USD',

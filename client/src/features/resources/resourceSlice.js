@@ -45,11 +45,39 @@ export const deleteResource = createAsyncThunk(
     }
 );
 
+// Upload filled form
+export const uploadFilledForm = createAsyncThunk(
+    'resources/uploadFilled',
+    async ({ id, fileUrl }, thunkAPI) => {
+        try {
+            const response = await api.put(`/resources/${id}/fill`, { fileUrl });
+            return response.data.data;
+        } catch (error) {
+            const message = error.response?.data?.message || error.message;
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+// Verify form (approve/reject)
+export const verifyForm = createAsyncThunk(
+    'resources/verify',
+    async ({ id, status, message }, thunkAPI) => {
+        try {
+            const response = await api.put(`/resources/${id}/verify`, { status, message });
+            return response.data.data;
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
 const resourceSlice = createSlice({
     name: 'resources',
     initialState: {
         resources: [],
-        isLoading: false, 
+        isLoading: false,
         isError: false,
         message: '',
         isSuccess: false
@@ -103,6 +131,40 @@ const resourceSlice = createSlice({
                 state.resources = state.resources.filter(r => r._id !== action.payload);
             })
             .addCase(deleteResource.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(uploadFilledForm.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(uploadFilledForm.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                // Update the resource in the list
+                const index = state.resources.findIndex(r => r._id === action.payload._id);
+                if (index !== -1) {
+                    state.resources[index] = action.payload;
+                }
+            })
+            .addCase(uploadFilledForm.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(verifyForm.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(verifyForm.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                // Update the resource in the list
+                const index = state.resources.findIndex(r => r._id === action.payload._id);
+                if (index !== -1) {
+                    state.resources[index] = action.payload;
+                }
+            })
+            .addCase(verifyForm.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;

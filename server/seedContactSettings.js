@@ -16,25 +16,25 @@ const connectDB = async () => {
 
 const contactData = {
     mainContact: {
-        companyName: 'Japan Visa SaaS',
-        email: 'contact@japanvisasaas.com',
+        companyName: 'Global Flow',
+        email: 'contact@globalflow.com',
         phone: '+81 3-1234-5678',
         address: '1-2-3 Shibuya, Shibuya-ku, Tokyo 150-0002, Japan',
-        description: 'Your trusted partner for Japan visa applications and consultancy services'
+        description: 'Your trusted partner for global visa applications and consultancy services'
     },
     officeLocations: [
         {
             name: 'Tokyo Headquarters',
             address: '1-2-3 Shibuya, Shibuya-ku, Tokyo 150-0002, Japan',
             phone: '+81 3-1234-5678',
-            email: 'tokyo@japanvisasaas.com',
+            email: 'tokyo@globalflow.com',
             mapCoordinates: { lat: 35.6762, lng: 139.6503 }
         },
         {
             name: 'Osaka Office',
             address: '4-5-6 Umeda, Kita-ku, Osaka 530-0001, Japan',
             phone: '+81 6-5678-1234',
-            email: 'osaka@japanvisasaas.com',
+            email: 'osaka@globalflow.com',
             mapCoordinates: { lat: 34.7024, lng: 135.4959 }
         }
     ],
@@ -54,7 +54,7 @@ const contactData = {
         { day: 'Sunday', hours: 'Closed', isOpen: false }
     ],
     supportInfo: {
-        supportEmail: 'support@japanvisasaas.com',
+        supportEmail: 'support@globalflow.com',
         supportPhone: '+81 3-1234-5678',
         responseTime: 'Within 24 hours'
     },
