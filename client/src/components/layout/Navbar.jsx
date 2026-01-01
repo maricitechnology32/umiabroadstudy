@@ -11,7 +11,7 @@ export default function Navbar() {
     const isLandingPage = location.pathname === '/' || location.pathname === '/landing';
 
     const { branding } = useSelector((state) => state.landing);
-    const logoInitial = branding?.name ? branding.name.charAt(0).toUpperCase() : 'U';
+    const logoInitial = branding?.name ? branding.name.charAt(0).toUpperCase() : 'G';
 
     const handleScroll = (e, id) => {
         e.preventDefault();
@@ -42,13 +42,9 @@ export default function Navbar() {
                     {branding?.logo ? (
                         <img src={fixImageUrl(branding.logo)} alt={branding.name} className="w-9 h-9 rounded-md object-cover" />
                     ) : (
-                        <div className="w-9 h-9 bg-primary-600 rounded-md flex items-center justify-center text-white text-base font-semibold">
-                            {logoInitial}
-                        </div>
+                        <img src="/logo.png" alt="Global Flow" className="w-9 h-9 rounded-md object-cover" />
                     )}
-                    <span className="font-semibold text-lg text-slate-900">
-                        {branding?.name || 'Your Consultancy'}
-                    </span>
+                    <span className="font-bold text-xl tracking-tight text-secondary-900">{branding?.name || 'UMI Abroad Study'}</span>
                 </Link>
 
                 {/* Desktop Navigation */}

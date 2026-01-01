@@ -166,6 +166,18 @@ export default function DocumentVerificationManager() {
                                             )}
                                         </>
                                     )}
+
+                                    {/* Actions for Verified Documents (History View) */}
+                                    {doc.status === 'Verified' && doc.verifiedUrl && (
+                                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => handlePrint(doc.verifiedUrl)}>
+                                            <ExternalLink size={16} className="mr-1" /> Download
+                                        </Button>
+                                    )}
+
+                                    {/* Actions for Rejected Documents (History View) */}
+                                    {doc.status === 'Rejected' && (
+                                        <span className="text-xs text-red-600 font-medium px-3 py-1">Document Rejected</span>
+                                    )}
                                 </td>
                             </tr>
                         ))}

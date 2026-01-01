@@ -17,13 +17,13 @@ const seedConsultancy = async () => {
         let consultancy = await Consultancy.findOne();
 
         const consultancyData = {
-            name: 'Himalaya Education Consultancy',
-            email: 'info@himalayaedu.com',
+            name: 'UMI Abroad Study',
+            email: 'info@umiabroadstudy.com',
             phone: '+977 1 4123456',
             address: 'Putalisadak, Kathmandu, Nepal',
-            website: 'https://himalayaedu.com',
+            website: 'https://umiabroadstudy.com',
             tagline: 'Your trusted partner for Japan study visa success',
-            logo: null, // Add logo URL if available
+            logo: '/logo.png',
             isActive: true
         };
 

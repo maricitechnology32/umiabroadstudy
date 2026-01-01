@@ -166,58 +166,74 @@ export default function LandingPage() {
          <Navbar />
 
          {/* --- HERO SECTION --- */}
-         <section className="relative pt-24 pb-12 lg:pt-32 lg:pb-16 overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-6xl pointer-events-none">
-               <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-primary-50 rounded-full blur-[80px] opacity-50"></div>
+         <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
+            {/* Animated Gradient Background */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+               <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-primary-400/30 via-purple-400/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
+               <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-tl from-blue-400/20 via-primary-300/20 to-transparent rounded-full blur-3xl" style={{ animationDelay: '1s' }}></div>
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-6xl">
+                  <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-primary-100/40 rounded-full blur-[120px] opacity-60"></div>
+               </div>
             </div>
 
             <motion.div
                initial="hidden"
                animate="visible"
                variants={staggerContainer}
-               className="max-w-5xl mx-auto px-6 text-center relative z-10"
+               className="max-w-6xl mx-auto px-6 text-center relative z-10"
             >
-               <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-primary-100 text-primary-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide mb-8 shadow-sm hover:shadow-md transition-shadow cursor-default">
-                  <Sparkles size={14} className="text-primary-500" /> {heroBadge}
+               <motion.div
+                  variants={fadeInUp}
+                  className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md border border-primary-200/50 text-primary-700 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wide mb-8 shadow-lg shadow-primary-500/10 hover:shadow-xl hover:shadow-primary-500/20 transition-all cursor-default group"
+               >
+                  <Sparkles size={14} className="text-primary-500 group-hover:rotate-12 transition-transform" /> {heroBadge}
                </motion.div>
 
-               <motion.h1 variants={fadeInUp} className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
+               <motion.h1
+                  variants={fadeInUp}
+                  className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.1]"
+               >
                   {heroTitle.includes('Japan') ? (
                      <>
                         {heroTitle.replace('Move to Japan.', '')}
-                        <span className="text-primary-600">Move to Japan.</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-primary-500 to-blue-600">Move to Japan.</span>
                      </>
                   ) : heroTitle}
                </motion.h1>
 
-               <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-500 mb-8 max-w-xl mx-auto leading-relaxed">
+               <motion.p
+                  variants={fadeInUp}
+                  className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed"
+               >
                   {heroSubtitle}
                </motion.p>
 
-               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                   <Link to="/inquiry/default">
-                     <Button className="w-full sm:w-auto px-6 py-2.5 shadow-md hover:shadow-lg transition-shadow">
-                        {ctaPrimaryText} <ArrowRight size={18} className="ml-2" />
+                     <Button className="w-full sm:w-auto px-8 py-3.5 text-base font-bold shadow-xl shadow-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/40 hover:-translate-y-0.5 transition-all">
+                        {ctaPrimaryText} <ArrowRight size={20} className="ml-2" />
                      </Button>
                   </Link>
 
                   <Button
                      variant="outline"
                      onClick={() => setShowDemoModal(true)}
-                     className="w-full sm:w-auto px-6 py-2.5 bg-white hover:bg-slate-50"
+                     className="w-full sm:w-auto px-8 py-3.5 text-base font-bold bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-primary-300 transition-all"
                   >
-                     <Play size={16} className="fill-slate-700 mr-2 text-slate-700" /> {ctaSecondaryText}
+                     <Play size={18} className="fill-slate-700 mr-2 text-slate-700" /> {ctaSecondaryText}
                   </Button>
                </motion.div>
 
-               {/* --- STATS SECTION (New) --- */}
+               {/* --- STATS SECTION --- */}
                {statsList.length > 0 && (
-                  <motion.div variants={fadeInUp} className="mt-10 pt-6 border-t border-slate-100 flex flex-wrap justify-center gap-8 md:gap-16">
+                  <motion.div
+                     variants={fadeInUp}
+                     className="mt-16 pt-10 border-t border-slate-200/60 flex flex-wrap justify-center gap-12 md:gap-20"
+                  >
                      {statsList.map((stat, idx) => (
-                        <div key={idx} className="text-center">
-                           <p className="text-2xl font-bold text-slate-900 tabular-nums">{stat.value}</p>
-                           <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mt-1">{stat.label}</p>
+                        <div key={idx} className="text-center group">
+                           <p className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-700 tabular-nums group-hover:scale-110 transition-transform">{stat.value}</p>
+                           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-2">{stat.label}</p>
                         </div>
                      ))}
                   </motion.div>
@@ -393,16 +409,18 @@ export default function LandingPage() {
          </section>
 
          {/* --- FEATURES GRID --- */}
-         <section id="features" className="py-12 lg:py-16 bg-slate-50 relative overflow-hidden">
-            <div className="max-w-6xl mx-auto px-4 relative z-10">
+         <section id="features" className="py-16 lg:py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+            <div className="max-w-6xl mx-auto px-6 relative z-10">
                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-center max-w-2xl mx-auto mb-10"
+                  className="text-center max-w-3xl mx-auto mb-16"
                >
-                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">Everything you need to <span className="text-primary-600">manage your consultancy.</span></h2>
-                  <p className="text-slate-500 text-base leading-relaxed">We've digitized the entire workflow, eliminating 90% of paperwork.</p>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
+                     Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">manage your consultancy.</span>
+                  </h2>
+                  <p className="text-slate-600 text-lg leading-relaxed">We've digitized the entire workflow, eliminating 90% of paperwork.</p>
                </motion.div>
 
                <motion.div
@@ -543,36 +561,39 @@ export default function LandingPage() {
 
          {/* --- SUCCESS STORIES --- */}
          {testimonialsList.length > 0 && (
-            <section id="testimonials" className="py-12 lg:py-16 bg-white relative">
-               <div className="max-w-5xl mx-auto px-4">
-                  <div className="text-center mb-10">
-                     <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Loved by Consultancies in Nepal</h2>
+            <section id="testimonials" className="py-16 lg:py-24 bg-gradient-to-b from-white to-slate-50 relative">
+               <div className="max-w-6xl mx-auto px-6">
+                  <div className="text-center mb-16">
+                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+                        Loved by <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">Consultancies in Nepal</span>
+                     </h2>
+                     <p className="text-slate-600 text-lg">See what our clients have to say</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      {testimonialsList.map((item, idx) => (
                         <motion.div
                            key={idx}
                            initial={{ opacity: 0, y: 20 }}
                            whileInView={{ opacity: 1, y: 0 }}
                            transition={{ delay: idx * 0.1 }}
-                           className="bg-secondary-50 p-8 rounded-2xl border border-secondary-100 relative"
+                           className="bg-white p-8 md:p-10 rounded-2xl border border-slate-200 relative shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
                         >
-                           <Quote className="absolute top-6 right-6 text-primary-200" size={40} />
-                           <p className="text-lg text-secondary-700 italic mb-6">"{item.quote}"</p>
+                           <Quote className="absolute top-6 right-6 text-primary-100 group-hover:text-primary-200 transition-colors" size={48} />
+                           <p className="text-lg md:text-xl text-slate-700 italic mb-8 leading-relaxed relative z-10">"{item.quote}"</p>
                            <div className="flex items-center gap-4">
                               {item.image && (
                                  <div className="shrink-0">
                                     <img
                                        src={fixImageUrl(item.image)}
                                        alt={item.name}
-                                       className="w-12 h-12 rounded-full object-cover bg-slate-200 border border-slate-100"
+                                       className="w-14 h-14 rounded-full object-cover bg-slate-200 border-2 border-primary-100 shadow-md"
                                        onError={(e) => { e.target.style.display = 'none'; }}
                                     />
                                  </div>
                               )}
                               <div>
-                                 <p className="font-bold text-secondary-900">{item.name}</p>
-                                 <p className="text-sm text-secondary-500">{item.role}</p>
+                                 <p className="font-bold text-slate-900 text-lg">{item.name}</p>
+                                 <p className="text-sm text-slate-500">{item.role}</p>
                               </div>
                            </div>
                         </motion.div>
@@ -584,39 +605,42 @@ export default function LandingPage() {
 
          {/* --- LATEST NEWS SECTION (BLOGS) --- */}
          {blogs && blogs.length > 0 && (
-            <section className="py-12 lg:py-16 bg-slate-50 relative">
-               <div className="max-w-6xl mx-auto px-4">
-                  <div className="flex justify-between items-end mb-8">
+            <section className="py-16 lg:py-24 bg-gradient-to-b from-slate-50 to-white relative">
+               <div className="max-w-6xl mx-auto px-6">
+                  <div className="flex justify-between items-end mb-12">
                      <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 tracking-tight">Latest News & Updates</h2>
-                        <p className="text-slate-500">Stay informed about studying and working in Japan.</p>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                           Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">News & Updates</span>
+                        </h2>
+                        <p className="text-slate-600 text-lg">Stay informed about studying and working in Japan.</p>
                      </div>
-                     <Link to="/blogs" className="hidden md:flex items-center gap-2 text-primary-600 font-bold hover:gap-3 transition-all">
-                        View All Blogs <ArrowRight size={20} />
+                     <Link to="/blogs" className="hidden md:flex items-center gap-2 text-primary-600 font-bold hover:gap-4 transition-all group">
+                        View All Blogs <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                      </Link>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-8">
                      {blogs.map((blog) => (
-                        <Link key={blog._id} to={`/blog/${blog.slug}`} className="group bg-white rounded-2xl overflow-hidden border border-slate-200 hover:shadow-xl hover:border-primary-100 transition-all duration-300">
+                        <Link key={blog._id} to={`/blog/${blog.slug}`} className="group bg-white rounded-2xl overflow-hidden border border-slate-200 hover:shadow-2xl hover:border-primary-200 hover:-translate-y-1 transition-all duration-300">
                            <div className="relative aspect-video bg-slate-100 overflow-hidden">
                               {blog.featuredImage ? (
-                                 <img src={fixImageUrl(blog.featuredImage)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                 <img src={fixImageUrl(blog.featuredImage)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                               ) : (
-                                 <div className="w-full h-full flex items-center justify-center text-slate-300 bg-slate-50">
+                                 <div className="w-full h-full flex items-center justify-center text-slate-300 bg-gradient-to-br from-slate-50 to-slate-100">
                                     <FileText size={48} />
                                  </div>
                               )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                               <div className="absolute top-4 left-4">
-                                 <span className="px-3 py-1 bg-white/90 backdrop-blur text-primary-700 text-xs font-bold rounded-full shadow-sm">
+                                 <span className="px-3 py-1.5 bg-white/95 backdrop-blur text-primary-700 text-xs font-bold rounded-full shadow-lg">
                                     {blog.category || 'News'}
                                  </span>
                               </div>
                            </div>
                            <div className="p-6">
-                              <h3 className="text-xl font-bold text-secondary-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">{blog.title}</h3>
-                              <p className="text-secondary-500 text-sm line-clamp-2 mb-4">{blog.excerpt}</p>
-                              <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-secondary-400 font-medium">
+                              <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">{blog.title}</h3>
+                              <p className="text-slate-500 text-sm line-clamp-2 mb-4">{blog.excerpt}</p>
+                              <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400 font-medium">
                                  <span className="flex items-center gap-1"><Clock size={14} /> {calculateReadTime(blog.content)} min read</span>
                                  <span className="flex items-center gap-1"><Eye size={14} /> {blog.viewCount || 0}</span>
                               </div>
@@ -786,27 +810,28 @@ export default function LandingPage() {
          </section>
 
          {/* --- CTA SECTION --- */}
-         <section className="py-16 bg-primary-900 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-600/20 rounded-full blur-[100px] opacity-30"></div>
+         <section className="py-20 lg:py-28 bg-gradient-to-br from-primary-900 via-primary-800 to-blue-900 text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-primary-600/30 to-purple-600/20 rounded-full blur-[120px] opacity-40 animate-pulse-slow"></div>
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-600/20 to-transparent rounded-full blur-[100px] opacity-30"></div>
 
             <motion.div
                initial={{ opacity: 0, y: 30 }}
                whileInView={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.8 }}
                viewport={{ once: true }}
-               className="max-w-3xl mx-auto px-4 text-center relative z-10"
+               className="max-w-4xl mx-auto px-6 text-center relative z-10"
             >
-               <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">Ready to streamline your visa process?</h2>
-               <p className="text-primary-200 mb-8 max-w-xl mx-auto">Join the platform that is processing thousands of applications for Japan every month.</p>
-               <div className="flex flex-col sm:flex-row justify-center gap-3">
-                  <Link to="/register" className="px-6 py-3 bg-white text-slate-900 rounded-lg font-semibold hover:bg-slate-100 transition shadow-md">
+               <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight leading-tight">Ready to streamline your visa process?</h2>
+               <p className="text-primary-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">Join the platform that is processing thousands of applications for Japan every month.</p>
+               <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Link to="/register" className="px-10 py-4 bg-white text-primary-900 rounded-xl font-bold hover:bg-primary-50 transition-all shadow-2xl shadow-black/30 hover:shadow-black/40 hover:-translate-y-1 text-lg">
                      Get Started for Free
                   </Link>
-                  <Link to="/contact" className="px-6 py-3 bg-transparent border border-white/20 text-white rounded-lg font-semibold hover:bg-white/10 transition">
+                  <Link to="/contact" className="px-10 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/10 hover:border-white/50 transition-all backdrop-blur-sm text-lg">
                      Contact Sales
                   </Link>
                </div>
-               <p className="mt-4 text-sm text-primary-300">No credit card required for 14-day trial.</p>
+               <p className="mt-6 text-sm text-primary-200">No credit card required for 14-day trial.</p>
             </motion.div>
          </section>
 
@@ -820,11 +845,9 @@ export default function LandingPage() {
                      {branding?.logo ? (
                         <img src={fixImageUrl(branding.logo)} alt={branding.name} className="w-8 h-8 rounded-lg object-cover" />
                      ) : (
-                        <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-primary-500/30">
-                           {branding?.name?.charAt(0) || 'C'}
-                        </div>
+                        <img src="/logo.png" alt="UMI Abroad Study" className="w-8 h-8 rounded-lg object-cover" />
                      )}
-                     <span className="font-bold text-xl tracking-tight text-secondary-900">{branding?.name || 'Your Consultancy'}</span>
+                     <span className="font-bold text-xl tracking-tight text-secondary-900">{branding?.name || 'UMI Abroad Study'}</span>
                   </div>
                   <p className="text-sm text-secondary-500 leading-relaxed pr-8">{branding?.tagline || 'Helping students and workers reach Japan with confidence.'}</p>
                </div>
@@ -854,7 +877,7 @@ export default function LandingPage() {
                </div>
             </div>
             <div className="max-w-7xl mx-auto px-6 border-t border-secondary-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-               <p className="text-sm text-secondary-400 font-medium">© {new Date().getFullYear()} {branding?.name || 'Your Consultancy'}. All rights reserved.</p>
+               <p className="text-sm text-secondary-400 font-medium">© {new Date().getFullYear()} {branding?.name || 'UMI Abroad Study'}. All rights reserved.</p>
                <div className="flex gap-4">
                   {contact?.socialMedia?.map((social, idx) => (
                      <a key={idx} href={social.url} target="_blank" rel="noopener noreferrer" className="text-secondary-400 hover:text-primary-600 transition-colors">
