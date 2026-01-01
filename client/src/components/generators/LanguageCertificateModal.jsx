@@ -116,49 +116,44 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
           @page { size: A4; margin: 0; }
           body { 
             font-family: 'MS Mincho', 'Times New Roman', serif; 
-            font-size: 11pt; 
-            line-height: 1.3; 
+            font-size: 9pt; 
+            line-height: 1.2; 
             margin: 0;
             padding: 0;
           }
           
           .page {
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
             position: relative;
-            page-break-after: always;
             ${formData.includeLetterpad ? `background-image: url('${window.location.origin}/umi_letterpad.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;` : ''}
           }
           
-          .page:last-child {
-            page-break-after: auto;
-          }
-          
           .content-area {
-            padding: 115pt 45pt 70pt 45pt;
+            padding: 110pt 50pt 40pt 50pt;
           }
           
-          .cert-info-table { width: 100%; margin-bottom: 15pt; font-weight: bold; font-size: 11pt; }
-          .cert-info-table td { border: none; padding: 2pt; }
+          .cert-info-table { width: 100%; margin-bottom: 10pt; font-weight: bold; font-size: 9pt; }
+          .cert-info-table td { border: none; padding: 1pt; }
 
-          .cert-title { text-align: center; font-size: 22pt; font-weight: bold; text-decoration: underline; margin: 15pt 0 20pt 0; letter-spacing: 4pt; }
+          .cert-title { text-align: center; font-size: 16pt; font-weight: bold; text-decoration: underline; margin: 10pt 0 12pt 0; letter-spacing: 3pt; }
 
-          .data-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
-          .data-table td { border: 1pt solid black; padding: 6pt 8pt; vertical-align: middle; }
+          .data-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+          .data-table td { border: 1pt solid black; padding: 3pt 5pt; vertical-align: middle; }
           
           .col-label { font-weight: bold; width: 20%; text-align: center; }
           .col-val { width: 30%; text-align: center; }
           
-          .score-table { width: 85%; border-collapse: collapse; margin: 15pt auto; font-size: 11pt; }
-          .score-table td { border: 1pt solid black; padding: 5pt; text-align: center; }
+          .score-table { width: 85%; border-collapse: collapse; margin: 12pt auto; font-size: 9pt; }
+          .score-table td { border: 1pt solid black; padding: 3pt; text-align: center; }
           .score-header { font-weight: bold; }
           
-          .notes { font-size: 10pt; margin: 12pt 0; line-height: 1.5; }
+          .notes { font-size: 8pt; margin: 12pt 0; line-height: 1.6; }
           
-          .sig-table { width: 100%; margin-top: 0; border: none; }
-          .sig-td { border: none; text-align: center; vertical-align: top; width: 33%; padding: 10pt; }
-          .sig-title { font-weight: bold; font-size: 11pt; margin-bottom: 50pt; }
-          .sig-name { font-weight: bold; font-size: 11pt; }
+          .sig-table { width: 100%; position: absolute; bottom: 200pt; left: 50pt; right: 50pt; border: none; }
+          .sig-td { border: none; text-align: center; vertical-align: top; width: 33%; padding: 5pt; }
+          .sig-title { font-weight: bold; font-size: 9pt; margin-bottom: 3pt; }
+          .sig-name { font-weight: bold; font-size: 9pt; }
           
           .footer-links { margin-top: 80pt; }
           .footer-links a { color: blue; }
@@ -166,7 +161,7 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
       </head>
       <body>
         
-        <!-- PAGE 1: Certificate Content -->
+        <!-- SINGLE PAGE: All Content -->
         <div class="page">
           <div class="content-area">
         
@@ -180,27 +175,27 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
             <div class="cert-title">日本語学習証明書</div>
 
             <!-- Student Info Table -->
-            <table class="data-table" style="margin-bottom: 15pt;">
+            <table class="data-table" style="margin-bottom: 5pt;">
                 <tr>
-                    <td class="col-label" style="text-align: left; padding-left: 10pt; width: 18%;">学生氏名 :</td>
-                    <td style="text-align: left; padding-left: 10pt; width: 35%; font-weight: bold;">${formData.studentName}</td>
+                    <td class="col-label" style="text-align: left; padding-left: 8pt; width: 18%;">学生氏名 :</td>
+                    <td style="text-align: left; padding-left: 8pt; width: 35%; font-weight: bold;">${formData.studentName}</td>
                     <td class="col-label" style="width: 12%;">性別</td>
                     <td style="width: 35%; text-align: center;">
                         <span style="${maleCircle}">男</span> 
-                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;
                         <span style="${femaleCircle}">女</span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="col-label" style="text-align: left; padding-left: 10pt;">生年月日 :</td>
-                    <td style="text-align: left; padding-left: 10pt; font-weight: bold;">${formData.dob}</td>
+                    <td class="col-label" style="text-align: left; padding-left: 8pt;">生年月日 :</td>
+                    <td style="text-align: left; padding-left: 8pt; font-weight: bold;">${formData.dob}</td>
                     <td class="col-label">国籍</td>
                     <td style="text-align: center;">${formData.nationality}</td>
                 </tr>
             </table>
 
             <!-- Course Details Table -->
-            <table class="data-table" style="margin-bottom: 8pt;">
+            <table class="data-table" style="margin-bottom: 4pt;">
                 <tr>
                     <td class="col-label">課程</td>
                     <td class="col-val">${formData.courseName}</td>
@@ -208,38 +203,38 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                     <td class="col-val">${formData.textbook}</td>
                 </tr>
                 <tr>
-                    <td class="col-label">日本語学習期間</td>
-                    <td class="col-val">
+                    <td class="col-label" style="font-size: 8pt;">日本語学習期間</td>
+                    <td class="col-val" style="font-size: 8pt;">
                         ${formData.startDate}　～　${formData.endDate}<br/>(修了予定)
                     </td>
-                    <td class="col-label">合計学習時間</td>
+                    <td class="col-label" style="font-size: 8pt;">合計学習時間</td>
                     <td class="col-val">${formData.totalStudyHours} 時間</td>
                 </tr>
                 <tr>
                     <td class="col-label">学習期間</td>
                     <td class="col-val">${formData.attendedDays}日/${formData.totalDays}日間</td>
-                    <td class="col-label">現在までの<br/>総学習時間</td>
+                    <td class="col-label" style="font-size: 7pt; line-height: 1.2;">現在までの<br/>総学習時間</td>
                     <td class="col-val">${formData.attendedHours}/${formData.totalHours}時間</td>
                 </tr>
                 <tr>
                     <td class="col-label">備考</td>
-                    <td class="col-val" style="white-space: pre-wrap; font-size: 10pt;">${formData.remarks}</td>
+                    <td class="col-val" style="white-space: pre-wrap; font-size: 7pt;">${formData.remarks}</td>
                     <td class="col-label">出席率</td>
                     <td class="col-val" style="font-weight: bold;">${formData.attendanceRate}</td>
                 </tr>
             </table>
 
-            <div style="font-size: 11pt; margin: 10pt 0;">
+            <div style="font-size: 9pt; font-weight: bold; margin: 18pt 0; text-align: center;">
                 日本語学習状況が下記の通りであることをここに証明致します。
             </div>
 
-            <div class="notes">
+            <div class="notes" style="font-size: 7pt; margin: 3pt 0;">
                 ※休日・祝祭日はネパールカレンダー、当校規定に基づきます。<br/>
                 ※欠席に関しましては原則振替授業を義務づけています。
             </div>
 
             <!-- Scores Table -->
-            <table class="score-table">
+            <table class="score-table" style="width: 90%; margin: 6pt auto;">
                 <tr class="score-header">
                     <td>文字・語彙</td>
                     <td>聴解</td>
@@ -256,36 +251,29 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                 </tr>
             </table>
 
-          </div>
-        </div>
-
-        <!-- PAGE 2: Signatures and Footer -->
-        <div class="page">
-          <div class="content-area">
-
             <!-- Signatures Section with lines above -->
-            <table class="sig-table">
+            <table class="sig-table" style="margin-top: 10pt;">
                 <tr>
                     <td class="sig-td">
-                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 4pt;"></div>
-                        <div class="sig-title" style="margin-bottom: 4pt;">日本語教師</div>
+                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 2pt;"></div>
+                        <div class="sig-title">日本語教師</div>
                         <div class="sig-name">${formData.teacherName}</div>
                     </td>
                     <td class="sig-td">
-                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 4pt;"></div>
-                        <div class="sig-title" style="margin-bottom: 4pt;">学校印</div>
+                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 2pt;"></div>
+                        <div class="sig-title">学校印</div>
                         <!-- Seal space -->
                     </td>
                     <td class="sig-td">
-                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 4pt;"></div>
-                        <div class="sig-title" style="margin-bottom: 4pt;">校長</div>
+                        <div style="border-top: 1pt solid black; width: 100%; margin-bottom: 2pt;"></div>
+                        <div class="sig-title">校長</div>
                         <div class="sig-name">${formData.principalName}</div>
                     </td>
                 </tr>
             </table>
 
             <!-- Web and Email Links - Same line, Orange color -->
-            <div style="margin-top: 60pt; display: flex; justify-content: space-between; font-size: 11pt;">
+            <div style="position: absolute; bottom: 50pt; left: 50pt; right: 50pt; display: flex; justify-content: center; font-size: 9pt;">
                 <div>
                     <span style="color: #E69500; font-weight: bold;">Web: </span>
                     <a href="http://${formData.companyWeb}" style="color: #E69500; text-decoration: underline;">${formData.companyWeb}</a>
@@ -315,7 +303,6 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
 
     return (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            {/* Print Styles - 2 Page Layout */}
             <style>{`
                 @media print {
                     body * { visibility: hidden; }
@@ -330,12 +317,8 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                     }
                     .print-page {
                         width: 210mm;
-                        min-height: 297mm;
-                        page-break-after: always;
+                        height: 297mm;
                         position: relative;
-                    }
-                    .print-page:last-child {
-                        page-break-after: auto;
                     }
                     @page { size: A4; margin: 0; }
                 }
@@ -346,7 +329,7 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                 {/* HEADER */}
                 <div className="px-4 sm:px-6 py-3 sm:py-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 bg-gradient-to-r from-indigo-50 to-white">
                     <h3 className="text-base sm:text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <BookOpen className="text-indigo-600" size={20} /> Language Certificate (UMI) - 2 Pages
+                        <BookOpen className="text-indigo-600" size={20} /> Language Certificate (UMI) - Single Page
                     </h3>
                     <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                         <button onClick={handlePrint} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 text-sm font-bold shadow-md active:scale-95 transition">
@@ -394,9 +377,9 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                                 className="print-area focus:outline-none"
                                 style={{ fontFamily: '"MS Mincho", "Times New Roman", serif' }}
                             >
-                                {/* ===== PAGE 1: Certificate Content ===== */}
+                                {/* ===== SINGLE PAGE: All Content ===== */}
                                 <div
-                                    className="print-page bg-white shadow-lg w-full sm:w-[210mm] min-h-[297mm] mx-auto mb-6 relative"
+                                    className="print-page bg-white shadow-lg w-full sm:w-[210mm] h-[297mm] mx-auto relative"
                                     style={{
                                         backgroundImage: formData.includeLetterpad ? 'url(/umi_letterpad.png)' : 'none',
                                         backgroundSize: '100% 100%',
@@ -404,148 +387,133 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                                         backgroundRepeat: 'no-repeat'
                                     }}
                                 >
-                                    <div className="pt-[165px] px-[45px] pb-[70px]" style={{ fontFamily: '"MS Mincho", "Yu Mincho", serif' }}>
+                                    <div className="pt-[165px] px-[50px] pb-[40px]" style={{ fontFamily: '"MS Mincho", "Yu Mincho", serif' }}>
 
                                         {/* Cert Meta */}
-                                        <div className="flex justify-between font-bold text-[11px] mb-4">
+                                        <div className="flex justify-between font-bold text-[9px] mb-4">
                                             <span>証明書番号: {formData.certNo}</span>
                                             <span>発行日 : {formData.issueDate}</span>
                                         </div>
 
                                         {/* Title */}
-                                        <div className="text-[20px] font-bold text-center underline tracking-[0.15em] mb-6" style={{ textDecorationThickness: '1px' }}>
+                                        <div className="text-[15px] font-bold text-center underline tracking-[0.12em] mb-5" style={{ textDecorationThickness: '1px' }}>
                                             日本語学習証明書
                                         </div>
 
                                         {/* Student Info Table */}
-                                        <table className="w-full border-collapse mb-5" style={{ border: '1px solid black', fontSize: '11px' }}>
+                                        <table className="w-full border-collapse mb-4" style={{ border: '1px solid black', fontSize: '9px' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', width: '15%' }}>学生氏名 :</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', width: '40%' }}>{formData.studentName}</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', width: '10%', textAlign: 'center' }}>性別</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', width: '35%', textAlign: 'center' }}>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold', width: '15%' }}>学生氏名 :</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold', width: '40%' }}>{formData.studentName}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold', width: '10%', textAlign: 'center' }}>性別</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', width: '35%', textAlign: 'center' }}>
                                                         <span style={formData.sex === 'Male' ? { border: '1px solid black', borderRadius: '50%', padding: '1px 6px' } : {}}>男</span>
-                                                        &nbsp;&nbsp;&nbsp;
+                                                        &nbsp;&nbsp;
                                                         <span style={formData.sex !== 'Male' ? { border: '1px solid black', borderRadius: '50%', padding: '1px 6px' } : {}}>女</span>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold' }}>生年月日 :</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold' }}>{formData.dob}</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>国籍</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.nationality}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold' }}>生年月日 :</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold' }}>{formData.dob}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', fontWeight: 'bold', textAlign: 'center' }}>国籍</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 6px', textAlign: 'center' }}>{formData.nationality}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
 
                                         {/* Course Details Table - 4 Column Layout */}
-                                        <table className="w-full border-collapse mb-4" style={{ border: '1px solid black', fontSize: '11px' }}>
+                                        <table className="w-full border-collapse mb-4" style={{ border: '1px solid black', fontSize: '9px' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', width: '18%', textAlign: 'center' }}>課程</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', width: '32%', textAlign: 'center' }}>{formData.courseName}</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', width: '18%', textAlign: 'center' }}>教材</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', width: '32%', textAlign: 'center' }}>{formData.textbook}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', width: '18%', textAlign: 'center' }}>課程</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', width: '32%', textAlign: 'center' }}>{formData.courseName}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', width: '18%', textAlign: 'center' }}>教材</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', width: '32%', textAlign: 'center' }}>{formData.textbook}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>日本語学習期間</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>
-                                                        {formData.startDate}　～　{formData.endDate}<br /><span style={{ fontSize: '10px' }}>(修了予定)</span>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', fontSize: '8px' }}>日本語学習期間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', fontSize: '8px' }}>
+                                                        {formData.startDate}　～　{formData.endDate}<br /><span style={{ fontSize: '7px' }}>(修了予定)</span>
                                                     </td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', fontSize: '10px' }}>合計学習時間</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.totalStudyHours} 時間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', fontSize: '8px' }}>合計学習時間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.totalStudyHours} 時間</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>学習期間</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.attendedDays}日/{formData.totalDays}日間</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', fontSize: '10px', lineHeight: '1.3' }}>現在までの<br />総学習時間</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.attendedHours}/{formData.totalHours}時間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center' }}>学習期間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.attendedDays}日/{formData.totalDays}日間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', fontSize: '7px', lineHeight: '1.2' }}>現在までの<br />総学習時間</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.attendedHours}/{formData.totalHours}時間</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>備考</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center', whiteSpace: 'pre-wrap', fontSize: '10px', lineHeight: '1.4' }}>{formData.remarks}</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>出席率</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>{formData.attendanceRate}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center' }}>備考</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center', whiteSpace: 'pre-wrap', fontSize: '7px', lineHeight: '1.3' }}>{formData.remarks}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center' }}>出席率</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center' }}>{formData.attendanceRate}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
 
                                         {/* Certification Statement */}
-                                        <div style={{ fontSize: '11px', fontWeight: 'bold', margin: '16px 0', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '9px', fontWeight: 'bold', margin: '18px 0', textAlign: 'center' }}>
                                             日本語学習状況が下記の通りであることをここに証明致します。
                                         </div>
 
                                         {/* Notes */}
-                                        <div style={{ fontSize: '10px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.6' }}>
+                                        <div style={{ fontSize: '7px', fontWeight: 'bold', marginBottom: '16px', lineHeight: '1.6' }}>
                                             ※休日・祝祭日はネパールカレンダー、当校規定に基づきます。<br />
                                             ※欠席に関しましては原則振替授業を義務づけています。
                                         </div>
 
                                         {/* Scores Table */}
-                                        <table className="border-collapse mx-auto" style={{ width: '90%', border: '1px solid black', fontSize: '11px' }}>
+                                        <table className="border-collapse mx-auto mb-3" style={{ width: '90%', border: '1px solid black', fontSize: '9px' }}>
                                             <thead>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>文字・語彙</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>聴解</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>読解・文法</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>会話</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>総合点</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>文字・語彙</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>聴解</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>読解・文法</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>会話</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center', width: '20%' }}>総合点</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.vocabScore}/100</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.listeningScore}/100</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.readingScore}/100</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', textAlign: 'center' }}>{formData.conversationScore}/100</td>
-                                                    <td style={{ border: '1px solid black', padding: '10px 8px', fontWeight: 'bold', textAlign: 'center' }}>{formData.totalScore}/{formData.totalMax}</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.vocabScore}/100</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.listeningScore}/100</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.readingScore}/100</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', textAlign: 'center' }}>{formData.conversationScore}/100</td>
+                                                    <td style={{ border: '1px solid black', padding: '6px 5px', fontWeight: 'bold', textAlign: 'center' }}>{formData.totalScore}/{formData.totalMax}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
 
-                                    </div>
-                                </div>
-
-                                {/* ===== PAGE 2: Signatures and Contact ===== */}
-                                <div
-                                    className="print-page bg-white shadow-lg w-full sm:w-[210mm] min-h-[297mm] mx-auto relative"
-                                    style={{
-                                        backgroundImage: formData.includeLetterpad ? 'url(/umi_letterpad.png)' : 'none',
-                                        backgroundSize: '100% 100%',
-                                        backgroundPosition: 'center',
-                                        backgroundRepeat: 'no-repeat'
-                                    }}
-                                >
-                                    <div className="pt-[165px] px-[45px] pb-[70px]" style={{ fontFamily: '"MS Mincho", "Yu Mincho", serif' }}>
-
                                         {/* Signatures with lines above */}
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'center', fontSize: '11px', marginTop: "10px" }}>
+                                        <div style={{ position: 'absolute', bottom: '200px', left: '50px', right: '50px', display: 'flex', justifyContent: 'space-between', textAlign: 'center', fontSize: '9px' }}>
                                             {/* Teacher */}
-                                            <div style={{ width: '10%' }}>
-                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '4px' }}></div>
-                                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>日本語教師</div>
+                                            <div style={{ width: '30%' }}>
+                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '2px' }}></div>
+                                                <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>日本語教師</div>
                                                 <div style={{ fontWeight: 'bold' }}>{formData.teacherName}</div>
                                             </div>
                                             {/* School Seal */}
-                                            <div style={{ width: '10%' }}>
-                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '4px' }}></div>
-                                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>学校印</div>
+                                            <div style={{ width: '30%' }}>
+                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '2px' }}></div>
+                                                <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>学校印</div>
                                                 {/* Seal space */}
                                             </div>
                                             {/* Principal */}
-                                            <div style={{ width: '10%' }}>
-                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '4px' }}></div>
-                                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>校長</div>
+                                            <div style={{ width: '30%' }}>
+                                                <div style={{ borderTop: '1px solid black', width: '100%', marginBottom: '2px' }}></div>
+                                                <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>校長</div>
                                                 <div style={{ fontWeight: 'bold' }}>{formData.principalName}</div>
                                             </div>
                                         </div>
 
                                         {/* Web and Email - Same line, Orange color */}
-                                        <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'center', fontSize: '11px' }}>
+                                        <div style={{ position: 'absolute', bottom: '170px', left: '50px', right: '50px', display: 'flex', justifyContent: 'center', fontSize: '9px', gap: '10px' }}>
                                             <div>
-                                                <span style={{ color: '#eab555ff', fontWeight: 'bold' }}>Web: </span>
-                                                <a href={`http://${formData.companyWeb}`} style={{ color: '#dcc599ff', textDecoration: 'none' }}>
+                                                <span style={{ color: '#E69500', fontWeight: 'bold' }}>Web: </span>
+                                                <a href={`http://${formData.companyWeb}`} style={{ color: '#E69500', textDecoration: 'underline' }}>
                                                     {formData.companyWeb}
                                                 </a>
                                             </div>

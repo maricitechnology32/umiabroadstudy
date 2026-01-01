@@ -205,12 +205,12 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
 
         <table class="data-table">
             <thead>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                     <th rowspan="2" style="width: 30px;">S.N.</th>
                     <th rowspan="2">Income Headings</th>
                     <th colspan="3">Annual Income Per Mentioned Fiscal Year In NPR</th>
                 </tr>
-                <tr style="background-color: #f0f0f0;">
+                <tr>
                     <th style="width: 80px;">${fiscalYearLabels[0]}</th>
                     <th style="width: 80px;">${fiscalYearLabels[1]}</th>
                     <th style="width: 80px;">${fiscalYearLabels[2]}</th>
@@ -218,7 +218,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             </thead>
             <tbody>
                 ${tableRows}
-                <tr style="font-weight: bold; background-color: #f5f5f5;">
+                <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt;">Total Amount (NPR)</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[0])}</td>
                     <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[1])}</td>
@@ -279,7 +279,6 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      {/* Print Styles */}
       <style>{`
                 @media print {
                     body * { visibility: hidden; }
@@ -291,7 +290,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                         width: 210mm; 
                         height: 297mm; 
                         margin: 0;
-                        padding: 10mm;
+                        padding: 20mm;
                         box-sizing: border-box;
                     }
                     @page { size: A4; margin: 0; }
@@ -434,12 +433,12 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 {/* TABLE PREVIEW */}
                 <table className="w-full border-collapse border border-black mb-3 text-right text-[10pt]">
                   <thead>
-                    <tr className="bg-gray-100 text-center">
+                    <tr className="text-center">
                       <th rowSpan="2" className="border border-black p-1 w-8">S.N.</th>
                       <th rowSpan="2" className="border border-black p-1 text-left">Income Headings</th>
                       <th colSpan="3" className="border border-black p-1">Annual Income Per Mentioned Fiscal Year In NPR</th>
                     </tr>
-                    <tr className="bg-gray-100 text-center">
+                    <tr className="text-center">
                       <th className="border border-black p-1">{fiscalYearLabels[0]}</th>
                       <th className="border border-black p-1">{fiscalYearLabels[1]}</th>
                       <th className="border border-black p-1">{fiscalYearLabels[2]}</th>
@@ -456,7 +455,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                       </tr>
                     ))}
                     {/* TOTALS */}
-                    <tr className="font-bold bg-gray-50">
+                    <tr className="font-bold">
                       <td colSpan="2" className="border border-black p-1 text-right">Total Amount (NPR)</td>
                       <td className="border border-black p-1">{formatCurrency(totals.totalNPR[0])}</td>
                       <td className="border border-black p-1">{formatCurrency(totals.totalNPR[1])}</td>
@@ -576,7 +575,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                   <input
                     type="range"
                     min="60"
-                    max="120"
+                    max="200"
                     value={formData.logoSize}
                     onChange={(e) => setFormData({ ...formData, logoSize: parseInt(e.target.value) })}
                     className="flex-1 h-2 bg-red-200 rounded-lg appearance-none cursor-pointer accent-red-600"
