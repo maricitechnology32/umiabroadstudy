@@ -1,5 +1,6 @@
 import { Download, FileText, Printer, UserPen, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getFormattedDate, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
 
 export default function DateOfBirthVerificationModal({
   isOpen,
@@ -50,17 +51,18 @@ export default function DateOfBirthVerificationModal({
     // Document options
     includeHeader: true,
     includeFooter: true,
-    logoSize: 80, // Logo size in pixels (adjustable)
+    logoSize: 136, // Logo size in pixels (1.42 inch approx)
 
     // Header info
     headerTitle: 'Machhapuchhre Rural Municipality',
     headerSubtitle: '4 No. Ward Office',
-    headerAddress: 'Lahachok, Kaski, Gandaki Province, Nepal',
+    headerAddress1: 'Lahachok, Kaski',
+    headerAddress2: 'Gandaki Province, Nepal',
 
     // Reference & Date
     refNo: '2081/082',
     disNo: '101',
-    issueDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+    issueDate: getFormattedDate(),
 
     // Footer info
     footerEmail: 'machhapuchhrereward4@gmail.com',
@@ -86,7 +88,8 @@ export default function DateOfBirthVerificationModal({
         // DYNAMIC HEADER FROM STUDENT PROFILE
         headerTitle: student.address?.municipality || 'Machhapuchhre Rural Municipality',
         headerSubtitle: student.address?.wardNo ? `${student.address.wardNo} No. Ward Office` : '4 No. Ward Office',
-        headerAddress: `${student.address?.tole ? student.address.tole + ', ' : ''}${student.address?.district || ''}, ${student.address?.province || ''}, Nepal`,
+        headerAddress1: `${student.address?.tole ? student.address.tole + ', ' : ''}${student.address?.district || ''}`,
+        headerAddress2: `${student.address?.province || ''}, Nepal`,
 
         applicantName: `${student.personalInfo?.title || ''} ${student.personalInfo?.firstName || ''} ${student.personalInfo?.lastName || ''}`,
         relation: getRelation(student),
@@ -166,37 +169,40 @@ export default function DateOfBirthVerificationModal({
     <body>
 
       ${formData.includeHeader ? `
-      <table style="width: 100%; margin-bottom: 5pt;">
+      <table style="width: 100%; margin-bottom: 3pt;">
         <tr>
-          <td style="width: 20%; vertical-align: top; padding-top: 5pt; padding-left: 5pt;">
-             <img src="${logoBase64}" width="110" height="auto" />
+          <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
+             <img src="${logoBase64}" width="90" height="auto" />
           </td>
-          <td style="width: 60%; text-align: center; padding-bottom: 5pt;">
-            <div style="font-size: 16pt; font-weight: bold; color: #DC2626;">${formData.headerTitle}</div>
-            <div style="font-size: 14pt; font-weight: bold; color: #DC2626;">${formData.headerSubtitle}</div>
-            <div style="font-size: 12pt; font-weight: bold; color: #DC2626;">${formData.headerAddress}</div>
+          <td style="width: 60%; text-align: center; vertical-align: middle;">
+            <div style="font-size: 20pt; font-weight: bold; color: #b91c1c;">${formData.headerTitle}</div>
+            <div style="font-size: 16pt; font-weight: bold; color: #b91c1c;">${formData.headerSubtitle}</div>
+            <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress1}</div>
+            <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress2}</div>
           </td>
           <td style="width: 20%;"></td>
         </tr>
       </table>
 
-      <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 11pt; margin-bottom: 20pt; border-bottom: 2pt solid #DC2626;">
+      <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 10pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #DC2626; padding-bottom: 3pt;">
         <tr>
-            <td style="text-align: left; padding-bottom: 5pt;">
-                <div>Ref. No.: ${formData.refNo}</div>
-                <div>Dis. No.: ${formData.disNo}</div>
+            <td style="text-align: left;">
+                <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
+                <div><span style="color: #DC2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
             </td>
-            <td style="text-align: right; vertical-align: bottom; padding-bottom: 5pt;">
-                Date: ${formData.issueDate}
+            <td style="text-align: right; vertical-align: bottom;">
+                <span style="color: #DC2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.issueDate)}</span>
             </td>
         </tr>
       </table>
+      <div style="border-bottom: 3px solid #DC2626; margin-left: -0.5in; margin-right: -0.5in; margin-top: 5pt; margin-bottom: 15pt;"></div>
+
       ` : `<div class="header-space"></div>`}
 
-      <div class="title">DATE OF BIRTH VERIFICATION CERTIFICATE</div>
-      <div class="subtitle">To Whom It May Concern</div>
+      <div class="title" style="text-decoration: underline; text-transform: none;">Date of Birth Verification Certificate</div>
+      <div class="subtitle" style="text-decoration: underline;">To Whom It May Concern</div>
 
-      <p>
+      <p style="text-align: justify; line-height: 1.5;">
         This is to certify that <strong>${formData.applicantName}</strong>
         ${formData.relation}
         <strong>Mr. ${formData.fatherName}</strong> and
@@ -205,21 +211,28 @@ export default function DateOfBirthVerificationModal({
         <strong>B.S. ${formData.dobBS} (${formData.dobAD} A.D.)</strong>.
       </p>
 
-      <p>
+      <p style="text-align: justify; line-height: 1.5;">
         This birth verification certificate is issued in accordance with the
-        <strong>Local Government Operation Act B.S. 2074 (2017 A.D.)</strong>,
-        Chapter 3, Section 12, Sub-section 2, Clause E (7).
+        Local Government Operation Act B.S. 2074 (2017 A.D.) Chapter 3,
+        Section 12, Sub-section 2, Clause E (7).
       </p>
 
       <div class="signature-block">
-        <div>......................................</div>
+        <div style="margin-bottom: 5pt;".....................................
+
+</div>
         <strong>${formData.signatoryName}</strong><br>
-        ${formData.signatoryDesignation}
+        <strong>${formData.signatoryDesignation}</strong>
       </div>
 
       ${formData.includeFooter ? `
-      <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 5pt 0; border-top: 2pt solid #DC2626; background: white;">
-        <span style="font-size: 9pt; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+      <div style="position: fixed; bottom: 0; left: 0; right: 0; margin-left: -0.5in; margin-right: -0.5in; padding: 5pt 0.5in; border-top: 3px solid #DC2626; background: white;">
+        <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 9pt;">
+          <tr>
+            <td style="text-align: left;">Phone No.: +977-9856017304</td>
+            <td style="text-align: right;">E-mail: ${formData.footerEmail}</td>
+          </tr>
+        </table>
       </div>
       ` : `<div class="footer-space"></div>`}
 
@@ -264,6 +277,12 @@ export default function DateOfBirthVerificationModal({
                     overflow: hidden !important; /* Prevent 2nd page spillover */
                 }
                 .print-hidden { display: none !important; }
+            }
+            
+            #printable-certificate sup {
+                vertical-align: super;
+                font-size: 0.6em;
+                line-height: 0;
             }
         `}
       </style>
@@ -418,54 +437,59 @@ export default function DateOfBirthVerificationModal({
               </div>
 
               {/* Preview Container */}
-              <div className="bg-gray-200 p-4 sm:p-8 flex justify-center overflow-auto h-[400px] sm:h-[500px] lg:h-[700px] rounded-b-lg">
+              <div className="bg-gray-200 p-2 sm:p-6 overflow-auto flex-1 flex justify-center items-start">
                 <div
                   id="printable-certificate"
                   contentEditable={true}
                   suppressContentEditableWarning={true}
                   spellCheck={false}
-                  className="bg-white shadow-2xl p-[0.5in] sm:p-[1in] w-full sm:w-[210mm] min-h-[297mm] font-serif text-[10pt] sm:text-[12pt] leading-[1.6] text-justify relative outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
-                  style={{ fontFamily: "Times New Roman, serif" }}
+                  className="bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
+                  style={{ fontFamily: 'Times New Roman, serif' }}
                 >
 
                   {/* Conditional Header */}
                   {formData.includeHeader && (
                     <>
-                      <div className="flex items-center justify-between pb-2 mb-1">
+                      <div className="flex items-center justify-between mb-1">
                         <div className="w-32">
-                          <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: 'auto' }} />
+                          <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                         </div>
                         <div className="text-center flex-1">
-                          <div className="text-xl font-bold text-red-600">{formData.headerTitle}</div>
-                          <div className="text-lg font-bold text-red-600">{formData.headerSubtitle}</div>
-                          <div className="text-sm font-bold text-red-600">{formData.headerAddress}</div>
+                          <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
+                          <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
+                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
+                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
                         </div>
                         <div className="w-32"></div> {/* Spacer for balance */}
                       </div>
 
-                      <div className="flex justify-between text-xs font-bold text-red-600 mb-1">
+                      <div className="flex justify-between font-bold mb-1 text-red-600 relative z-10" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
                         <div>
-                          <div>Ref. No.: {formData.refNo}</div>
-                          <div>Dis. No.: {formData.disNo}</div>
+                          <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
+                          <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
                         </div>
                         <div className="self-end">
-                          Date: {formData.issueDate}
+                          Date: <span className="text-black">{(() => {
+                            const d = parseDateParts(formData.issueDate);
+                            return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
+                          })()}</span>
                         </div>
                       </div>
 
-                      <div className="border-b-2 border-red-600 mb-6"></div>
+                      {/* Full Width Red Line - Spans edge to edge */}
+                      <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
                     </>
                   )}
 
-                  <div className="text-center font-bold underline text-[16px]">
-                    DATE OF BIRTH VERIFICATION CERTIFICATE
+                  <div className="text-center font-bold underline mb-1" style={{ fontSize: '16pt' }}>
+                    Date of Birth Verification Certificate
                   </div>
 
-                  <div className="text-center font-bold underline text-[14px] mt-1 mb-6">
+                  <div className="text-center font-bold underline mb-6" style={{ fontSize: '16pt' }}>
                     To Whom It May Concern
                   </div>
 
-                  <p className="mb-4">
+                  <p className="mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
                     This is to certify that <strong>{formData.applicantName}</strong>{" "}
                     {formData.relation} <strong>Mr. {formData.fatherName}</strong>{" "}
                     and <strong>Mrs. {formData.motherName}</strong>, permanent resident of{" "}
@@ -476,22 +500,23 @@ export default function DateOfBirthVerificationModal({
                     .
                   </p>
 
-                  <p>
+                  <p className="text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
                     This birth verification certificate is issued in accordance with the
                     Local Government Operation Act B.S. 2074 (2017 A.D.) Chapter 3,
                     Section 12, Sub-section 2, Clause E (7).
                   </p>
 
-                  <div className="mt-16 text-right">
-                    <div>......................................</div>
+                  <div className="mt-16 text-right" style={{ fontSize: '12pt' }}>
+                    <div className="mb-2 font-bold">.................................</div>
                     <div className="font-bold">{formData.signatoryName}</div>
-                    <div>{formData.signatoryDesignation}</div>
+                    <div className="font-bold">{formData.signatoryDesignation}</div>
                   </div>
 
                   {/* Conditional Footer */}
                   {formData.includeFooter && (
-                    <div className="absolute bottom-4 left-0 right-0 text-center pt-2 border-t-2 border-red-600 mx-8">
-                      <span className="text-[10px] font-bold text-red-600">E-mail: {formData.footerEmail}</span>
+                    <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-red-600 px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
+                      <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>Phone No.: +977-9856017304</span>
+                      <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
                     </div>
                   )}
                 </div>
@@ -578,8 +603,12 @@ export default function DateOfBirthVerificationModal({
                           <input name="headerSubtitle" value={formData.headerSubtitle} onChange={handleChange} className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Location</label>
-                          <input name="headerAddress" value={formData.headerAddress} onChange={handleChange} className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Address Line 1</label>
+                          <input name="headerAddress1" value={formData.headerAddress1} onChange={handleChange} className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Address Line 2</label>
+                          <input name="headerAddress2" value={formData.headerAddress2} onChange={handleChange} className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all" />
                         </div>
                       </div>
                     </div>

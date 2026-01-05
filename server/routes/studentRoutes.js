@@ -35,21 +35,18 @@ const EDIT_ACCESS = ['consultancy_admin', 'manager', 'document_officer', 'recept
 // 1. Student Self-Access
 router.get('/me', authorize('student'), getMyProfile);
 
+// 5. Dashboard Helper (Must be before /:id to avoid conflict)
+router.get('/documents/pending', authorize(...VIEW_ACCESS), getPendingDocuments);
+
 // 2. Consultancy Actions (with input validation on invite)
 router.post('/invite', authorize(...VIEW_ACCESS), studentInviteValidation, handleValidationErrors, inviteStudent);
 router.get('/', authorize(...VIEW_ACCESS), getStudents);
 router.get('/:id', authorize(...VIEW_ACCESS), getStudentById);
-
-// 3. Update Profile (Shared)
-router.put('/:id', authorize('student', ...EDIT_ACCESS), updateStudentProfile);
-
-// 4. Document Verification Workflow
+router.put('/:id', authorize(...EDIT_ACCESS, 'student'), updateStudentProfile);
+// Document Management
 router.post('/:id/documents', authorize(...EDIT_ACCESS), uploadApplicationDocument);
 router.put('/:id/documents/:docId', authorize(...EDIT_ACCESS), updateApplicationDocument);
-router.put('/:id/documents/:docId/verify-upload', authorize(...VIEW_ACCESS), uploadVerifiedDocument);
-router.put('/:id/documents/:docId/status', authorize('consultancy_admin', 'manager'), updateDocumentStatus);
-
-// 5. Dashboard Helper
-router.get('/documents/pending', authorize(...VIEW_ACCESS), getPendingDocuments);
+router.put('/:id/documents/:docId/verify-upload', authorize(...EDIT_ACCESS), uploadVerifiedDocument);
+router.put('/:id/documents/:docId/status', authorize(...EDIT_ACCESS), updateDocumentStatus);
 
 module.exports = router;

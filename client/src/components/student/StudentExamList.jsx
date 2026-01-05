@@ -4,6 +4,7 @@ import { getResources, resourceAdded } from '../../features/resources/resourceSl
 import { BookOpen, Calendar, Clock, Lock, Eye, AlertTriangle, ShieldAlert } from 'lucide-react';
 import io from 'socket.io-client';
 import Modal from '../ui/Modal';
+import { fixImageUrl } from '../../utils/imageUtils';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 const socket = io.connect(SOCKET_URL);
@@ -19,7 +20,7 @@ export default function StudentExamList() {
     const examResources = resources.filter(r => r.category === 'exam');
 
     // Helper to determine type
-    const isImage = (url) => url.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+    const isImage = (url) => fixImageUrl(url).match(/\.(jpeg|jpg|gif|png|webp)$/i);
 
     useEffect(() => {
         dispatch(getResources());
@@ -205,7 +206,7 @@ export default function StudentExamList() {
                             >
                                 {isImage(previewDoc.fileUrl) ? (
                                     <img
-                                        src={previewDoc.fileUrl}
+                                        src={fixImageUrl(previewDoc.fileUrl)}
                                         alt="Secure Content"
                                         className="max-w-full max-h-full object-contain pointer-events-none select-none shadow-2xl"
                                         onDragStart={(e) => e.preventDefault()}
@@ -213,7 +214,7 @@ export default function StudentExamList() {
                                 ) : (
                                     // IFRAME
                                     <iframe
-                                        src={`${previewDoc.fileUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                        src={`${fixImageUrl(previewDoc.fileUrl)}#toolbar=0&navpanes=0&scrollbar=0`}
                                         className="w-full h-full border-0 bg-white shadow-2xl"
                                         title="Exam Question"
                                     />

@@ -76,6 +76,61 @@ export const formatExchangeRateDate = (dateString) => {
 };
 
 /**
+ * Formats the exchange rate date with HTML superscript for Word doc
+ * @param {string} dateString - ISO date string (YYYY-MM-DD)
+ * @returns {string} - Formatted date like "7<sup>th</sup> October 2025"
+ */
+export const formatExchangeRateDateWithSuperscript = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    const getOrdinalSuffix = (d) => {
+        if (d > 3 && d < 21) return 'th';
+        switch (d % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    };
+
+    return `${day}<sup>${getOrdinalSuffix(day)}</sup> ${month} ${year}`;
+};
+
+/**
+ * Parses exchange rate date for JSX rendering with native <sup> elements
+ * @param {string} dateString - ISO date string (YYYY-MM-DD)
+ * @returns {{ day: number, suffix: string, month: string, year: number }}
+ */
+export const parseExchangeRateParts = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const getOrdinalSuffix = (d) => {
+        if (d > 3 && d < 21) return 'th';
+        switch (d % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    };
+
+    return {
+        day,
+        suffix: getOrdinalSuffix(day),
+        month: months[date.getMonth()],
+        year: date.getFullYear()
+    };
+};
+
+/**
  * Hook to use NRB exchange rate with auto-refresh capability
  * Can be used in React components
  */

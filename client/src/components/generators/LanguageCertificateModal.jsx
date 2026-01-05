@@ -368,7 +368,7 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                         </div>
 
                         {/* Preview Container - Scrollable 2 Pages */}
-                        <div className="bg-gray-400 p-6 overflow-auto flex-1">
+                        <div className="bg-gray-200 p-2 sm:p-6 overflow-auto flex-1 flex justify-center items-start">
                             <div
                                 id="printable-certificate"
                                 contentEditable={true}
@@ -379,7 +379,7 @@ export default function LanguageCertificateModal({ isOpen, onClose, student }) {
                             >
                                 {/* ===== SINGLE PAGE: All Content ===== */}
                                 <div
-                                    className="print-page bg-white shadow-lg w-full sm:w-[210mm] h-[297mm] mx-auto relative"
+                                    className="print-page bg-white shadow-lg w-[210mm] min-w-[210mm] h-[297mm] mx-auto relative"
                                     style={{
                                         backgroundImage: formData.includeLetterpad ? 'url(/umi_letterpad.png)' : 'none',
                                         backgroundSize: '100% 100%',

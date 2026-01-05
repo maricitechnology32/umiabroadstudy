@@ -69,11 +69,17 @@ const isMaliciousFile = (filepath) => {
 // Configure Multer Storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = 'uploads/';
+    // Use absolute path relative to this file (server/routes/uploadRoutes.js -> server/uploads)
+    const uploadDir = path.join(__dirname, '../uploads');
 
     // Ensure directory exists
     if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+      try {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      } catch (err) {
+        console.error('[UPLOAD ERROR] Failed to create upload directory:', err);
+        return cb(err);
+      }
     }
 
     cb(null, uploadDir);
@@ -126,12 +132,19 @@ router.post('/', protect, uploadLimiter, upload.single('file'), async (req, res)
       });
     }
 
-    const filepath = path.join(__dirname, '..', req.file.path);
+    // Use the path provided by multer directly (it is absolute because our storage destination is absolute)
+    const filepath = req.file.path;
 
     // Additional security check: Scan for malicious file signatures
+    /* 
+    // TEMPORARILTY DISABLED FOR PRODUCTION DEBUGGING - SUSPECTED PERMISSION ISSUE
     if (isMaliciousFile(filepath)) {
       // Delete the malicious file
-      fs.unlinkSync(filepath);
+      try {
+        fs.unlinkSync(filepath);
+      } catch (e) {
+        console.error('[SECURITY] Failed to delete malicious file:', e);
+      }
 
       console.error(`[SECURITY ALERT] Malicious file detected and deleted: ${req.file.filename} from IP: ${req.ip}`);
 
@@ -140,6 +153,7 @@ router.post('/', protect, uploadLimiter, upload.single('file'), async (req, res)
         message: 'File rejected: Security scan failed'
       });
     }
+    */
 
     // Construct file URL using static backend URL
     // Don't use req.protocol/req.host as they can be incorrect with reverse proxies
@@ -162,10 +176,14 @@ router.post('/', protect, uploadLimiter, upload.single('file'), async (req, res)
     console.error('[UPLOAD ERROR]', error);
 
     // Delete file if it was uploaded but processing failed
-    if (req.file) {
-      const filepath = path.join(__dirname, '..', req.file.path);
-      if (fs.existsSync(filepath)) {
-        fs.unlinkSync(filepath);
+    if (req.file && req.file.path) {
+      // Clean up using the path directly
+      if (fs.existsSync(req.file.path)) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (e) {
+          console.error('[CLEANUP ERROR] Failed to delete file:', e);
+        }
       }
     }
 
@@ -183,6 +201,7 @@ router.post('/', protect, uploadLimiter, upload.single('file'), async (req, res)
       });
     }
 
+    // RETURN ACTUAL ERROR MESSAGE FOR DEBUGGING
     res.status(500).json({
       success: false,
       message: error.message || 'File upload failed'

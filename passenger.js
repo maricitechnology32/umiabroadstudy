@@ -46,7 +46,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 connectDB();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+const server = http.createServer(app);
 
 // Trust proxy (Required for cPanel/reverse proxy)
 app.set('trust proxy', 1);
@@ -141,5 +143,41 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Export for Passenger
-module.exports = app;
+// Initialize Socket.io
+const io = new Server(server, {
+    cors: {
+        origin: CLIENT_URL,
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
+
+// Socket Logic
+io.on('connection', (socket) => {
+    console.log(`[SOCKET] User Connected: ${socket.id}`);
+
+    // Join a specific room based on User ID (for private notifications)
+    socket.on('join_room', (userId) => {
+        socket.join(userId);
+        console.log(`[SOCKET] User ${userId} joined their private room`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('[SOCKET] User Disconnected', socket.id);
+    });
+});
+
+// Make 'io' accessible in Controllers
+app.set('io', io);
+
+// Start server
+server.listen(PORT, () => {
+    console.log(`
+  ============================================
+  KDR Consultancy API Server (Passenger)
+  Environment: ${process.env.NODE_ENV}
+  Port: ${PORT}
+  Client URL: ${CLIENT_URL}
+  ============================================
+  `);
+});

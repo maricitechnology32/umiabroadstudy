@@ -4,6 +4,7 @@ import { getResources, resourceAdded } from '../../features/resources/resourceSl
 import { FileText, Download, Loader2, Calendar, Clock, Eye } from 'lucide-react';
 import io from 'socket.io-client';
 import Modal from '../ui/Modal';
+import { fixImageUrl } from '../../utils/imageUtils';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 // Initialize outside to prevent reconnections, though inside useEffect is safer for auth-based logic if needed.
@@ -19,7 +20,7 @@ export default function StudentResourceList() {
     const [previewDoc, setPreviewDoc] = useState(null);
 
     // Helper to determine type
-    const isImage = (url) => url.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+    const isImage = (url) => fixImageUrl(url).match(/\.(jpeg|jpg|gif|png|webp)$/i);
 
     useEffect(() => {
         dispatch(getResources());
@@ -85,7 +86,7 @@ export default function StudentResourceList() {
                                 <Eye size={16} /> Preview
                             </button>
                             <a
-                                href={resource.fileUrl}
+                                href={fixImageUrl(resource.fileUrl)}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="flex-1 py-2 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-all text-sm font-medium"
@@ -107,11 +108,11 @@ export default function StudentResourceList() {
                     <div className="w-full h-full min-h-[70vh] flex items-center justify-center bg-slate-100 rounded-lg overflow-hidden">
                         {isImage(previewDoc.fileUrl) ? (
                             <img
-                                src={previewDoc.fileUrl}
+                                src={fixImageUrl(previewDoc.fileUrl)}
                                 alt={previewDoc.name}
                                 className="max-w-full max-h-[80vh] object-contain"
                             />
-                        ) : previewDoc.fileUrl.match(/\.(doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
+                        ) : fixImageUrl(previewDoc.fileUrl).match(/\.(doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
                             /* Microsoft Office Viewer */
                             window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? (
                                 <div className="text-center p-8 text-slate-500">
@@ -122,7 +123,7 @@ export default function StudentResourceList() {
                                         This feature will work automatically when you host your website.
                                     </p>
                                     <a
-                                        href={previewDoc.fileUrl}
+                                        href={fixImageUrl(previewDoc.fileUrl)}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center gap-2"
@@ -132,7 +133,7 @@ export default function StudentResourceList() {
                                 </div>
                             ) : (
                                 <iframe
-                                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(previewDoc.fileUrl)}`}
+                                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fixImageUrl(previewDoc.fileUrl))}`}
                                     className="w-full h-[80vh] border-0"
                                     title="Office Document Preview"
                                 />
@@ -140,7 +141,7 @@ export default function StudentResourceList() {
                         ) : (
                             /* Fallback: Native Viewer (PDF, Text, etc.) */
                             <iframe
-                                src={previewDoc.fileUrl}
+                                src={fixImageUrl(previewDoc.fileUrl)}
                                 className="w-full h-[80vh] border-0"
                                 title="Document Preview"
                             />

@@ -1,6 +1,7 @@
 import { Download, FileText, Printer, Plus, Trash2, X, Calendar, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getThreeConsecutiveFiscalYears, getFiscalYearLabels, getDefaultStartYear } from '../../utils/nepaliFiscalYear';
+import { getFormattedDate, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
 
 export default function TaxClearanceVerificationModal({ isOpen, onClose, student }) {
   if (!isOpen || !student) return null;
@@ -19,12 +20,13 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
     // Document options
     includeHeader: true,
     includeFooter: true,
-    logoSize: 100,
+    logoSize: 136,
 
     // Header info (will be dynamically set from student)
     headerTitle: 'Machhapuchhre Rural Municipality',
     headerSubtitle: '4 No. Ward Office',
-    headerAddress: 'Lahachok, Kaski, Gandaki Province, Nepal',
+    headerAddress1: 'Lahachok, Kaski',
+    headerAddress2: 'Gandaki Province, Nepal',
 
     // Footer info
     footerEmail: 'machhapuchhrereward4@gmail.com',
@@ -32,7 +34,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
 
     refNo: '2082/083',
     disNo: '403',
-    date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+    date: getFormattedDate(),
 
     parentName: `Mr. ${student.familyInfo?.fatherName || 'Parent Name'}`,
     relation: 'father',
@@ -82,7 +84,8 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
         ...prev,
         headerTitle: municipality,
         headerSubtitle: `${wardNo} No. Ward Office`,
-        headerAddress: `${tole}, ${district}, ${province}, Nepal`,
+        headerAddress1: `${tole}, ${district}`,
+        headerAddress2: `${province}, Nepal`,
         parentName: `Mr. ${student.familyInfo?.fatherName || ''}`,
         relation: 'father',
         studentName: `${student.personalInfo?.title || ''} ${student.personalInfo?.firstName || ''} ${student.personalInfo?.lastName || ''}`.trim(),
@@ -168,26 +171,27 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
         ${formData.includeHeader ? `
         <table style="width: 100%; margin-bottom: 3pt;">
           <tr>
-            <td style="width: 18%; vertical-align: top; padding-left: 3pt;">
-               <img src="${window.location.origin}/nepal_coat_of_arms.png" width="70" height="auto" />
+            <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
+               <img src="${window.location.origin}/nepal_coat_of_arms.png" width="90" height="auto" />
             </td>
-            <td style="width: 64%; text-align: center; vertical-align: middle;">
-              <div style="font-size: 14pt; font-weight: bold; color: #DC2626;">${formData.headerTitle}</div>
-              <div style="font-size: 11pt; font-weight: bold; color: #DC2626;">${formData.headerSubtitle}</div>
-              <div style="font-size: 9pt; font-weight: bold; color: #DC2626;">${formData.headerAddress}</div>
+            <td style="width: 60%; text-align: center; vertical-align: middle;">
+              <div style="font-size: 20pt; font-weight: bold; color: #dc2626;">${formData.headerTitle}</div>
+              <div style="font-size: 16pt; font-weight: bold; color: #dc2626;">${formData.headerSubtitle}</div>
+              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress1}</div>
+              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress2}</div>
             </td>
-            <td style="width: 18%;"></td>
+            <td style="width: 20%;"></td>
           </tr>
         </table>
 
-        <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 9pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #DC2626; padding-bottom: 3pt;">
+        <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 10pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #DC2626; padding-bottom: 3pt;">
           <tr>
               <td style="text-align: left;">
-                  <div>Ref. No.: ${formData.refNo}</div>
-                  <div>Dis. No.: ${formData.disNo}</div>
+                  <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
+                  <div><span style="color: #DC2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
               </td>
               <td style="text-align: right; vertical-align: bottom;">
-                  Date: ${formData.date}
+                  <span style="color: #DC2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.date)}</span>
               </td>
           </tr>
         </table>
@@ -254,7 +258,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
         <div class="signature-block">
             <div style="margin-bottom: 3pt;">........................................</div>
             <strong>${formData.signatoryName}</strong><br>
-            ${formData.signatoryDesignation}
+            <strong>${formData.signatoryDesignation}</strong>
         </div>
 
         ${formData.includeFooter ? `
@@ -290,10 +294,16 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                         width: 210mm; 
                         height: 297mm; 
                         margin: 0;
-                        padding: 20mm;
+                        padding: 6mm 25mm 25mm 25mm;
                         box-sizing: border-box;
                     }
                     @page { size: A4; margin: 0; }
+                }
+                
+                .print-area sup {
+                    vertical-align: super;
+                    font-size: 0.6em;
+                    line-height: 0;
                 }
             `}</style>
 
@@ -377,53 +387,58 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             </div>
 
             {/* Preview Container */}
-            <div className="bg-gray-200 p-6 overflow-auto flex-1 flex justify-center">
+            <div className="bg-gray-200 p-2 sm:p-6 overflow-auto flex-1 flex justify-center items-start">
               <div
                 id="printable-certificate"
                 contentEditable={true}
                 suppressContentEditableWarning={true}
                 spellCheck={false}
-                className="print-area bg-white shadow-lg w-full max-w-[210mm] min-h-[297mm] p-8 text-[11px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                className="print-area bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
+                style={{ fontFamily: 'Times New Roman, serif' }}
               >
 
                 {/* Conditional Header - Red Theme */}
                 {formData.includeHeader && (
                   <>
-                    <div className="flex items-center justify-between pb-2 mb-1">
+                    <div className="flex items-center justify-between mb-1">
                       <div className="w-32">
-                        <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: 'auto', transform: 'scaleX(1.15)' }} />
+                        <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                       </div>
                       <div className="text-center flex-1">
-                        <div className="text-xl font-bold text-red-600">{formData.headerTitle}</div>
-                        <div className="text-lg font-bold text-red-600">{formData.headerSubtitle}</div>
-                        <div className="text-sm font-bold text-red-600">{formData.headerAddress}</div>
+                        <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
+                        <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
+                        <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
+                        <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
                       </div>
                       <div className="w-32"></div>
                     </div>
 
-                    <div className="flex justify-between text-xs font-bold text-red-600 mb-1">
-                      <div>
-                        <div>Ref. No.: {formData.refNo}</div>
-                        <div>Dis. No.: {formData.disNo}</div>
+                    <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
+                      <div className="text-red-600">
+                        <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
+                        <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
                       </div>
-                      <div className="self-end">
-                        Date: {formData.date}
+                      <div className="self-end text-red-600">
+                        Date: <span className="text-black">{(() => {
+                          const d = parseDateParts(formData.date);
+                          return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
+                        })()}</span>
                       </div>
                     </div>
 
-                    <div className="border-b-2 border-red-600 mb-4"></div>
+                    <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
                   </>
                 )}
 
-                <div className="text-center font-bold underline text-[14px]">
+                <div className="text-center font-bold underline mb-1" style={{ fontSize: '16pt' }}>
                   Tax Clearance Verification Certificate
                 </div>
 
-                <div className="text-center font-bold underline text-[12px] mt-1 mb-4">
+                <div className="text-center font-bold underline mb-6" style={{ fontSize: '16pt' }}>
                   To Whom It May Concern
                 </div>
 
-                <p className="mb-3 text-[11pt]">
+                <p className="mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
                   This is to certify that <strong>{formData.parentName}</strong> {formData.relation} of
                   <strong>   {formData.studentName}</strong> the permanent resident of
                   <strong> {formData.addressLine}</strong>, Nepal has been regularly paying all the government taxes up to fiscal year {fiscalYearLabels[2]} as per government rules and regulation.
@@ -431,74 +446,75 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 </p>
 
                 {/* TABLE PREVIEW */}
-                <table className="w-full border-collapse border border-black mb-3 text-right text-[10pt]">
+                <table className="w-full border-collapse border border-black mb-1 text-right leading-none" style={{ fontSize: '12pt' }}>
                   <thead>
                     <tr className="text-center">
-                      <th rowSpan="2" className="border border-black p-1 w-8">S.N.</th>
-                      <th rowSpan="2" className="border border-black p-1 text-left">Income Headings</th>
-                      <th colSpan="3" className="border border-black p-1">Annual Income Per Mentioned Fiscal Year In NPR</th>
+                      <th rowSpan="2" className="border border-black px-1 py-[1px] w-8">S.N.</th>
+                      <th rowSpan="2" className="border border-black px-1 py-[1px] text-left">Income Headings</th>
+                      <th colSpan="3" className="border border-black px-1 py-[1px]">Annual Income Per Mentioned Fiscal Year In NPR</th>
                     </tr>
                     <tr className="text-center">
-                      <th className="border border-black p-1">{fiscalYearLabels[0]}</th>
-                      <th className="border border-black p-1">{fiscalYearLabels[1]}</th>
-                      <th className="border border-black p-1">{fiscalYearLabels[2]}</th>
+                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[0]}</th>
+                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[1]}</th>
+                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[2]}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {formData.incomeData.map((row, idx) => (
                       <tr key={idx}>
-                        <td className="border border-black p-1 text-center">{idx + 1}</td>
-                        <td className="border border-black p-1 text-left">{row.source}</td>
-                        <td className="border border-black p-1">{formatCurrency(row.amount1)}</td>
-                        <td className="border border-black p-1">{formatCurrency(row.amount2)}</td>
-                        <td className="border border-black p-1">{formatCurrency(row.amount3)}</td>
+                        <td className="border border-black px-1 py-[1px] text-center">{idx + 1}</td>
+                        <td className="border border-black px-1 py-[1px] text-left">{row.source}</td>
+                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount1)}</td>
+                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount2)}</td>
+                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount3)}</td>
                       </tr>
                     ))}
                     {/* TOTALS */}
                     <tr className="font-bold">
-                      <td colSpan="2" className="border border-black p-1 text-right">Total Amount (NPR)</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[0])}</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[1])}</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[2])}</td>
+                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right">Total Amount (NPR)</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[0])}</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[1])}</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[2])}</td>
                     </tr>
                     <tr>
-                      <td colSpan="2" className="border border-black p-1 text-right font-bold">Tax Amount</td>
-                      <td className="border border-black p-1 text-center">Nil</td>
-                      <td className="border border-black p-1 text-center">Nil</td>
-                      <td className="border border-black p-1 text-center">Nil</td>
+                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Tax Amount</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
                     </tr>
                     <tr>
-                      <td colSpan="2" className="border border-black p-1 text-right font-bold">Income after Tax</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[0])}</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[1])}</td>
-                      <td className="border border-black p-1">{formatCurrency(totals.totalNPR[2])}</td>
+                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Income after Tax</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[0])}</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[1])}</td>
+                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[2])}</td>
                     </tr>
                     <tr>
-                      <td colSpan="2" className="border border-black p-1 text-right font-bold">Status</td>
-                      <td className="border border-black p-1 text-center">Tax Cleared</td>
-                      <td className="border border-black p-1 text-center">Tax Cleared</td>
-                      <td className="border border-black p-1 text-center">Tax Cleared</td>
+                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Status</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
+                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
                     </tr>
                   </tbody>
                 </table>
 
-                <p className="text-[9pt] mb-4">
+                <p className="mt-4 text-justify leading-relaxed mb-4" style={{ fontSize: '12pt' }}>
                   <strong>Note:</strong> We also state that Government Tax is exemptions for agriculture income according to the Income Tax
                   Act 2058 B.S. (2002 A.D.), Chapter 4 (11) (1). (Source: www.lawcommission.gov.np, www.ird.gov.np).
                   Therefore, no tax has been issued for their agriculture income.
                 </p>
 
                 {/* SIGNATURE */}
-                <div className="mt-16 text-right">
-                  <div>......................................</div>
+                <div className="mt-16 text-right" style={{ fontSize: '12pt' }}>
+                  <div className="font-bold">......................................</div>
                   <div className="font-bold">{formData.signatoryName}</div>
-                  <div>{formData.signatoryDesignation}</div>
+                  <div className="font-bold">{formData.signatoryDesignation}</div>
                 </div>
 
-                {/* Conditional Footer - Red Theme */}
+                {/* Conditional Footer - Standardized Full Width */}
                 {formData.includeFooter && (
-                  <div className="absolute bottom-4 left-0 right-0 text-center pt-2 border-t-2 border-red-600 mx-8">
-                    <span className="text-[9px] font-bold text-red-600">Phone No.: {formData.footerPhone} | E-mail: {formData.footerEmail}</span>
+                  <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-red-600 px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
+                    <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>Phone No.: {formData.footerPhone}</span>
+                    <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
                   </div>
                 )}
 
@@ -596,8 +612,13 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                         className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Address</label>
-                      <input name="headerAddress" value={formData.headerAddress} onChange={handleChange}
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Address Line 1</label>
+                      <input name="headerAddress1" value={formData.headerAddress1} onChange={handleChange}
+                        className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all" />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Address Line 2</label>
+                      <input name="headerAddress2" value={formData.headerAddress2} onChange={handleChange}
                         className="w-full border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all" />
                     </div>
                   </div>

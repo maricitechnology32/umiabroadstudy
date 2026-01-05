@@ -757,12 +757,12 @@ export default function StudentProfile() {
                                                 </td>
                                                 <td className="px-6 py-4 flex gap-2">
                                                     {doc.originalUrl && (
-                                                        <a href={doc.originalUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center">
+                                                        <a href={fixImageUrl(doc.originalUrl)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center">
                                                             Original <ExternalLink size={10} className="ml-1" />
                                                         </a>
                                                     )}
                                                     {doc.verifiedUrl && (
-                                                        <a href={doc.verifiedUrl} target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline text-xs flex items-center">
+                                                        <a href={fixImageUrl(doc.verifiedUrl)} target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline text-xs flex items-center">
                                                             Signed <CheckCircle size={10} className="ml-1" />
                                                         </a>
                                                     )}
@@ -1355,7 +1355,7 @@ function DocumentUploadCard({ title, fieldKey, existingUrl, onUpload, onDelete }
                     </span>
 
                     <div className="flex gap-2 relative z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                        <a href={existingUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
+                        <a href={fixImageUrl(existingUrl)} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
                             className="px-3 py-2 bg-white border border-primary-200 rounded-xl text-xs font-bold text-slate-700 hover:text-primary-700 hover:border-primary-400 hover:shadow-md transition-all flex items-center gap-1.5">
                             <Eye size={14} />
                         </a>

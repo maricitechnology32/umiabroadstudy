@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { getHolidays } from '../../features/holidays/holidaySlice';
 import { getTemplate, getTemplateList } from '../../config/bankTemplates';
 import { fetchNRBExchangeRate, formatExchangeRateDate } from '../../utils/nrbExchangeRate';
+import { getFormattedDate, addSuperscriptToDateString } from '../../utils/dateFormat';
 
 export default function BankStatementGeneratorModal({ isOpen, onClose, student }) {
     if (!isOpen || !student) return null;
@@ -52,7 +53,7 @@ export default function BankStatementGeneratorModal({ isOpen, onClose, student }
 
         // Ref & Date
         refNo: '2082/083/15',
-        issueDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+        issueDate: getFormattedDate(),
     });
 
     // Holidays
@@ -177,7 +178,7 @@ export default function BankStatementGeneratorModal({ isOpen, onClose, student }
 
     const removeLocalHoliday = (date) => {
         setLocalHolidays(localHolidays.filter(h => h !== date));
-    };
+    }; 
 
     const tileClassName = ({ date, view }) => {
         if (view !== 'month') return null;
@@ -1181,7 +1182,7 @@ ${template.id !== 'devipur' && template.id !== 'prabhabkari' ? '<hr style="borde
                                 id="printable-statement"
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
-                                className="bg-gray-50 border border-gray-300 rounded-lg p-4 shadow-inner overflow-auto"
+                                className="bg-gray-200 p-2 sm:p-6 overflow-auto flex-1 flex flex-col items-center gap-8"
                                 style={{ fontFamily: 'Times New Roman, serif', fontSize: '12pt', lineHeight: '1.5', minHeight: '600px' }}
                             >
                                 {transactions.length === 0 ? (

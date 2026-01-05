@@ -7,6 +7,7 @@ import Input from '../ui/Input';
 import Modal from '../ui/Modal';
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
+import { fixImageUrl } from '../../utils/imageUtils';
 
 export default function ResourceManager() {
     const dispatch = useDispatch();
@@ -27,6 +28,10 @@ export default function ResourceManager() {
     const [selectedResource, setSelectedResource] = useState(null);
     const [fillFile, setFillFile] = useState(null);
     const [verificationData, setVerificationData] = useState({ status: '', message: '' });
+
+    // Preview Modal State (Same as StudentResourceList)
+    const [previewDoc, setPreviewDoc] = useState(null);
+    const isImage = (url) => fixImageUrl(url).match(/\.(jpeg|jpg|gif|png|webp)$/i);
 
     useEffect(() => {
         dispatch(getResources());
@@ -298,7 +303,7 @@ export default function ResourceManager() {
                                             {/* Template download for university forms */}
                                             {resource.category === 'university_form' && resource.templateUrl && (
                                                 <a
-                                                    href={resource.templateUrl}
+                                                    href={fixImageUrl(resource.templateUrl)}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all flex items-center gap-1"
@@ -310,7 +315,7 @@ export default function ResourceManager() {
 
                                             {/* Main file download */}
                                             <a
-                                                href={resource.fileUrl}
+                                                href={fixImageUrl(resource.fileUrl)}
                                                 target="_blank"
                                                 rel="noreferrer"
                                                 className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
@@ -318,6 +323,15 @@ export default function ResourceManager() {
                                             >
                                                 <Download size={18} />
                                             </a>
+
+                                            {/* Preview Button (New) */}
+                                            <button
+                                                onClick={() => setPreviewDoc(resource)}
+                                                className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                title="Preview"
+                                            >
+                                                <Eye size={18} />
+                                            </button>
 
                                             {/* Workflow actions for university forms */}
                                             {resource.category === 'university_form' && (
@@ -415,7 +429,7 @@ export default function ResourceManager() {
                     {/* Preview link */}
                     {selectedResource?.fileUrl && (
                         <a
-                            href={selectedResource.fileUrl}
+                            href={fixImageUrl(selectedResource.fileUrl)}
                             target="_blank"
                             rel="noreferrer"
                             className="block w-full py-2 px-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-center flex items-center justify-center gap-2"
@@ -430,8 +444,8 @@ export default function ResourceManager() {
                             <button
                                 onClick={() => setVerificationData({ ...verificationData, status: 'verified' })}
                                 className={`py-3 px-4 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${verificationData.status === 'verified'
-                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                        : 'border-slate-200 hover:border-emerald-300'
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                                    : 'border-slate-200 hover:border-emerald-300'
                                     }`}
                             >
                                 <CheckCircle size={20} /> Approve
@@ -439,8 +453,8 @@ export default function ResourceManager() {
                             <button
                                 onClick={() => setVerificationData({ ...verificationData, status: 'rejected' })}
                                 className={`py-3 px-4 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${verificationData.status === 'rejected'
-                                        ? 'border-red-500 bg-red-50 text-red-700'
-                                        : 'border-slate-200 hover:border-red-300'
+                                    ? 'border-red-500 bg-red-50 text-red-700'
+                                    : 'border-slate-200 hover:border-red-300'
                                     }`}
                             >
                                 <XCircle size={20} /> Reject
@@ -468,6 +482,47 @@ export default function ResourceManager() {
                             {verificationData.status === 'verified' ? 'Approve Form' : 'Reject Form'}
                         </Button>
                     </div>
+                </div>
+            </Modal>
+
+            {/* PREVIEW MODAL (Copied logic from StudentResourceList) */}
+            <Modal isOpen={!!previewDoc} onClose={() => setPreviewDoc(null)} title={previewDoc?.name || 'Document Preview'} maxWidth="4xl">
+                <div className="w-full h-full min-h-[70vh] flex items-center justify-center bg-slate-100 rounded-lg overflow-hidden">
+                    {previewDoc && (
+                        <>
+                            {isImage(previewDoc.fileUrl) ? (
+                                <img
+                                    src={fixImageUrl(previewDoc.fileUrl)}
+                                    alt={previewDoc.name}
+                                    className="max-w-full max-h-[80vh] object-contain"
+                                />
+                            ) : fixImageUrl(previewDoc.fileUrl).match(/\.(doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
+                                /* Microsoft Office Viewer */
+                                <iframe
+                                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fixImageUrl(previewDoc.fileUrl))}`}
+                                    className="w-full h-[80vh] border-0"
+                                    title="Office Document Preview"
+                                />
+                            ) : (
+                                /* Fallback: Native Viewer (PDF, Text, etc.) */
+                                <iframe
+                                    src={fixImageUrl(previewDoc.fileUrl)}
+                                    className="w-full h-[80vh] border-0"
+                                    title="Document Preview"
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+                <div className="flex justify-end pt-4">
+                    <a
+                        href={previewDoc ? fixImageUrl(previewDoc.fileUrl) : '#'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center gap-2"
+                    >
+                        <Download size={16} /> Download Original
+                    </a>
                 </div>
             </Modal>
         </div>

@@ -14,39 +14,40 @@ const BACKEND_URL = API_URL.replace('/api', ''); // Get base backend URL
 export const fixImageUrl = (imageUrl) => {
     if (!imageUrl) return imageUrl;
 
-    // If it's already a full external URL (http://... or https://...), keep it
+    // 1. Force HTTPS for production domain (Required for Office Viewer)
+    if (imageUrl.includes('umiabroadstudies.com') && imageUrl.startsWith('http://')) {
+        return imageUrl.replace('http://', 'https://');
+    }
+
+    // 2. Handle absolute URLs
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-        // Check if it's pointing to an old/incorrect backend
+        // Fix localhost/127.0.0.1 URLs from development/old uploads
         const urlPatterns = [
-            /https?:\/\/127\.0\.0\.1:\d+/,  // 127.0.0.1 with any port
-            /https?:\/\/localhost:\d+/,      // localhost with any port (except current)
+            /https?:\/\/127\.0\.0\.1:\d+/,
+            /https?:\/\/localhost:\d+/,
         ];
 
         for (const pattern of urlPatterns) {
             if (pattern.test(imageUrl)) {
-                // Extract the path after the domain
                 const pathMatch = imageUrl.match(/\/uploads\/.*$/);
                 if (pathMatch) {
                     return `${BACKEND_URL}${pathMatch[0]}`;
                 }
             }
         }
-
-        // If it's not a localhost/127.0.0.1 URL, return as-is (external image)
-        return imageUrl;
+        return imageUrl; // Return external/valid URLs as is
     }
 
-    // If it's a relative path starting with /uploads, prepend backend URL
+    // 3. Handle relative paths
     if (imageUrl.startsWith('/uploads')) {
         return `${BACKEND_URL}${imageUrl}`;
     }
 
-    // If it's just a filename or relative path, assume it's in /uploads
+    // 4. Handle filenames (assume they are in uploads)
     if (!imageUrl.includes('/')) {
         return `${BACKEND_URL}/uploads/${imageUrl}`;
     }
 
-    // Default: return as-is
     return imageUrl;
 };
 

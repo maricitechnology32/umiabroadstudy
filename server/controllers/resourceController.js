@@ -46,8 +46,10 @@ const addResource = async (req, res) => {
         res.status(201).json({ success: true, data: resource });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Server Error' });
+        console.error('[ADD RESOURCE ERROR]', error);
+        // Return duplicate key error or validation error details
+        const message = error.message || 'Server Error';
+        res.status(error.name === 'ValidationError' ? 400 : 500).json({ success: false, message });
     }
 };
 

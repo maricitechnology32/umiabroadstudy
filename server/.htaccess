@@ -1,36 +1,5 @@
-# ============================================
-# API SUBDOMAIN .htaccess - api.kdrconsultancy.com
-# ============================================
+RewriteEngine On
 
 # Force HTTPS
-RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# Proxy all requests to Node.js application on port 30016
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteRule ^$ http://127.0.0.1:30016/ [P,L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ http://127.0.0.1:30016/$1 [P,L]
-</IfModule>
-
-# CORS Headers for API
-<IfModule mod_headers.c>
-  Header always set Access-Control-Allow-Origin "https://kdrconsultancy.com"
-  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-  Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, Cache-Control, Pragma, Expires"
-  Header always set Access-Control-Allow-Credentials "true"
-  
-  # Handle preflight OPTIONS requests
-  RewriteCond %{REQUEST_METHOD} OPTIONS
-  RewriteRule ^(.*)$ $1 [R=200,L]
-</IfModule>
-
-# Security Headers
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set X-XSS-Protection "1; mode=block"
-</IfModule>

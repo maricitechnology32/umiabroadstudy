@@ -49,17 +49,46 @@ export const formatGregorianDate = (date) => {
 };
 
 /**
+ * Formats a Date object as "16<sup>th</sup> July, 2022 A.D." (with HTML superscript)
+ */
+export const formatGregorianDateWithSuperscript = (date) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day}<sup>${getOrdinalSuffix(day)}</sup> ${month}, ${year} A.D.`;
+};
+
+/**
+ * Parses a Date object and returns components for JSX rendering
+ * @param {Date} date - The date to parse
+ * @returns {{ day: number, suffix: string, month: string, year: number }}
+ */
+export const parseFiscalDateParts = (date) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const day = date.getDate();
+    return {
+        day,
+        suffix: getOrdinalSuffix(day),
+        month: months[date.getMonth()],
+        year: date.getFullYear()
+    };
+};
+
+/**
  * Gets the precise start date of Nepali fiscal year (1st Shrawan)
  * @param {number} adYear - The AD year when the fiscal year starts
  * @returns {Date} - The Gregorian date of 1st Shrawan
  */
 export const getFiscalYearStartDate = (adYear) => {
-    // Manual overrides for specific fiscal years as per user request
+    // Manual overrides for Nepal fiscal year start dates (July 16 each year)
     const overrides = {
-        2022: '2022-07-17',
-        2023: '2023-07-17',
+        2022: '2022-07-16',
+        2023: '2023-07-16',
         2024: '2024-07-16',
-        2025: '2025-07-17' // Needed to calculate end date of 2024/25
+        2025: '2025-07-16' // Needed to calculate end date of 2024/25
     };
 
     if (overrides[adYear]) {
@@ -98,24 +127,43 @@ export const getFiscalYearEndDate = (adYear) => {
 };
 
 /**
- * Returns a single fiscal year object with PRECISE dates
+ * Returns a single fiscal year object with hardcoded dates
+ * Nepal Fiscal Year: 16 July to 15 July
  * @param {number} startYear - The starting AD year of the fiscal year
  * @returns {{ label: string, startDate: string, endDate: string, startYear: number, endYear: number }}
  */
 export const getFiscalYear = (startYear) => {
     const endYear = startYear + 1;
-    const startDate = getFiscalYearStartDate(startYear);
-    const endDate = getFiscalYearEndDate(startYear);
+
+    // Hardcoded fiscal year dates (exact dates from user)
+    // 2022/23: July 17, 2022 – July 16, 2023
+    // 2023/24: July 17, 2023 – July 15, 2024
+    // 2024/25: July 16, 2024 – July 16, 2025
+    const fiscalYearDates = {
+        2022: { start: new Date(2022, 6, 17), end: new Date(2023, 6, 16) }, // July = 6 (0-indexed)
+        2023: { start: new Date(2023, 6, 17), end: new Date(2024, 6, 15) },
+        2024: { start: new Date(2024, 6, 16), end: new Date(2025, 6, 16) },
+        2025: { start: new Date(2025, 6, 16), end: new Date(2026, 6, 15) },
+    };
+
+    // Use hardcoded dates if available, otherwise calculate
+    const dates = fiscalYearDates[startYear] || {
+        start: new Date(startYear, 6, 16),
+        end: new Date(endYear, 6, 15)
+    };
 
     return {
         label: `${startYear}/${endYear} A.D.`,
-        startDate: formatGregorianDate(startDate),
-        endDate: formatGregorianDate(endDate),
+        startDate: formatGregorianDate(dates.start),
+        endDate: formatGregorianDate(dates.end),
+        // Superscript versions for Word doc generation
+        startDateSup: formatGregorianDateWithSuperscript(dates.start),
+        endDateSup: formatGregorianDateWithSuperscript(dates.end),
         startYear,
         endYear,
         // Raw Date objects for programmatic use
-        startDateObj: startDate,
-        endDateObj: endDate
+        startDateObj: dates.start,
+        endDateObj: dates.end
     };
 };
 
