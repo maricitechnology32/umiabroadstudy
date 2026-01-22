@@ -1,11 +1,21 @@
+import {
+    ArrowLeft,
+    BookOpen,
+    ChevronDown, ChevronRight,
+    FileText,
+    Globe,
+    HelpCircle,
+    Mail,
+    MessageCircle,
+    Phone,
+    Shield,
+    Users,
+    Zap
+} from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-    HelpCircle, MessageCircle, Mail, Phone, Clock, ChevronDown, ChevronRight,
-    BookOpen, FileText, Users, Shield, Zap, Globe, ArrowLeft
-} from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import Navbar from '../components/layout/Navbar';
 import Button from '../components/ui/Button';
 
 const faqs = [
@@ -95,16 +105,10 @@ const contactMethods = [
         icon: Phone,
         title: 'Phone Support',
         description: 'Mon-Fri, 9AM - 6PM JST',
-        action: '+81-3-1234-5678',
-        link: 'tel:+81312345678'
+        action: '+977-9706127862',
+        link: 'tel:9706127862'
     },
-    {
-        icon: MessageCircle,
-        title: 'Live Chat',
-        description: 'Chat with our support team',
-        action: 'Start Chat',
-        link: '#chat'
-    }
+    
 ];
 
 export default function HelpSupport({ isDashboard }) {

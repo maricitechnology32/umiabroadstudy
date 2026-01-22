@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { ArrowRight, Briefcase, Calendar, DollarSign, Loader2, MapPin, Search, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchJobs, reset } from '../../features/jobs/jobSlice';
-import { Briefcase, MapPin, DollarSign, Calendar, Search, Filter, Loader2, ArrowRight, TrendingUp } from 'lucide-react';
-import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import BannerAd from '../../components/ads/BannerAd';
+import Navbar from '../../components/layout/Navbar';
+import { fetchJobs, reset } from '../../features/jobs/jobSlice';
 
 
 const Careers = ({ isDashboard }) => {
@@ -57,7 +56,7 @@ const Careers = ({ isDashboard }) => {
             {!isDashboard && <Navbar />}
             <div className="min-h-screen bg-slate-50">
                 {/* Hero Section */}
-                <div className="bg-primary-600 text-white py-12 mt-14">
+                <div className="bg-primary-600 text-white py-12 mt-32">
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center">
                             <div className="inline-flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full mb-4">

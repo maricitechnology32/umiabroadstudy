@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { ArrowRight, Calendar, Clock, Eye, Loader2, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchBlogs, reset } from '../../features/blog/blogSlice';
-import { Calendar, Clock, Eye, Search, Loader2, ArrowRight } from 'lucide-react';
-import SEO from '../../components/common/SEO';
-import Button from '../../components/ui/Button';
-import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import Navbar from '../../components/layout/Navbar';
+import Button from '../../components/ui/Button';
+import { fetchBlogs, reset } from '../../features/blog/blogSlice';
 import { fixImageUrl } from '../../utils/imageUtils';
-import BannerAd from '../../components/ads/BannerAd';
 
 
 const BlogList = ({ isDashboard }) => {
@@ -60,7 +58,7 @@ const BlogList = ({ isDashboard }) => {
             {!isDashboard && <Navbar />}
 
             {/* Hero Section */}
-            <section className="bg-primary-600 text-white py-12 mt-14">
+            <section className="bg-primary-600 text-white py-12 mt-32">
                 <div className="max-w-5xl mx-auto px-4 text-center">
                     <h1 className="text-2xl md:text-3xl font-bold mb-2">Our Blog</h1>
                     <p className="text-primary-100 max-w-xl mx-auto">
@@ -70,7 +68,7 @@ const BlogList = ({ isDashboard }) => {
             </section>
 
             {/* Banner Ad */}
-            <BannerAd className="max-w-7xl mx-auto" />
+            {/* <BannerAd className="max-w-7xl mx-auto" /> */}
 
             <div className="max-w-7xl mx-auto px-6 py-12">
                 {/* Filters */}

@@ -114,7 +114,7 @@ const siteContentData = {
     features: [
         {
             title: "Complete COE Assistance",
-            description: "We prepare all your Certificate of Eligibility documents with 100% accuracy. No rejection due to paperwork errors.",
+            description: "We prepare all your Certificate of Eligibility documents with 100% accuracy.",
             icon: "FileText"
         },
         {

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
 
 @tailwind base;
@@ -7,7 +7,11 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    @apply bg-white text-slate-900 font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
   }
 }
 
@@ -99,5 +103,55 @@
 
   .text-body {
     @apply text-base text-slate-600 leading-relaxed;
+  }
+
+  /* Premium UI Patterns */
+  .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
+
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl;
+  }
+
+  .mesh-gradient {
+    background-color: #ffffff;
+    background-image:
+      radial-gradient(at 0% 0%, hsla(210, 100%, 98%, 1) 0, transparent 50%),
+      radial-gradient(at 50% 0%, hsla(217, 91%, 96%, 1) 0, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(220, 100%, 97%, 1) 0, transparent 50%),
+      radial-gradient(at 0% 50%, hsla(210, 100%, 98%, 1) 0, transparent 50%),
+      radial-gradient(at 100% 50%, hsla(217, 91%, 95%, 1) 0, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(220, 100%, 97%, 1) 0, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(210, 100%, 98%, 1) 0, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(217, 91%, 96%, 1) 0, transparent 50%);
+  }
+
+  .glow-primary {
+    @apply bg-transparent;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-primary-500 to-blue-600;
   }
 }

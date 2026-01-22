@@ -1,8 +1,8 @@
 import React from 'react';
 
-export const Card = ({ children, className = '' }) => {
+export const Card = ({ children, className = '', ...props }) => {
     return (
-        <div className={`bg-white dark:bg-secondary-900 rounded-xl border border-secondary-200 dark:border-secondary-800 shadow-sm ${className}`}>
+        <div className={`bg-white dark:bg-secondary-900 rounded-xl border border-secondary-200 dark:border-secondary-800 shadow-sm ${className}`} {...props}>
             {children}
         </div>
     );

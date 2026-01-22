@@ -1,12 +1,11 @@
-import { Loader2, Lock, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { login, reset } from '../features/auth/authSlice';
 import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
 import { Card, CardContent } from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import { login, reset } from '../features/auth/authSlice';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -59,7 +58,7 @@ function Login() {
           Welcome back
         </h2>
         <p className="mt-2 text-center text-sm text-secondary-600 dark:text-secondary-400">
-          Sign in to Global Flow
+          Sign in to UMI Abroad Study
         </p>
       </div>
 

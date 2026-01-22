@@ -30,11 +30,12 @@ import {
     XCircle,
     ChevronRight,
     BookOpen,
-    Bell
+    Bell,
+    Edit2
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { bsToAd } from '@sbmdkl/nepali-date-converter';
 import { clearCurrentProfile, getMyProfile, getStudentById, reset, updateProfile, updateStudentStatus } from '../../features/students/studentSlice';
@@ -103,13 +104,15 @@ export default function StudentProfile() {
         subRole === 'manager' ||
         subRole === 'document_officer';
 
-    const [activeTab, setActiveTab] = useState(role === 'student' ? 'sop' : 'personal');
+    const location = useLocation();
+    const [activeTab, setActiveTab] = useState(location.state?.activeTab || (role === 'student' ? 'sop' : 'personal'));
 
     const isStudent = role === 'student';
 
     // Form Data State
     const [formData, setFormData] = useState({
         personalInfo: { title: 'Mr.', firstName: '', lastName: '', gender: 'Male', dobAD: '', dobBS: '', email: '', phone: '', citizenshipNo: '', citizenshipDistrict: '', citizenshipDate: '', passportNo: '', passportExpiry: '', passportIssuePlace: '', photoUrl: '' },
+        assignedUniversity: '',
         address: { municipality: '', wardNo: '', district: '', province: '', tole: '' },
         familyInfo: { fatherName: '', fatherPhone: '', fatherEmail: '', motherName: '', motherPhone: '', motherEmail: '', grandfatherName: '', spouseName: '', relatives: [] },
         academics: [],
@@ -140,16 +143,59 @@ export default function StudentProfile() {
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [statusToUpdate, setStatusToUpdate] = useState('');
     const [showDocModal, setShowDocModal] = useState(false);
+
+    // Define available document types
+    const DOCUMENT_TYPES = [
+        "Birth Verification",
+        "Relationship Certificate",
+        "Occupation Verification",
+        "Surname Verification",
+        "Annual Income Verification",
+        "Bank Statement",
+        "Tax Clearance",
+        "DOB Verification (Married)",
+        "Relationship Certificate (Married)",
+        "Japanese Language Certificate",
+        "Character Certificate",
+        "Application Form",
+        "Financial Statement",
+        "Essay / SOP",
+        "Recommendation Letter",
+        "Other"
+    ];
     const [docForm, setDocForm] = useState({ type: '', universityId: '', file: null, notes: '' });
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
     // New permission checks
     const isOwner = user?._id === studentId;
     const canEdit = isOwner || ['consultancy_admin', 'consultancy_staff', 'counselor'].includes(user?.role);
-    const canManageDocs = ['consultancy_admin', 'manager', 'counselor', 'consultancy_staff'].includes(user?.role) || ['document_officer', 'receptionist'].includes(user?.subRole);
+    const canManageDocs = ['consultancy_admin', 'manager', 'counselor', 'consultancy_staff'].includes(user?.role) || ['document_officer'].includes(user?.subRole);
+    const canVerifyDocs = ['consultancy_admin'].includes(user?.role) || ['manager', 'document_officer'].includes(user?.subRole);
+    const isConsultancyStaff = ['receptionist', 'consultancy_staff'].includes(user?.role) || ['receptionist'].includes(user?.subRole);
+
+    // Check for editDocId in location state (from UniversityStudentList)
+    useEffect(() => {
+        if (location.state?.editDocId && currentProfile?.applicationDocuments) {
+            const docToEdit = currentProfile.applicationDocuments.find(d => d._id === location.state.editDocId);
+            if (docToEdit) {
+                setDocForm({
+                    _id: docToEdit._id,
+                    type: docToEdit.type,
+                    universityId: docToEdit.universityId?._id || docToEdit.universityId || '',
+                    file: null, // File input can't be pre-filled
+                    notes: docToEdit.notes || ''
+                });
+                setShowDocModal(true);
+                // Clear state so it doesn't reopen on refresh/tab switch or after update
+                navigate(location.pathname, { replace: true, state: {} });
+            }
+        }
+    }, [location.state, currentProfile, navigate, location.pathname]);
 
     // --- 1. INITIALIZATION ---
+    // --- 1. INITIALIZATION ---
     useEffect(() => {
+        dispatch(getUniversities());
         if (isAdminView) {
             dispatch(getStudentById(studentId));
         } else {
@@ -178,7 +224,8 @@ export default function StudentProfile() {
                     ...currentProfile.documents,
                     other: currentProfile.documents?.other || []
                 },
-                visaDetails: currentProfile.visaDetails || {}
+                visaDetails: currentProfile.visaDetails || {},
+                assignedUniversity: currentProfile.assignedUniversity?._id || currentProfile.assignedUniversity || ''
             }));
         }
     }, [currentProfile]);
@@ -218,8 +265,9 @@ export default function StudentProfile() {
     };
 
     const updateAcademicRow = (index, field, value) => {
-        const newList = [...formData.academics];
-        newList[index][field] = value;
+        const newList = formData.academics.map((item, i) =>
+            i === index ? { ...item, [field]: value } : item
+        );
         setFormData(prev => ({ ...prev, academics: newList }));
     };
 
@@ -413,19 +461,17 @@ export default function StudentProfile() {
                                     </div>
 
                                     {/* Save Button */}
-                                    {!isStudent && (
-                                        <Button
-                                            onClick={handleSave}
-                                            disabled={isLoading}
-                                            isLoading={isLoading}
-                                            size="sm"
-                                            className="text-xs sm:text-sm"
-                                        >
-                                            <Save size={14} className="mr-1 sm:mr-2 sm:w-[18px] sm:h-[18px]" />
-                                            <span className="hidden sm:inline">Save</span>
-                                            <span className="sm:hidden">Save</span>
-                                        </Button>
-                                    )}
+                                    <Button
+                                        onClick={handleSave}
+                                        disabled={isLoading}
+                                        isLoading={isLoading}
+                                        size="sm"
+                                        className="text-xs sm:text-sm"
+                                    >
+                                        <Save size={14} className="mr-1 sm:mr-2 sm:w-[18px] sm:h-[18px]" />
+                                        <span className="hidden sm:inline">Save</span>
+                                        <span className="sm:hidden">Save</span>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -468,12 +514,12 @@ export default function StudentProfile() {
                         {/* Small spacer for left indicator on mobile */}
                         <div className="shrink-0 w-2 sm:hidden"></div>
 
-                        {!isStudent && [
+                        {[
                             { id: 'personal', label: 'Personal', icon: <User size={14} /> },
                             { id: 'address', label: 'Address', icon: <MapPin size={14} /> },
                             { id: 'family', label: 'Family', icon: <User size={14} /> },
                             { id: 'academics', label: 'Academics', icon: <Award size={14} /> },
-                            { id: 'financial', label: 'Financial', icon: <DollarSign size={14} /> },
+                            // { id: 'financial', label: 'Financial', icon: <DollarSign size={14} /> },
                         ].map(tab => (
                             <TabButton key={tab.id} {...tab} active={activeTab} set={setActiveTab} />
                         ))}
@@ -486,14 +532,12 @@ export default function StudentProfile() {
 
                         <TabButton id="exams" label="Exams" icon={<BookOpen size={14} />} active={activeTab} set={setActiveTab} color="purple" />
 
-                        {!isStudent && (
-                            <>
-                                <div className="w-px h-6 bg-secondary-300 self-center mx-1 sm:mx-2 hidden sm:block opacity-30 shrink-0"></div>
-                                <TabButton id="review" label="Review" icon={<ClipboardCheck size={14} />} active={activeTab} set={setActiveTab} />
-                            </>
-                        )}
+                        <>
+                            <div className="w-px h-6 bg-secondary-300 self-center mx-1 sm:mx-2 hidden sm:block opacity-30 shrink-0"></div>
+                            <TabButton id="review" label="Review" icon={<ClipboardCheck size={14} />} active={activeTab} set={setActiveTab} />
+                        </>
 
-                        {canViewApplications && !isStudent && (
+                        {canViewApplications && (
                             <TabButton id="applications" label="Apps" icon={<Building2 size={14} />} active={activeTab} set={setActiveTab} />
                         )}
 
@@ -532,6 +576,20 @@ export default function StudentProfile() {
                                     <div className="md:col-span-2">
                                         <Select label="Gender" value={formData.personalInfo.gender} onChange={(e) => updateField('personalInfo', 'gender', e.target.value)}>
                                             <option>Male</option><option>Female</option><option>Other</option>
+                                        </Select>
+                                    </div>
+
+                                    {/* Assigned University */}
+                                    <div className="md:col-span-4">
+                                        <Select
+                                            label="Assigned University"
+                                            value={formData.assignedUniversity || ''}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, assignedUniversity: e.target.value }))}
+                                        >
+                                            <option value="">Select University...</option>
+                                            {universities?.map(uni => (
+                                                <option key={uni._id} value={uni._id}>{uni.name}</option>
+                                            ))}
                                         </Select>
                                     </div>
 
@@ -722,7 +780,19 @@ export default function StudentProfile() {
                             <div className="flex justify-between items-center">
                                 <SectionHeader title="Application Documents" subtitle="Manage official documents for verification." icon={<FileText className="text-primary-600" />} />
                                 {canManageDocs && (
-                                    <Button size="sm" onClick={() => setShowDocModal(true)}>
+                                    <Button size="sm" onClick={() => {
+                                        // Fallback: If no assignedUniversity (Personal Tab), check if there is an application (Apps Tab)
+                                        const appUniId = currentProfile?.applications?.[0]?.universityId;
+                                        const defaultUni = formData.assignedUniversity || appUniId || '';
+
+                                        setDocForm({
+                                            type: '',
+                                            universityId: defaultUni,
+                                            file: null,
+                                            notes: ''
+                                        });
+                                        setShowDocModal(true);
+                                    }}>
                                         <Upload size={16} className="mr-2" /> Add Document
                                     </Button>
                                 )}
@@ -735,9 +805,10 @@ export default function StudentProfile() {
                                             <th className="px-6 py-4">Type</th>
                                             <th className="px-6 py-4">University</th>
                                             <th className="px-6 py-4">Status</th>
+                                            <th className="px-6 py-4">Comments</th>
                                             <th className="px-6 py-4">Links</th>
                                             <th className="px-6 py-4 text-right">Uploaded</th>
-                                            {canManageDocs && <th className="px-6 py-4 text-right">Actions</th>}
+                                            {(canManageDocs || isConsultancyStaff) && <th className="px-6 py-4 text-right">Actions</th>}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
@@ -755,6 +826,9 @@ export default function StudentProfile() {
                                                         {doc.status}
                                                     </span>
                                                 </td>
+                                                <td className="px-6 py-4 text-xs text-slate-600 max-w-[200px] truncate" title={doc.notes}>
+                                                    {doc.notes || '-'}
+                                                </td>
                                                 <td className="px-6 py-4 flex gap-2">
                                                     {doc.originalUrl && (
                                                         <a href={fixImageUrl(doc.originalUrl)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs flex items-center">
@@ -770,8 +844,9 @@ export default function StudentProfile() {
                                                 <td className="px-6 py-4 text-right text-slate-500 text-xs">
                                                     {new Date(doc.createdAt).toLocaleDateString()}
                                                 </td>
-                                                {canManageDocs && (
+                                                {(canManageDocs || isConsultancyStaff) && (
                                                     <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                                        {/* Update Button (Available to Admin & Staff) */}
                                                         <button
                                                             onClick={() => {
                                                                 setDocForm({
@@ -783,33 +858,61 @@ export default function StudentProfile() {
                                                                 });
                                                                 setShowDocModal(true);
                                                             }}
-                                                            className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2 py-1 rounded transition-colors"
+                                                            className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium p-1.5 rounded transition-colors"
+                                                            title="Edit / Update"
                                                         >
-                                                            Update
+                                                            <Edit2 size={14} />
                                                         </button>
-                                                        <select
-                                                            className="text-xs border rounded p-1 bg-white cursor-pointer hover:border-blue-500 transition-colors w-24"
-                                                            value=""
-                                                            onChange={async (e) => {
-                                                                const newStatus = e.target.value;
-                                                                if (!newStatus) return;
-                                                                if (!window.confirm(`Mark this document as ${newStatus}?`)) return;
 
-                                                                try {
-                                                                    await api.put(`/students/${currentProfile._id}/documents/${doc._id}/status`, { status: newStatus });
-                                                                    toast.success(`Document marked as ${newStatus}`);
-                                                                    dispatch(getStudentById(currentProfile._id));
-                                                                } catch (err) {
-                                                                    toast.error("Failed to update status");
-                                                                    console.error(err);
-                                                                }
-                                                            }}
-                                                        >
-                                                            <option value="">Status...</option>
-                                                            <option value="Verified">Verify</option>
-                                                            <option value="Rejected">Reject</option>
-                                                            <option value="Pending Verification">Reset</option>
-                                                        </select>
+                                                        {/* Staff Action: Upload Filled Version */}
+                                                        {isConsultancyStaff && !canManageDocs && (doc.status === 'Draft' || doc.status === 'Rejected' || doc.status === 'Pending Verification') && (
+                                                            <button
+                                                                onClick={() => {
+                                                                    // Open modal pre-filled for update, effectively treating it as uploading a filled version
+                                                                    setDocForm({
+                                                                        _id: doc._id,
+                                                                        type: doc.type,
+                                                                        universityId: doc.universityId,
+                                                                        file: null,
+                                                                        notes: doc.notes || ''
+                                                                    });
+                                                                    setShowDocModal(true);
+                                                                }}
+                                                                className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors flex items-center gap-1"
+                                                            >
+                                                                <Upload size={12} /> Upload Filled
+                                                            </button>
+                                                        )}
+
+                                                        {/* Admin Action: Verify / Reject */}
+                                                        {canVerifyDocs && (
+                                                            <select
+                                                                className={`text-xs border rounded p-1 cursor-pointer transition-colors w-24 ${doc.status === 'Pending Verification' ? 'border-orange-300 bg-orange-50' : 'bg-white'}`}
+                                                                value=""
+                                                                onChange={async (e) => {
+                                                                    const newStatus = e.target.value;
+                                                                    if (!newStatus) return;
+                                                                    const reason = prompt(`Optional: Add a comment for marking as ${newStatus}:`, doc.notes || "");
+
+                                                                    try {
+                                                                        await api.put(`/students/${currentProfile._id}/documents/${doc._id}/status`, {
+                                                                            status: newStatus,
+                                                                            notes: reason !== null ? reason : doc.notes
+                                                                        });
+                                                                        toast.success(`Document marked as ${newStatus}`);
+                                                                        dispatch(getStudentById(currentProfile._id));
+                                                                    } catch (err) {
+                                                                        toast.error("Failed to update status");
+                                                                        console.error(err);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <option value="">Status...</option>
+                                                                <option value="Verified">Verify</option>
+                                                                <option value="Rejected">Reject</option>
+                                                                <option value="Pending Verification">Reset</option>
+                                                            </select>
+                                                        )}
                                                     </td>
                                                 )}
                                             </tr>
@@ -821,128 +924,14 @@ export default function StudentProfile() {
                                 </table>
                             </div>
 
-                            {/* Document Upload Modal */}
-                            <Modal isOpen={showDocModal} onClose={() => setShowDocModal(false)} title={docForm._id ? "Update Document" : "Upload Application Document"}>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Document Type</label>
-                                        <select
-                                            className="w-full border rounded-lg p-2"
-                                            value={docForm.type}
-                                            onChange={(e) => setDocForm({ ...docForm, type: e.target.value })}
-                                        >
-                                            <option value="">Select Type</option>
-                                            <option value="Birth Verification">Birth Verification</option>
-                                            <option value="Relationship Certificate">Relationship Certificate</option>
-                                            <option value="Occupation Verification">Occupation Verification</option>
-                                            <option value="Surname Verification">Surname Verification</option>
-                                            <option value="Annual Income Verification">Annual Income Verification</option>
-                                            <option value="Bank Statement">Bank Statement</option>
-                                            <option value="Tax Clearance">Tax Clearance</option>
-                                            <option value="DOB Verification (Married)">DOB Verification (Married)</option>
-                                            <option value="Relationship Certificate (Married)">Relationship Certificate (Married)</option>
-                                            <option value="Japanese Language Certificate">Japanese Language Certificate</option>
-                                            <option value="Character Certificate">Character Certificate</option>
-                                            <option value="Application Form">Application Form</option>
-                                            <option value="Financial Statement">Financial Statement</option>
-                                            <option value="Essay / SOP">Essay / SOP</option>
-                                            <option value="Recommendation Letter">Recommendation Letter</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
-                                    {docForm.type === 'Other' && (
-                                        <Input
-                                            label="Specify Document Type"
-                                            placeholder="e.g. Health Certificate"
-                                            value={docForm.customType || ''}
-                                            onChange={(e) => setDocForm({ ...docForm, customType: e.target.value })}
-                                        />
-                                    )}
-                                    <div className="mt-2">
-                                        <label className="block text-sm font-medium mb-1">University (Optional)</label>
-                                        <select
-                                            className="w-full border rounded-lg p-2"
-                                            value={docForm.universityId || ''}
-                                            onChange={(e) => setDocForm({ ...docForm, universityId: e.target.value })}
-                                        >
-                                            <option value="">-- No University --</option>
-                                            {universities.map(uni => (
-                                                <option key={uni._id} value={uni._id}>
-                                                    {uni.name} {uni.country ? `(${uni.country})` : ''}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <Input
-                                        label="File (Draft/Generated)"
-                                        type="file"
-                                        onChange={(e) => setDocForm({ ...docForm, file: e.target.files[0] })}
-                                    />
-                                    <div className="flex justify-end gap-2 pt-4">
-                                        <Button variant="outline" onClick={() => setShowDocModal(false)}>Cancel</Button>
-                                        <Button
-                                            onClick={async () => {
-                                                // For updates, file is optional; for creates, it's required
-                                                if (!docForm._id && !docForm.file) return toast.error("File required for new document");
-                                                if (!docForm.type) return toast.error("Document type required");
-                                                if (docForm.type === 'Other' && !docForm.customType) return toast.error("Please specify the document type");
+                            {/* Document Upload Modal MOVED TO BOTTOM */}
+                            {/* <Modal isOpen={showDocModal} onClose={() => setShowDocModal(false)} ... > ... </Modal> */}
 
-                                                const finalType = docForm.type === 'Other' ? docForm.customType : docForm.type;
 
-                                                setIsUploadingDoc(true);
-                                                try {
-                                                    let uploadRes = null;
 
-                                                    // 1. Upload File (if provided)
-                                                    if (docForm.file) {
-                                                        const formDataUpload = new FormData();
-                                                        formDataUpload.append('file', docForm.file);
-                                                        uploadRes = await api.post('/upload', formDataUpload, {
-                                                            headers: { 'Content-Type': 'multipart/form-data' }
-                                                        });
-                                                    }
 
-                                                    // 2. Create or Update Doc Record
-                                                    if (docForm._id) {
-                                                        // UPDATE MODE
-                                                        const updatePayload = {
-                                                            universityId: docForm.universityId || null,
-                                                            notes: docForm.notes
-                                                        };
-                                                        if (uploadRes) {
-                                                            updatePayload.originalUrl = uploadRes.data.url;
-                                                        }
-                                                        await api.put(`/students/${currentProfile._id}/documents/${docForm._id}`, updatePayload);
-                                                        toast.success("Document updated!");
-                                                    } else {
-                                                        // CREATE MODE
-                                                        await api.post(`/students/${currentProfile._id}/documents`, {
-                                                            type: finalType,
-                                                            originalUrl: uploadRes.data.url,
-                                                            universityId: docForm.universityId || null,
-                                                            notes: docForm.notes
-                                                        });
-                                                        toast.success("Document added!");
-                                                    }
 
-                                                    setShowDocModal(false);
-                                                    setDocForm({ type: '', universityId: '', file: null, notes: '' });
-                                                    dispatch(getStudentById(currentProfile._id)); // Refresh Profile
-                                                } catch (err) {
-                                                    toast.error("Failed to upload");
-                                                    console.error(err);
-                                                } finally {
-                                                    setIsUploadingDoc(false);
-                                                }
-                                            }}
-                                            disabled={isUploadingDoc}
-                                        >
-                                            {isUploadingDoc ? 'Uploading...' : 'Save Document'}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </Modal>
-                        </div>
+                        </div >
                     )
                     }
 
@@ -1170,7 +1159,8 @@ export default function StudentProfile() {
             </div >
 
             {/* --- MODALS --- */}
-            < SurnameVerificationModal isOpen={showSurnameModal} onClose={() => setShowSurnameModal(false)} student={currentProfile} />
+            < SurnameVerificationModal isOpen={showSurnameModal} onClose={() => setShowSurnameModal(false)
+            } student={currentProfile} />
             <DateOfBirthVerificationModal isOpen={showDobModal} onClose={() => setShowDobModal(false)} student={currentProfile} />
             <RelationshipVerificationModal isOpen={showRelationModal} onClose={() => setShowRelationModal(false)} student={currentProfile} />
             <OccupationVerificationModal isOpen={showOccupationModal} onClose={() => setShowOccupationModal(false)} student={currentProfile} />
@@ -1181,6 +1171,132 @@ export default function StudentProfile() {
             <RelationshipVerificationMarriedModal isOpen={showRelationMarriedModal} onClose={() => setShowRelationMarriedModal(false)} student={currentProfile} />
             <LanguageCertificateModal isOpen={showLanguageModal} onClose={() => setShowLanguageModal(false)} student={currentProfile} />
             <CharacterCertificateModal isOpen={showCharacterModal} onClose={() => setShowCharacterModal(false)} student={currentProfile} />
+
+            {/* DOCUMENT UPLOAD MODAL */}
+            <Modal isOpen={showDocModal} onClose={() => setShowDocModal(false)} title={docForm._id ? "Update Document" : "Upload Application Document"}>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Document Type</label>
+                        <select
+                            className="w-full border rounded-lg p-2"
+                            value={docForm.type}
+                            onChange={(e) => setDocForm({ ...docForm, type: e.target.value })}
+                        >
+                            <option value="">Select Type</option>
+                            {DOCUMENT_TYPES.filter(type => {
+                                // Always show if it's the current value (for editing) or "Other"
+                                if (type === docForm.type || type === 'Other') return true;
+
+                                // Check if this type already exists in the uploaded documents
+                                const exists = formData.applicationDocuments?.some(doc => doc.type === type);
+                                return !exists;
+                            }).map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </div>
+                    {docForm.type === 'Other' && (
+                        <Input
+                            label="Specify Document Type"
+                            placeholder="e.g. Health Certificate"
+                            value={docForm.customType || ''}
+                            onChange={(e) => setDocForm({ ...docForm, customType: e.target.value })}
+                        />
+                    )}
+                    <div className="mt-2">
+                        <label className="block text-sm font-medium mb-1">University (Optional)</label>
+                        <select
+                            className="w-full border rounded-lg p-2"
+                            value={docForm.universityId || ''}
+                            onChange={(e) => setDocForm({ ...docForm, universityId: e.target.value })}
+                        >
+                            <option value="">-- No University --</option>
+                            {universities.map(uni => (
+                                <option key={uni._id} value={uni._id}>
+                                    {uni.name} {uni.country ? `(${uni.country})` : ''}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <Input
+                        label="File (Draft/Generated)"
+                        type="file"
+                        onChange={(e) => setDocForm({ ...docForm, file: e.target.files[0] })}
+                    />
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Comments / Instructions</label>
+                        <textarea
+                            className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                            rows="3"
+                            placeholder="Add instructions, notes, or rejection reasons..."
+                            value={docForm.notes || ''}
+                            onChange={(e) => setDocForm({ ...docForm, notes: e.target.value })}
+                        />
+                    </div>
+                    <div className="flex justify-end gap-2 pt-4">
+                        <Button variant="outline" onClick={() => setShowDocModal(false)}>Cancel</Button>
+                        <Button
+                            onClick={async () => {
+                                // For updates, file is optional; for creates, it's required
+                                if (!docForm._id && !docForm.file) return toast.error("File required for new document");
+                                if (!docForm.type) return toast.error("Document type required");
+                                if (docForm.type === 'Other' && !docForm.customType) return toast.error("Please specify the document type");
+
+                                const finalType = docForm.type === 'Other' ? docForm.customType : docForm.type;
+
+                                setIsUploadingDoc(true);
+                                try {
+                                    let uploadRes = null;
+
+                                    // 1. Upload File (if provided)
+                                    if (docForm.file) {
+                                        const formDataUpload = new FormData();
+                                        formDataUpload.append('file', docForm.file);
+                                        uploadRes = await api.post('/upload', formDataUpload, {
+                                            headers: { 'Content-Type': 'multipart/form-data' }
+                                        });
+                                    }
+
+                                    // 2. Create or Update Doc Record
+                                    if (docForm._id) {
+                                        // UPDATE MODE
+                                        const updatePayload = {
+                                            universityId: docForm.universityId || null,
+                                            notes: docForm.notes
+                                        };
+                                        if (uploadRes) {
+                                            updatePayload.originalUrl = uploadRes.data.url;
+                                        }
+                                        await api.put(`/students/${currentProfile._id}/documents/${docForm._id}`, updatePayload);
+                                        toast.success("Document updated!");
+                                    } else {
+                                        // CREATE MODE
+                                        await api.post(`/students/${currentProfile._id}/documents`, {
+                                            type: finalType,
+                                            originalUrl: uploadRes.data.url,
+                                            universityId: docForm.universityId || null,
+                                            notes: docForm.notes
+                                        });
+                                        toast.success("Document added!");
+                                    }
+
+                                    setShowDocModal(false);
+                                    setDocForm({ type: '', universityId: '', file: null, notes: '' });
+                                    dispatch(getStudentById(currentProfile._id)); // Refresh Profile
+                                } catch (err) {
+                                    toast.error("Failed to upload");
+                                    console.error(err);
+                                } finally {
+                                    setIsUploadingDoc(false);
+                                }
+                            }}
+                            disabled={isUploadingDoc}
+                        >
+                            {isUploadingDoc ? 'Uploading...' : 'Save Document'}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
 
         </div >
     );

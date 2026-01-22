@@ -191,7 +191,7 @@ app.set('io', io);
 server.listen(PORT, () => {
     console.log(`
 ============================================
-  KDR Consultancy API Server
+  UMI Abroad Study API Server
   Environment: ${process.env.NODE_ENV}
   Port: ${PORT}
   Client URL: ${CLIENT_URL}

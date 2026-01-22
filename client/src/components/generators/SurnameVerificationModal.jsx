@@ -1,4 +1,4 @@
-import { Download, FileText, Printer, UserPen, X, Plus, Trash2 } from 'lucide-react';
+﻿import { Download, FileText, Printer, UserPen, X, Plus, Trash2, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, RemoveFormatting } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getFormattedDate, getOrdinalSuffix, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
 
@@ -82,145 +82,293 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
     window.print();
   };
 
-  // 2. Word Document Generator Logic
+  // Word Document Generator - Matches PDF exactly
   const generateWordDoc = () => {
     const content = `
-    <html xmlns:o='urn:schemas-microsoft-com:office:office'
-          xmlns:w='urn:schemas-microsoft-com:office:word'
-          xmlns='http://www.w3.org/TR/REC-html40'>
-    <head>
-    <meta charset="utf-8">
-    <style>
-      @page {
-          margin: 0.5in;
-      }
-      body {
-        font-family: 'Times New Roman', serif;
-        font-size: 11pt;
-        line-height: 1.4;
-        text-align: justify;
-      }
-      
-      /* LAYOUT SPACERS */
-      .header-space { height: 15pt; } 
-      .footer-space { height: 15pt; }
+     <!DOCTYPE html>
+     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+     <head>
+         <meta charset="utf-8">
+         <title>Surname Verification Certificate</title>
+         <meta name=ProgId content=Word.Document>
+         <meta name=Generator content="Microsoft Word 15">
+         <meta name=Originator content="Microsoft Word 15">
+         <!--[if gte mso 9]>
+         <xml>
+             <w:WordDocument>
+                 <w:View>Print</w:View>
+                 <w:Zoom>100</w:Zoom>
+                 <w:DoNotOptimizeForBrowser/>
+             </w:WordDocument>
+         </xml>
+         <![endif]-->
+         <style>
+             @page WordSection1
+             {
+                 size: 210.0mm 297.0mm;
+                 margin: 0.4in 0.5in 0.4in 0.5in;
+                 mso-header-margin: .2in;
+                 mso-footer-margin: .2in;
+                 mso-footer: f1;
+                 mso-paper-source: 0;
+             }
+             div.WordSection1 { page: WordSection1; }
+             p.MsoFooter, li.MsoFooter, div.MsoFooter
+             {mso-style-priority:99;
+             margin:0in;
+             mso-pagination:widow-orphan;
+             tab-stops:center 3.0in right 6.0in;
+             font-size:9.0pt;
+             font-family:"Times New Roman",serif;}
+             
+             body {
+                 margin: 0;
+                 padding: 0;
+                 font-family: 'Times New Roman', serif;
+                 font-size: 12pt;
+                 line-height: 1.15;
+                 -webkit-print-color-adjust: exact !important;
+                 print-color-adjust: exact !important;
+             }
+             
+             /* Header Styles - Match PDF */
+             .header-container {
+                 width: 100%;
+                 margin-bottom: 5pt;
+             }
+             
+             .municipality-title {
+                 font-size: 24pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 margin-bottom: 3pt;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .ward-office {
+                 font-size: 18pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 margin-bottom: 3pt;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .address-line {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .ref-date-row {
+                 display: flex;
+                 justify-content: space-between;
+                 align-items: flex-end;
+                 margin-top: 8pt;
+                 margin-bottom: 4pt;
+                 font-weight: bold;
+             }
+             
+             .red-line {
+                 border-bottom: 1.5pt solid #DC2626;
+                 margin: 4pt -0.75in 10pt -0.75in;
+             }
+             
+             /* Main Content */
+             .main-title {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 text-align: center;
+                 text-decoration: underline;
+                 margin: 10pt 0 4pt 0;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .sub-title {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 text-align: center;
+                 text-decoration: underline;
+                 margin-bottom: 12pt;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .content-text {
+                 font-size: 12pt;
+                 text-align: justify;
+                 line-height: 1.5;
+                 margin-bottom: 12pt;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             /* Signature */
+             .signature-block {
+                 margin-top: 30pt;
+                 text-align: right;
+                 font-size: 12pt;
+                 line-height: 1.15;
+             }
+             
+             
+             /* Utility */
+             .text-right {
+                 text-align: right;
+             }
+             
+             .text-center {
+                 text-align: center;
+             }
+             
+             .text-left {
+                 text-align: left;
+             }
+             
+             .text-red {
+                 color: #DC2626;
+             }
+             
+             .text-black {
+                 color: black;
+             }
+             
+             .font-bold {
+                 font-weight: bold;
+             }
+         </style>
+     </head>
+     <body style="margin: 0; padding: 0;">
+     
+     ${formData.includeHeader ? `
+     <!-- HEADER SECTION -->
+     <div class="header-container">
+         <table style="width: 100%; margin-bottom: 0;">
+             <tr>
+                 <td style="width: 20%; vertical-align: top; padding-left: 0;">
+                     <img src="${window.location.origin}/nepal_coat_of_arms.png" 
+                          width="${formData.logoSize}" 
+                          height="${(formData.logoSize * 1.3) / 1.42}"
+                          style="width: ${formData.logoSize}px; height: auto; display: block;" />
+                 </td>
+                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                     <div class="municipality-title">${formData.headerTitle}</div>
+                     <div class="ward-office">${formData.headerSubtitle}</div>
+                     <div class="address-line">${formData.headerAddress1}</div>
+                     <div class="address-line">${formData.headerAddress2}</div>
+                 </td>
+                 <td style="width: 20%;"></td>
+             </tr>
+         </table>
+         
+         <!-- Reference and Date -->
+         <div class="ref-date-row">
+             <div style="text-align: left;">
+                 <span class="text-red">Ref. No.:</span> 
+                 <span class="text-black">${formData.refNo}</span><br>
+                 <span class="text-red">Dis. No.:</span> 
+                 <span class="text-black">${formData.disNo}</span>
+             </div>
+             <div style="text-align: right;">
+                 <span class="text-red">Date:</span> 
+                 <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
+             </div>
+         </div>
+         
+         <!-- Red Line -->
+         <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; margin-bottom: 12pt;">&nbsp;</p>
+     </div>
+     ` : ''}
+     
+     <!-- MAIN CONTENT -->
+     <div class="main-title">Surname Verification Certificate</div>
+     <div class="sub-title">To Whom It May Concern</div>
+     
+     ${formData.fatherSurname.toLowerCase() !== formData.motherSurname.toLowerCase() ? `
+     <p class="content-text">
+         This is to certify that <strong>${formData.applicantName}</strong> ${formData.relation} 
+         <strong>Mr. ${formData.fatherName}</strong> and 
+         <strong>Mrs. ${formData.motherName}</strong>. The father uses the surname 
+         <strong>"${formData.fatherSurname}"</strong> and the mother uses the surname 
+         <strong>"${formData.motherSurname}"</strong>, while the applicant uses 
+         <strong>"${formData.applicantSurname}"</strong> as surname.
+         Despite these variations, <strong>"${formData.fatherSurname}"</strong>, <strong>"${formData.motherSurname}"</strong> &amp; <strong>"${formData.applicantSurname}"</strong>
+         belong to the same family and these differences are due to personal 
+         or cultural naming preferences. This should not be considered a discrepancy in official relationships.
+     </p>
+     ` : `
+     <p class="content-text">
+         This is to certify that <strong>${formData.applicantName}</strong> ${formData.relation} 
+         <strong>Mr. ${formData.fatherName}</strong> and 
+         <strong>Mrs. ${formData.motherName}</strong>, despite the use of 
+         <strong>"${formData.fatherSurname}"</strong> as the parents' surname.
+         <strong>"${formData.applicantSurname}"</strong> is the Applicant's surname.
+         <strong>"${formData.fatherSurname}"</strong> &amp; <strong>"${formData.applicantSurname}"</strong>
+         belong to the same family name and both are the same surname. This difference is due to personal 
+         or cultural naming preferences and should not be considered a discrepancy in official relationships.
+     </p>
+     `}
+     
+     <!-- SIGNATURE -->
+     <div class="signature-block">
+         <div style="margin-bottom: 4pt;">......................................</div>
+         <div class="font-bold">${formData.signatoryName}</div>
+         <div class="font-bold">${formData.signatoryDesignation}</div>
+     </div>
+     
+     ${formData.includeFooter ? `
+     <div style="mso-element:footer" id="f1">
+         <div class="MsoFooter">
+             <!-- Red Line (matching header style) -->
+             <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                 <tr>
+                     <td width="50%" align="left">
+                         <p style="margin: 0; line-height: 1.0;">
+                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
+                         </p>
+                     </td>
+                     <td width="50%" align="right">
+                         <p style="margin: 0; line-height: 1.0; text-align: right;">
+                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                         </p>
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+     ` : ''}
+     
+     <div style="mso-element:section-pr" id="sec1">
+         <p class="MsoNormal">&nbsp;</p>
+     </div>
+     </body>
+     </html>
+     `;
 
-      .title {
-        text-align: center;
-        font-size: 14pt;
-        font-weight: bold;
-        text-decoration: underline;
-        margin-top: 10pt;
-      }
+    // Create and download the Word document
+    const blob = new Blob(['\ufeff', content], {
+      type: 'application/msword;charset=utf-8'
+    });
 
-      .subtitle {
-        text-align: center;
-        font-size: 12pt;
-        font-weight: bold;
-        text-decoration: underline;
-        margin-top: 5pt;
-        margin-bottom: 20pt;
-      }
-
-      p {
-        margin-bottom: 8pt;
-      }
-
-      .signature-block {
-        margin-top: 40pt;
-        text-align: right;
-        font-size: 11pt;
-      }
-    </style>
-    </head>
-    
-    <body>
-    
-      ${formData.includeHeader ? `
-      <!-- Header with Logo and Municipality Details - Red Theme -->
-      <table style="width: 100%; margin-bottom: 3pt;">
-        <tr>
-          <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
-             <img src="${window.location.origin}/nepal_coat_of_arms.png" width="90" height="auto" />
-          </td>
-          <td style="width: 60%; text-align: center; vertical-align: middle;">
-            <div style="font-size: 20pt; font-weight: bold; color: #dc2626;">${formData.headerTitle}</div>
-            <div style="font-size: 16pt; font-weight: bold; color: #dc2626;">${formData.headerSubtitle}</div>
-            <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress1}</div>
-            <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress2}</div>
-          </td>
-          <td style="width: 20%;"></td>
-        </tr>
-      </table>
-      ` : `<div class="header-space"></div>`}
-
-      <table style="width: 100%; color: #dc2626; font-weight: bold; font-size: 10pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #dc2626; padding-bottom: 3pt;">
-        <tr>
-          <td style="text-align: left;">
-            <div><span style="color: #dc2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
-            <div><span style="color: #dc2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
-          </td>
-          <td style="text-align: right; vertical-align: bottom;">
-            <span style="color: #dc2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.date)}</span>
-          </td>
-        </tr>
-      </table>
-
-      <!-- CERTIFICATE TITLES -->
-      <div class="title" style="text-transform: none;">Surname Verification Certificate</div>
-      <div class="subtitle">To Whom It May Concern</div>
-
-      <!-- BODY -->
-      ${formData.fatherSurname.toLowerCase() !== formData.motherSurname.toLowerCase() ? `
-      <p>
-        This is to certify that <strong>${formData.applicantName}</strong> ${formData.relation} 
-        <strong>Mr. ${formData.fatherName}</strong> and 
-        <strong>Mrs. ${formData.motherName}</strong>. The father uses the surname 
-        <strong>"${formData.fatherSurname}"</strong> and the mother uses the surname 
-        <strong>"${formData.motherSurname}"</strong>, while the applicant uses 
-        <strong>"${formData.applicantSurname}"</strong> as surname.
-        Despite these variations, <strong>"${formData.fatherSurname}"</strong>, <strong>"${formData.motherSurname}"</strong> &amp; <strong>"${formData.applicantSurname}"</strong>
-        belong to the same family and these differences are due to personal 
-        or cultural naming preferences. This should not be considered a discrepancy in official relationships.
-      </p>
-      ` : `
-      <p>
-        This is to certify that <strong>${formData.applicantName}</strong> ${formData.relation} 
-        <strong>Mr. ${formData.fatherName}</strong> and 
-        <strong>Mrs. ${formData.motherName}</strong>, despite the use of 
-        <strong>"${formData.fatherSurname}"</strong> as the parents' surname.
-        <strong>"${formData.applicantSurname}"</strong> is the Applicant's surname.
-        <strong>"${formData.fatherSurname}"</strong> &amp; <strong>"${formData.applicantSurname}"</strong>
-        belong to the same family name and both are the same surname. This difference is due to personal 
-        or cultural naming preferences and should not be considered a discrepancy in official relationships.
-      </p>
-      `}
-
-      <!-- SIGNATURE -->
-      <div class="signature-block">
-        <div>......................................</div>
-        <strong>${formData.signatoryName}</strong><br>
-        <strong>${formData.signatoryDesignation}</strong>
-      </div>
-
-      ${formData.includeFooter ? `
-      <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 5pt 0; border-top: 2pt solid #dc2626; background: white;">
-        <span style="font-size: 9pt; color: #dc2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
-      </div>
-      ` : `<div class="footer-space"></div>`}
-
-    </body>
-    </html>
-    `;
-
-    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = `Surname_Verification_${formData.applicantName.replace(/\s+/g, '_')}.doc`;
+    link.style.display = 'none';
+
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+
+    // Cleanup
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 100);
   };
 
   return (
@@ -313,28 +461,28 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                 {/* Bold, Italic, Underline */}
-                <button onClick={() => document.execCommand('bold')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 font-bold text-sm border border-gray-200" title="Bold">B</button>
-                <button onClick={() => document.execCommand('italic')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 italic text-sm border border-gray-200" title="Italic">I</button>
-                <button onClick={() => document.execCommand('underline')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 underline text-sm border border-gray-200" title="Underline">U</button>
+                <button onClick={() => document.execCommand('bold')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Bold"><Bold size={14} /></button>
+                <button onClick={() => document.execCommand('italic')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Italic"><Italic size={14} /></button>
+                <button onClick={() => document.execCommand('underline')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Underline"><Underline size={14} /></button>
 
                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                 {/* Alignment */}
-                <button onClick={() => document.execCommand('justifyLeft')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Left">⬅</button>
-                <button onClick={() => document.execCommand('justifyCenter')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Center">⬌</button>
-                <button onClick={() => document.execCommand('justifyRight')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Right">➡</button>
-                <button onClick={() => document.execCommand('justifyFull')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Justify">☰</button>
+                <button onClick={() => document.execCommand('justifyLeft')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Left"><AlignLeft size={14} /></button>
+                <button onClick={() => document.execCommand('justifyCenter')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Center"><AlignCenter size={14} /></button>
+                <button onClick={() => document.execCommand('justifyRight')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Right"><AlignRight size={14} /></button>
+                <button onClick={() => document.execCommand('justifyFull')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Justify"><AlignJustify size={14} /></button>
 
                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                 {/* Undo/Redo */}
-                <button onClick={() => document.execCommand('undo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Undo">↩</button>
-                <button onClick={() => document.execCommand('redo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Redo">↪</button>
+                <button onClick={() => document.execCommand('undo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Undo"><Undo size={14} /></button>
+                <button onClick={() => document.execCommand('redo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Redo"><Redo size={14} /></button>
 
                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                 {/* Clear Formatting */}
-                <button onClick={() => document.execCommand('removeFormat')} className="px-2 h-7 flex items-center justify-center rounded hover:bg-red-50 text-xs border border-gray-200 text-red-600" title="Clear Formatting">Clear</button>
+                <button onClick={() => document.execCommand('removeFormat')} className="px-2 h-7 flex items-center justify-center rounded hover:bg-red-50 text-xs border border-gray-200 text-red-600" title="Clear Formatting"><RemoveFormatting size={14} /></button>
               </div>
 
               {/* Preview Container */}
@@ -344,7 +492,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                   contentEditable={true}
                   suppressContentEditableWarning={true}
                   spellCheck={false}
-                  className="bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
+                  className="bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
                   style={{ fontFamily: 'Times New Roman, serif' }}
                 >
 

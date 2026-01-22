@@ -1,16 +1,22 @@
-import { Building2, Download, MapPin, Plus, Search } from 'lucide-react';
+import { Building2, Download, MapPin, Plus, Search, User, FileCheck, ExternalLink } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addUniversity, getUniversities, importUniversity, reset, searchMaster } from '../../features/universities/universitySlice';
+import { getStudents } from '../../features/students/studentSlice';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import { Card } from '../../components/ui/Card';
+import Modal from '../../components/ui/Modal';
+import { fixImageUrl } from '../../utils/imageUtils';
 
 export default function UniversityManager() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { universities, masterSearchResults, isLoading, isSuccess, message } = useSelector((state) => state.universities);
+    const { students } = useSelector((state) => state.students);
 
     const [showForm, setShowForm] = useState(false);
     const [activeTab, setActiveTab] = useState('manual');
@@ -22,6 +28,7 @@ export default function UniversityManager() {
 
     useEffect(() => {
         dispatch(getUniversities());
+        dispatch(getStudents()); // Fetch students to cross-reference
     }, [dispatch]);
 
     useEffect(() => {
@@ -124,12 +131,16 @@ export default function UniversityManager() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {universities.map(uni => (
-                    <Card key={uni._id} className="p-5 border-secondary-200 shadow-sm hover:shadow-md transition">
+                    <Card
+                        key={uni._id}
+                        className="p-5 border-secondary-200 shadow-sm hover:shadow-md transition cursor-pointer hover:border-primary-300 group"
+                        onClick={() => navigate(`/admin/universities/${uni._id}`)}
+                    >
                         <div className="flex justify-between items-start mb-2">
-                            <div className="bg-primary-50 p-2 rounded-md text-primary-600"><Building2 size={20} /></div>
+                            <div className="bg-primary-50 p-2 rounded-md text-primary-600 group-hover:bg-primary-100 transition-colors"><Building2 size={20} /></div>
                             <span className="text-xs bg-secondary-100 px-2 py-1 rounded text-secondary-600">{uni.type}</span>
                         </div>
-                        <h3 className="font-bold text-secondary-900">{uni.name}</h3>
+                        <h3 className="font-bold text-secondary-900 group-hover:text-primary-700 transition-colors">{uni.name}</h3>
                         <div className="flex items-center gap-1 text-sm text-secondary-500 mt-1">
                             <MapPin size={14} /> {uni.location}
                         </div>

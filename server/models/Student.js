@@ -13,6 +13,11 @@ const studentSchema = new mongoose.Schema({
         ref: 'Consultancy',
         required: true
     },
+    // The university this student is primarily applying to/assigned to
+    assignedUniversity: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'University'
+    },
 
     // --- 1. PERSONAL DETAILS ---
     personalInfo: {

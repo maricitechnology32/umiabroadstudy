@@ -19,6 +19,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        display: ['Outfit', 'sans-serif'],
         serif: ['Merriweather', 'serif'],
       },
       colors: {
@@ -58,7 +59,11 @@ export default {
           800: '#115e59',
           900: '#134e4a',
         },
-      }
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+        'glow-primary': '0 0 20px rgba(14, 165, 233, 0.3)',
+      },
     },
   },
   plugins: [],

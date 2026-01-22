@@ -138,17 +138,12 @@ export const BANK_TEMPLATES = {
             deposits: [
                 'CASH DEPOSIT',
                 'Cash Deposit by Self',
-                'Mobile Banking Credit',
-                'ConnectIPS Transfer',
-                'Salary Credit',
-                'Fund Transfer'
+                'Cash Deposit by Bimal Bhusal',
+                'Cash Deposit by Sita Pandey'
             ],
             withdrawals: [
                 'CHEQUE Withdrawal by Self',
-                'POS Purchase',
-                'Fonepay Payment',
-                'Bill Payment',
-                'IPS Transfer'
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -278,7 +273,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Sita Pandey'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -407,7 +403,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Soni Rai'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -535,7 +532,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Pabitra Pandey'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -665,7 +663,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Numa Lama'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -790,10 +789,13 @@ export const BANK_TEMPLATES = {
         // Transaction descriptions
         transactionDescriptions: {
             deposits: [
-                'Cash Deposit by Self'
+                'Cash Deposit by Self',
+                'Cash Deposit by Suman Thapa',
+                'Cash Deposit by Kalpana Rai'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deduction'
@@ -924,7 +926,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Rajan Thapa'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -1060,7 +1063,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Shila Thapa'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'
@@ -1204,10 +1208,7 @@ export const BANK_TEMPLATES = {
             ],
             withdrawals: [
                 'Cheque Withdrawal By Self',
-                'Cheque Withdrawal By Kundan',
-                'Cheque Withdrawal By Nabin',
-                'Cheque Withdrawal By Ramesh',
-                'Cheque Withdrawal By Susmita'
+                'Cash Withdrawal By Self'
             ],
             interest: 'Interest',
             tax: 'Tax Deduction'
@@ -1338,7 +1339,8 @@ export const BANK_TEMPLATES = {
                 'Cash Deposit by Soni Rai'
             ],
             withdrawals: [
-                'CHEQUE Withdrawal by Self'
+                'CHEQUE Withdrawal by Self',
+                'CASH Withdrawal'
             ],
             interest: 'Interest Posted on A/C',
             tax: 'Tax Deducted'

@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { ArrowRight, Facebook, Globe, Instagram, Linkedin, Loader2, Mail, MapPin, Phone, Send, Twitter } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchContactSettings } from '../../features/contactSettings/contactSettingsSlice';
-import { submitContactMessage, clearSuccess, clearError } from '../../features/contactMessage/contactMessageSlice';
-import { MapPin, Phone, Mail, Clock, Send, Loader2, CheckCircle, Globe, Facebook, Twitter, Linkedin, Instagram, ArrowRight } from 'lucide-react';
-import Button from '../../components/ui/Button';
 import { toast } from 'react-toastify';
-import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import BannerAd from '../../components/ads/BannerAd';
+import Navbar from '../../components/layout/Navbar';
+import Button from '../../components/ui/Button';
+import { clearError, clearSuccess, submitContactMessage } from '../../features/contactMessage/contactMessageSlice';
+import { fetchContactSettings } from '../../features/contactSettings/contactSettingsSlice';
 
 
 const Contact = () => {
@@ -60,7 +59,7 @@ const Contact = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+        <div className="min-h-screen bg-slate-50 m-20 flex flex-col font-sans text-slate-900">
             {/* Note: Navbar usually handles its own layout, but we wrap for consistency */}
             <Navbar />
 
@@ -169,7 +168,7 @@ const Contact = () => {
                                             onChange={handleChange}
                                             required
                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="John Doe"
+                                            placeholder="Ram Sharma"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -181,7 +180,7 @@ const Contact = () => {
                                             onChange={handleChange}
                                             required
                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="john@example.com"
+                                            placeholder="ram@example.com"
                                         />
                                     </div>
                                 </div>
@@ -195,7 +194,7 @@ const Contact = () => {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="+1 (555) 000-0000"
+                                            placeholder="+977-9706127862"
                                         />
                                     </div>
                                     <div className="space-y-2">

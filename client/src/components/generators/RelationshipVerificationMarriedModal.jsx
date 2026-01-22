@@ -1,4 +1,4 @@
-import { Download, FileText, Printer, Users, X, Plus, Trash2 } from 'lucide-react';
+import { Download, FileText, Printer, Users, X, Plus, Trash2, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, RemoveFormatting } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getFormattedDate, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
 
@@ -96,22 +96,22 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         window.print();
     };
 
-    // Word Document Generator - Compact Format with Logo
+    // Word Document Generator - Matches PDF exactly
     const generateWordDoc = () => {
         const tableRows = formData.relatives.map((rel, index) => `
-    <tr style="line-height: 1.2;">
-        <td style="border: 1pt solid black; padding: 3pt; text-align: center; width: 8%;">${index + 1}</td>
-        <td style="border: 1pt solid black; padding: 3pt; width: 50%;">${rel.name}</td>
-        <td style="border: 1pt solid black; padding: 3pt; width: 42%;">${rel.relation}</td>
+    <tr style="height: 20pt;">
+        <td style="border: 0.75pt solid black; padding: 1pt 2pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+        <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: left; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.name}</td>
+        <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
     </tr>
 `).join('');
 
         // Generate Photo Grid Cells
         const photoCells = formData.relatives.map(rel => `
         <td style="text-align: center; vertical-align: top; padding: 5pt 2pt; width: 33%;">
-            <div style="width: 80pt; height: 90pt; border: 1pt solid #000; margin: 0 auto; display: block;"></div>
-            <div style="margin-top: 2pt; font-weight: bold; font-size: 9pt;">${rel.name}</div>
-            <div style="font-size: 8pt;">(${rel.relation})</div>
+            <div style="width: 80pt; height: 90pt; border: 0.75pt solid #000; margin: 0 auto; display: block;"></div>
+            <div style="margin-top: 4pt; font-weight: bold; font-size: 10pt; font-family: 'Times New Roman', serif;">${rel.name}</div>
+            <div style="font-size: 9pt; font-family: 'Times New Roman', serif;">(${rel.relation})</div>
         </td>
     `);
 
@@ -122,106 +122,353 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         }
 
         const content = `
-      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-      <head>
+    <!DOCTYPE html>
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
         <meta charset="utf-8">
-        <title>Relationship Verification (Married)</title>
+        <title>Relationship Verification Certificate</title>
+        <meta name=ProgId content=Word.Document>
+        <meta name=Generator content="Microsoft Word 15">
+        <meta name=Originator content="Microsoft Word 15">
+        <!--[if gte mso 9]>
+        <xml>
+            <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForBrowser/>
+            </w:WordDocument>
+        </xml>
+        <![endif]-->
         <style>
-          @page { margin: 0.4in 0.5in; size: A4; }
-          body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.3; }
-          p { margin-bottom: 6pt; text-align: justify; }
-          .doc-title { text-align: center; font-size: 13pt; font-weight: bold; text-decoration: underline; margin-top: 5pt; margin-bottom: 3pt; }
-          .doc-subtitle { text-align: center; font-size: 11pt; font-weight: bold; text-decoration: underline; margin-bottom: 10pt; }
-          .data-table { width: 100%; border-collapse: collapse; margin-bottom: 8pt; font-size: 10pt; }
-          .data-table td, .data-table th { border: 1pt solid black; padding: 3pt; vertical-align: middle; }
-          .photo-table { width: 100%; border: none; margin-top: 5pt; }
-          .signature-block { text-align: right; margin-top: 15pt; }
+            @page WordSection1
+            {
+                size: 210.0mm 297.0mm;
+                margin: 0.4in 0.5in 0.4in 0.5in;
+                mso-header-margin: .2in;
+                mso-footer-margin: .2in;
+                mso-footer: f1;
+                mso-paper-source: 0;
+            }
+            div.WordSection1 { page: WordSection1; }
+            p.MsoFooter, li.MsoFooter, div.MsoFooter
+            {mso-style-priority:99;
+            margin:0in;
+            mso-pagination:widow-orphan;
+            tab-stops:center 3.0in right 6.0in;
+            font-size:9.0pt;
+            font-family:"Times New Roman",serif;}
+            
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Times New Roman', serif;
+                font-size: 12pt;
+                line-height: 1.15;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Header Styles - Match PDF */
+            .header-container {
+                width: 100%;
+                margin-bottom: 5pt;
+            }
+            
+            .municipality-title {
+                font-size: 24pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                margin-bottom: 3pt;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .ward-office {
+                font-size: 18pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                margin-bottom: 3pt;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .address-line {
+                font-size: 16pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .ref-date-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 8pt;
+                margin-bottom: 4pt;
+                font-weight: bold;
+            }
+            
+            .red-line {
+                border-bottom: 1.5pt solid #DC2626;
+                margin: 4pt -0.75in 10pt -0.75in;
+            }
+            
+            /* Main Content */
+            .main-title {
+                font-size: 16pt;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+                margin: 10pt 0 4pt 0;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .sub-title {
+                font-size: 16pt;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+                margin-bottom: 12pt;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .content-text {
+                font-size: 12pt;
+                text-align: justify;
+                line-height: 1.15;
+                margin-bottom: 6pt;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            /* Table Styles - Match PDF */
+            .income-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 6pt 0 6pt 0;
+                font-family: 'Times New Roman', serif;
+                font-size: 11pt;
+            }
+            
+            .income-table th {
+                border: 0.75pt solid black;
+                padding: 2pt 3pt;
+                text-align: center;
+                font-weight: bold;
+                vertical-align: middle;
+                background-color: #f8f8f8;
+            }
+            
+            .income-table td {
+                border: 0.75pt solid black;
+                padding: 1pt 4pt;
+                vertical-align: middle;
+            }
+
+            .photo-table { 
+                width: 100%; 
+                border: none; 
+                margin-top: 10pt;
+                border-collapse: separate;
+                border-spacing: 0 10pt;
+            }
+            
+            /* Signature */
+            .signature-block {
+                margin-top: 30pt;
+                text-align: right;
+                font-size: 12pt;
+                line-height: 1.15;
+            }
+            
+            /* Footer */
+            .footer-container {
+                position: fixed;
+                bottom: 0;
+                left: 0.75in;
+                right: 0.75in;
+                padding-top: 6pt;
+                border-top: 1.5pt solid #DC2626;
+                background: white;
+            }
+            
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                font-size: 9pt;
+                color: #DC2626;
+                font-weight: bold;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            /* Superscript styling */
+            sup {
+                vertical-align: super;
+                font-size: 0.7em;
+                line-height: 0;
+            }
+            
+            /* Utility */
+            .text-right {
+                text-align: right;
+            }
+            
+            .text-center {
+                text-align: center;
+            }
+            
+            .text-left {
+                text-align: left;
+            }
+            
+            .text-red {
+                color: #DC2626;
+            }
+            
+            .text-black {
+                color: black;
+            }
+            
+            .font-bold {
+                font-weight: bold;
+            }
         </style>
-      </head>
-      <body>
+    </head>
+    <body style="margin: 0; padding: 0;">
+    
+    ${formData.includeHeader ? `
+    <!-- HEADER SECTION -->
+    <div class="header-container">
+        <table style="width: 100%; margin-bottom: 0;">
+            <tr>
+                <td style="width: 20%; vertical-align: top; padding-left: 0;">
+                    <img src="${window.location.origin}/nepal_coat_of_arms.png" 
+                         width="${formData.logoSize}" 
+                         height="${(formData.logoSize * 1.3) / 1.42}"
+                         style="width: ${formData.logoSize}px; height: auto; display: block;" />
+                </td>
+                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                    <div class="municipality-title">${formData.headerTitle}</div>
+                    <div class="ward-office">${formData.headerSubtitle}</div>
+                    <div class="address-line">${formData.headerAddress1}</div>
+                    <div class="address-line">${formData.headerAddress2}</div>
+                </td>
+                <td style="width: 20%;"></td>
+            </tr>
+        </table>
         
-        ${formData.includeHeader ? `
-        <table style="width: 100%; margin-bottom: 3pt;">
-          <tr>
-            <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
-               <img src="${window.location.origin}/nepal_coat_of_arms.png" width="90" height="auto" />
-            </td>
-            <td style="width: 60%; text-align: center; vertical-align: middle;">
-              <div style="font-size: 20pt; font-weight: bold; color: #b91c1c;">${formData.headerTitle}</div>
-              <div style="font-size: 16pt; font-weight: bold; color: #b91c1c;">${formData.headerSubtitle}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress1}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress2}</div>
-            </td>
-            <td style="width: 20%;"></td>
-          </tr>
-        </table>
+        <!-- Reference and Date -->
+        <div class="ref-date-row">
+            <div style="text-align: left;">
+                <span class="text-red">Ref. No.:</span> 
+                <span class="text-black">${formData.refNo}</span><br>
+                <span class="text-red">Dis. No.:</span> 
+                <span class="text-black">${formData.disNo}</span>
+            </div>
+            <div style="text-align: right;">
+                <span class="text-red">Date:</span> 
+                <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
+            </div>
+        </div>
+        
+        <!-- Red Line -->
+        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
+    </div>
+    ` : ''}
+    
+    <!-- MAIN CONTENT -->
+    <div class="main-title">Relationship Verification Certificate</div>
+    <div class="sub-title">To Whom It May Concern</div>
+    
+    <p class="content-text">
+        This is to certify that <strong>${formData.applicantName}</strong> the permanent resident of 
+        <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
+    </p>
 
-        <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 9pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #DC2626; padding-bottom: 3pt;">
-          <tr>
-              <td style="text-align: left;">
-                  <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
-                  <div><span style="color: #DC2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
-              </td>
-              <td style="text-align: right; vertical-align: bottom;">
-                  <span style="color: #DC2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.date)}</span>
-              </td>
-          </tr>
-        </table>
-        ` : ''}
+    <p class="content-text" style="font-size: 10pt;">
+        This relationship verification certificate is issued in accordance with the Local Government Operation 
+        Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
+    </p>
+    
+    <!-- RELATIONSHIP TABLE -->
+    <table class="income-table">
+        <thead>
+            <tr>
+                <th style="width: 8%; text-align: center;">S.N.</th>
+                <th style="width: 50%;">Name</th>
+                <th style="width: 42%;">Relationship</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${tableRows}
+        </tbody>
+    </table>
 
-        <div class="doc-title" style="text-transform: none;">Relationship Verification Certificate</div>
-        <div class="doc-subtitle">To Whom It May Concern</div>
+    <p class="content-text" style="margin-bottom: 5pt; margin-top: 10pt;">The photographs of the persons mentioned above are attached below.</p>
 
-        <p>
-            This is to certify that <strong>${formData.applicantName}</strong> the permanent resident of 
-            <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
-        </p>
-        <p style="font-size: 10pt;">
-            This relationship verification certificate is issued in accordance with the Local Government Operation 
-            Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
-        </p>
-
-        <table class="data-table">
-            <thead>
+    <table class="photo-table">
+        ${photoRows.join('')}
+    </table>
+    
+    <!-- SIGNATURE -->
+    <div class="signature-block">
+        <div style="margin-bottom: 4pt;">......................................</div>
+        <div class="font-bold">${formData.signatoryName}</div>
+        <div class="font-bold">${formData.signatoryDesignation}</div>
+    </div>
+    
+    ${formData.includeFooter ? `
+    <div style="mso-element:footer" id="f1">
+        <div class="MsoFooter">
+            <!-- Red Line (matching header style) -->
+            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+            <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
                 <tr>
-                    <th style="width: 8%; text-align: center;">S.N.</th>
-                    <th style="width: 50%;">Name</th>
-                    <th style="width: 42%;">Relationship</th>
+                    <td width="50%" align="left">
+                        <p style="margin: 0; line-height: 1.0;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                        </p>
+                    </td>
+                    <td width="50%" align="right">
+                        <p style="margin: 0; line-height: 1.0; text-align: right;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                        </p>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>${tableRows}</tbody>
-        </table>
-
-        <p style="font-size: 10pt; margin-bottom: 5pt;">The photographs of the persons mentioned above are attached below.</p>
-
-        <table class="photo-table">
-            ${photoRows.join('')}
-        </table>
-
-        <div class="signature-block">
-            <div style="margin-bottom: 3pt;">.................................................</div>
-            <strong>${formData.signatoryName}</strong><br>
-            <strong>${formData.signatoryDesignation}</strong>
+            </table>
         </div>
-
-        ${formData.includeFooter ? `
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 3pt 0; border-top: 1.5pt solid #DC2626; background: white;">
-          <span style="font-size: 8pt; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone} | E-mail: ${formData.footerEmail}</span>
-        </div>
-        ` : ''}
-
-      </body>
-      </html>
+    </div>
+    ` : ''}
+    
+    <div style="mso-element:section-pr" id="sec1">
+        <p class="MsoNormal">&nbsp;</p>
+    </div>
+    </body>
+    </html>
     `;
 
-        const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+        // Create and download the Word document
+        const blob = new Blob(['\ufeff', content], {
+            type: 'application/msword;charset=utf-8'
+        });
+
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `Relationship_Married_${formData.applicantName.replace(/\s+/g, '_')}.doc`;
+        link.download = `Relationship_Verification_Married_${formData.applicantName.replace(/\s+/g, '_')}.doc`;
+        link.style.display = 'none';
+
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 100);
     };
 
     return (
@@ -305,28 +552,28 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                             <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                             {/* Bold, Italic, Underline */}
-                            <button onClick={() => document.execCommand('bold')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 font-bold text-sm border border-gray-200" title="Bold">B</button>
-                            <button onClick={() => document.execCommand('italic')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 italic text-sm border border-gray-200" title="Italic">I</button>
-                            <button onClick={() => document.execCommand('underline')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 underline text-sm border border-gray-200" title="Underline">U</button>
+                            <button onClick={() => document.execCommand('bold')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Bold"><Bold size={14} /></button>
+                            <button onClick={() => document.execCommand('italic')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Italic"><Italic size={14} /></button>
+                            <button onClick={() => document.execCommand('underline')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Underline"><Underline size={14} /></button>
 
                             <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                             {/* Alignment */}
-                            <button onClick={() => document.execCommand('justifyLeft')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Left">⬅</button>
-                            <button onClick={() => document.execCommand('justifyCenter')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Center">⬌</button>
-                            <button onClick={() => document.execCommand('justifyRight')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Align Right">➡</button>
-                            <button onClick={() => document.execCommand('justifyFull')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Justify">☰</button>
+                            <button onClick={() => document.execCommand('justifyLeft')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Left"><AlignLeft size={14} /></button>
+                            <button onClick={() => document.execCommand('justifyCenter')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Center"><AlignCenter size={14} /></button>
+                            <button onClick={() => document.execCommand('justifyRight')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Align Right"><AlignRight size={14} /></button>
+                            <button onClick={() => document.execCommand('justifyFull')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Justify"><AlignJustify size={14} /></button>
 
                             <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                             {/* Undo/Redo */}
-                            <button onClick={() => document.execCommand('undo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Undo">↩</button>
-                            <button onClick={() => document.execCommand('redo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200" title="Redo">↪</button>
+                            <button onClick={() => document.execCommand('undo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Undo"><Undo size={14} /></button>
+                            <button onClick={() => document.execCommand('redo')} className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200" title="Redo"><Redo size={14} /></button>
 
                             <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                             {/* Clear Formatting */}
-                            <button onClick={() => document.execCommand('removeFormat')} className="px-2 h-7 flex items-center justify-center rounded hover:bg-red-50 text-xs border border-gray-200 text-red-600" title="Clear Formatting">Clear</button>
+                            <button onClick={() => document.execCommand('removeFormat')} className="px-2 h-7 flex items-center justify-center rounded hover:bg-red-50 text-xs border border-gray-200 text-red-600" title="Clear Formatting"><RemoveFormatting size={14} /></button>
                         </div>
 
                         {/* Preview Container */}
@@ -336,7 +583,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 spellCheck={false}
-                                className="print-area bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
+                                className="print-area bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
                                 style={{ fontFamily: 'Times New Roman, serif' }}
                             >
                                 {/* Conditional Header - Red Theme */}

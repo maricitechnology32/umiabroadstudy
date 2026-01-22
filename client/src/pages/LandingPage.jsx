@@ -1,48 +1,47 @@
+
+
+import { motion } from 'framer-motion';
 import {
    ArrowRight,
+   Award,
    Bot,
+   Building,
+   Calendar,
    CheckCircle2,
    ChevronRight,
+   Clock,
+   DollarSign,
+   Eye,
    FileText,
    Globe,
    LayoutDashboard,
+   Mail,
+   Map,
+   MapPin,
    MessageSquare,
    Mic,
+   Phone,
    Play,
-   ShieldCheck,
-   Sparkles,
-   Zap,
-   Users,
-   Award,
-   Building,
-   Star,
    Quote,
    Search,
-   Calendar,
-   Clock,
-   Eye,
-   Briefcase,
-   MapPin,
-   DollarSign,
-   Phone,
-   Mail,
-   Map
+   ShieldCheck,
+   Sparkles,
+   Star,
+   Users,
+   Zap
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLandingData } from '../features/landing/landingSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/ui/Button';
 import { fetchBlogs } from '../features/blog/blogSlice';
 import { fetchJobs } from '../features/jobs/jobSlice';
-import Button from '../components/ui/Button';
+import { fetchLandingData } from '../features/landing/landingSlice';
 import { fixImageUrl } from '../utils/imageUtils';
 
 // IMPORT YOUR NEW COMPONENTS
 import SEO from '../components/common/SEO';
-import SuccessStories from './SuccessStories'; // Adjust path as needed
 import Navbar from '../components/layout/Navbar';
-import BannerAd from '../components/ads/BannerAd';
 
 
 // Icon Mapping Helper
@@ -91,7 +90,7 @@ export default function LandingPage() {
    ];
 
    const statsList = content?.stats?.length > 0 ? content.stats : [
-      { value: "50+", label: "Consultancies" },
+      { value: "50+", label: "Students" },
       { value: "10k+", label: "Applications Processed" },
       { value: "98%", label: "Success Rate" }
    ];
@@ -141,7 +140,7 @@ export default function LandingPage() {
    return (
       <div className="min-h-screen bg-white font-sans text-secondary-900 selection:bg-primary-100 overflow-x-hidden">
          <SEO
-            title="Global Flow - Automate Your Consultancy"
+            title="UMI Abroad Study - Automate Your Consultancy"
             description="The smartest way to move to Japan. Automate COE documents, track applications, and practice with our AI Immigration Officer."
          />
 
@@ -215,13 +214,13 @@ export default function LandingPage() {
                      </Button>
                   </Link>
 
-                  <Button
+                  {/* <Button
                      variant="outline"
                      onClick={() => setShowDemoModal(true)}
                      className="w-full sm:w-auto px-8 py-3.5 text-base font-bold bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-primary-300 transition-all"
                   >
                      <Play size={18} className="fill-slate-700 mr-2 text-slate-700" /> {ctaSecondaryText}
-                  </Button>
+                  </Button> */}
                </motion.div>
 
                {/* --- STATS SECTION --- */}
@@ -242,7 +241,7 @@ export default function LandingPage() {
          </section>
 
          {/* Banner Ad */}
-         <BannerAd className="container mx-auto" />
+         {/* <BannerAd className="container mx-auto" /> */}
 
          {/* --- DASHBOARD PREVIEW --- */}
          <section className="pb-24 px-4 relative">
@@ -261,7 +260,7 @@ export default function LandingPage() {
                      <div className="w-16 md:w-56 bg-primary-900 border-r border-primary-800 flex flex-col pt-5 pb-4">
                         <div className="px-4 mb-6 flex items-center gap-3">
                            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold text-sm shrink-0">GF</div>
-                           <span className="text-white font-bold hidden md:block">GlobalFlow</span>
+                           <span className="text-white font-bold hidden md:block">UMI Abroad Study</span>
                         </div>
                         <div className="flex-1 space-y-1 px-2">
                            {[
@@ -418,9 +417,8 @@ export default function LandingPage() {
                   className="text-center max-w-3xl mx-auto mb-16"
                >
                   <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
-                     Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">manage your consultancy.</span>
+                     Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">manage your visa application.</span>
                   </h2>
-                  <p className="text-slate-600 text-lg leading-relaxed">We've digitized the entire workflow, eliminating 90% of paperwork.</p>
                </motion.div>
 
                <motion.div
@@ -478,7 +476,7 @@ export default function LandingPage() {
                      <ListItem text="Student & Skilled Worker scenarios" delay={0.2} />
                      <ListItem text="Feedback on pronunciation and grammar" delay={0.3} />
                   </ul>
-                  <Link to="/register" className="inline-flex items-center gap-2 text-primary-600 font-bold hover:gap-3 transition-all hover:text-primary-700 text-lg group">
+                  <Link to="/login" className="inline-flex items-center gap-2 text-primary-600 font-bold hover:gap-3 transition-all hover:text-primary-700 text-lg group">
                      Try the Simulator <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
                </motion.div>
@@ -565,9 +563,9 @@ export default function LandingPage() {
                <div className="max-w-6xl mx-auto px-6">
                   <div className="text-center mb-16">
                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
-                        Loved by <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">Consultancies in Nepal</span>
+                        Loved by <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-600">Students in Nepal</span>
                      </h2>
-                     <p className="text-slate-600 text-lg">See what our clients have to say</p>
+                     <p className="text-slate-600 text-lg">See what our students say</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      {testimonialsList.map((item, idx) => (
@@ -774,7 +772,7 @@ export default function LandingPage() {
          {/* --- CONTACT SECTION --- */}
          <section className="py-12 lg:py-16 bg-white relative">
             <div className="max-w-3xl mx-auto px-4 text-center">
-               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">Get in Touch</h2>
+               {/* <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">Get in Touch</h2> */}
                <p className="text-slate-500 mb-8">Have questions? We're here to help you every step of the way.</p>
 
                <div className="grid md:grid-cols-3 gap-4 mb-8 text-left">
@@ -783,27 +781,27 @@ export default function LandingPage() {
                         <Phone size={20} />
                      </div>
                      <h4 className="font-semibold text-slate-900 mb-1 text-sm">Call Us</h4>
-                     <p className="text-slate-500 text-sm">{contact?.mainContact?.phone || branding?.phone || "+977 1 4XXXXXX"}</p>
+                     <p className="text-slate-500 text-sm">{contact?.mainContact?.phone || branding?.phone || "+977 985-1117263"}</p>
                   </div>
                   <div className="bg-slate-50 p-5 rounded-lg border border-slate-100">
                      <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mb-3">
                         <Mail size={20} />
                      </div>
                      <h4 className="font-semibold text-slate-900 mb-1 text-sm">Email Us</h4>
-                     <p className="text-slate-500 text-sm">{contact?.mainContact?.email || branding?.email || "info@example.com"}</p>
+                     <p className="text-slate-500 text-sm">{contact?.mainContact?.email || branding?.email || "info@umiabroadstudies.com"}</p>
                   </div>
                   <div className="bg-slate-50 p-5 rounded-lg border border-slate-100">
                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-3">
                         <Map size={20} />
                      </div>
                      <h4 className="font-semibold text-slate-900 mb-1 text-sm">Visit Us</h4>
-                     <p className="text-slate-500 text-sm">{contact?.mainContact?.address || branding?.address || "Your address"}</p>
+                     <p className="text-slate-500 text-sm">{contact?.mainContact?.address || branding?.address || "Bagbazar 28, Kathmandu"}</p>
                   </div>
                </div>
 
                <Link to="/contact">
                   <Button size="xl" className="bg-primary-600 hover:bg-primary-700 text-white px-12 py-5 shadow-xl shadow-primary-500/30">
-                     Contact Support
+                     Contact Us
                   </Button>
                </Link>
             </div>
@@ -822,16 +820,13 @@ export default function LandingPage() {
                className="max-w-4xl mx-auto px-6 text-center relative z-10"
             >
                <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight leading-tight">Ready to streamline your visa process?</h2>
-               <p className="text-primary-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">Join the platform that is processing thousands of applications for Japan every month.</p>
+               
                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Link to="/register" className="px-10 py-4 bg-white text-primary-900 rounded-xl font-bold hover:bg-primary-50 transition-all shadow-2xl shadow-black/30 hover:shadow-black/40 hover:-translate-y-1 text-lg">
+                  <Link to="/contact" className="px-10 py-4 bg-white text-primary-900 rounded-xl font-bold hover:bg-primary-50 transition-all shadow-2xl shadow-black/30 hover:shadow-black/40 hover:-translate-y-1 text-lg">
                      Get Started for Free
                   </Link>
-                  <Link to="/contact" className="px-10 py-4 bg-transparent border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/10 hover:border-white/50 transition-all backdrop-blur-sm text-lg">
-                     Contact Sales
-                  </Link>
+                  
                </div>
-               <p className="mt-6 text-sm text-primary-200">No credit card required for 14-day trial.</p>
             </motion.div>
          </section>
 
@@ -851,14 +846,7 @@ export default function LandingPage() {
                   </div>
                   <p className="text-sm text-secondary-500 leading-relaxed pr-8">{branding?.tagline || 'Helping students and workers reach Japan with confidence.'}</p>
                </div>
-               <div>
-                  <h4 className="font-bold text-secondary-900 mb-6">Quick Links</h4>
-                  <ul className="space-y-3 text-sm text-secondary-500">
-                     <li><Link to="/#features" className="hover:text-primary-600 transition-colors">Features</Link></li>
-                     <li><Link to="/#ai-simulator" className="hover:text-primary-600 transition-colors">AI Interview</Link></li>
-                     <li><Link to="/careers" className="hover:text-primary-600 transition-colors">Careers</Link></li>
-                  </ul>
-               </div>
+              
                <div>
                   <h4 className="font-bold text-secondary-900 mb-6">Resources</h4>
                   <ul className="space-y-3 text-sm text-secondary-500">
@@ -872,7 +860,7 @@ export default function LandingPage() {
                   <ul className="space-y-3 text-sm text-secondary-500">
                      <li><Link to="/contact" className="hover:text-primary-600 transition-colors">Contact Us</Link></li>
                      <li><Link to="/login" className="hover:text-primary-600 transition-colors">Login</Link></li>
-                     <li><Link to="/register" className="hover:text-primary-600 transition-colors">Register</Link></li>
+                     <li><Link to="/login " className="hover:text-primary-600 transition-colors">Register</Link></li>
                   </ul>
                </div>
             </div>
@@ -885,6 +873,7 @@ export default function LandingPage() {
                      </a>
                   ))}
                </div>
+               <Link to={"https://maricitechnologies.com"}>Crafted with love by Marici Technology</Link>
             </div>
          </footer>
       </div>

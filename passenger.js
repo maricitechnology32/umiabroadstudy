@@ -126,7 +126,7 @@ app.use('/api/exchange-rate', require('./routes/exchangeRateRoutes'));
 // Health check endpoint
 app.get('/', (req, res) => {
     res.json({
-        message: "KDR Consultancy API is running...",
+        message: "VisaSaaS API is running...",
         environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString()
     });
@@ -174,7 +174,7 @@ app.set('io', io);
 server.listen(PORT, () => {
     console.log(`
   ============================================
-  KDR Consultancy API Server (Passenger)
+  UMI Abroad Study API Server (Passenger)
   Environment: ${process.env.NODE_ENV}
   Port: ${PORT}
   Client URL: ${CLIENT_URL}

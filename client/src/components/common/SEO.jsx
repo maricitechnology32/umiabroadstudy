@@ -1,14 +1,13 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 export default function SEO({
     title,
-    description = "Leading consultancy for Japan Visa services. Powered by Global Flow.",
-    keywords = "Japan Visa, Global Flow, Student Visa, Work Visa, Consultancy, Nepal",
+    description = "Leading consultancy for Japan Visa services. Powered by UMI Abroad Study.",
+    keywords = "Japan Visa, UMI Abroad Study, Student Visa, Work Visa, Consultancy, Nepal",
     image = "/logo.png",
     url = window.location.href
 }) {
-    const siteTitle = "KDR Consultancy";
+    const siteTitle = "UMI Abroad  Study";
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 
     return (

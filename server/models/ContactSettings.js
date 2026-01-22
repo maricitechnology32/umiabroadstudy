@@ -5,7 +5,7 @@ const contactSettingsSchema = new mongoose.Schema({
         companyName: {
             type: String,
             required: true,
-            default: 'Global Flow'
+            default: 'UMI Abroad Study'
         },
         email: {
             type: String,

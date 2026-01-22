@@ -15,7 +15,7 @@ export default function CharacterCertificateModal({
         if (gender === "Male" || title === "Mr.") return "Mr.";
         if (title === "Ms.") return "Ms.";
         if (title === "Mrs.") return "Mrs.";
-        return "Miss";
+        return "Miss.";
     };
 
     const getRelation = (s) => {
@@ -238,13 +238,32 @@ xmlns = 'http://www.w3.org/TR/REC-html40' >
     <head>
       <meta charset="utf-8">
       <style>
-        @page { margin: 0.5in; }
+          @page WordSection1
+          {
+              size: 210.0mm 297.0mm;
+              margin: 0.4in 0.5in 0.4in 0.5in;
+              mso-header-margin: .2in;
+              mso-footer-margin: .2in;
+              mso-footer: f1;
+              mso-paper-source: 0;
+          }
+          div.WordSection1 { page: WordSection1; }
+          p.MsoFooter, li.MsoFooter, div.MsoFooter
+          {mso-style-priority:99;
+          margin:0in;
+          mso-pagination:widow-orphan;
+          tab-stops:center 3.0in right 6.0in;
+          font-size:9.0pt;
+          font-family:"Times New Roman",serif;}
         body {
           font-family: 'Times New Roman', serif;
           font-size: 12pt;
           line-height: 1.6;
           text-align: justify;
+          margin: 0; padding: 0;
         }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { font-family: 'Times New Roman', serif; }
         .title {
           text-align: center;
           font-size: 16pt;
@@ -266,7 +285,7 @@ xmlns = 'http://www.w3.org/TR/REC-html40' >
       <table style="width: 100%; margin-bottom: 3pt;">
         <tr>
           <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
-             ${logoBase64 ? `<img src="${logoBase64}" width="90" height="auto" />` : ''}
+             ${logoBase64 ? `<img src="${logoBase64}" width="100" height="100" style="width: 100px; height: auto;" />` : ''}
           </td>
           <td style="width: 60%; text-align: center; vertical-align: middle;">
             <div style="font-size: 28pt; font-weight: bold; color: #dc2626;">${formData.headerTitle}</div>
@@ -278,7 +297,7 @@ xmlns = 'http://www.w3.org/TR/REC-html40' >
         </tr>
       </table>
 
-      <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 16pt; margin-bottom: 8pt; border-bottom: 3pt solid #DC2626; padding-bottom: 3pt;">
+      <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 16pt; margin-bottom: 0; padding-bottom: 0;">
         <tr>
             <td style="text-align: left;">
                 <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
@@ -289,22 +308,48 @@ xmlns = 'http://www.w3.org/TR/REC-html40' >
             </td>
         </tr>
       </table>
+      <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
       ` : ''}
 
-                            <div className="text-center font-bold underline mb-1" style={{ fontSize: '16pt' }}>
-                                To Whom It May Concern
-                            </div>
+                        <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 5pt; font-size: 16pt;">
+                            To Whom It May Concern
+                        </div>
 
-                            <div className="text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
-                                <div dangerouslySetInnerHTML={{ __html: selectedTemplate.content(formData) }} />
-                            </div>
+                        <div style="text-align: justify; line-height: 1.6; font-size: 12pt;">
+                            ${selectedTemplate.content(formData)}
+                        </div>
 
-                            <div className="mt-16 text-right" style={{ fontSize: '12pt' }}>
-                                <div className="font-bold">......................................</div>
-                                <div className="font-bold">{formData.signatoryName}</div>
-                                <div className="font-bold">{formData.signatoryDesignation}</div>
-                            </div>
-    </body>
+                        <div style="margin-top: 40pt; text-align: right; font-size: 12pt;">
+                            <div style="font-weight: bold;">......................................</div>
+                            <div style="font-weight: bold;">${formData.signatoryName}</div>
+                            <div style="font-weight: bold;">${formData.signatoryDesignation}</div>
+                        </div>
+    ${formData.includeFooter ? `
+    <div style="mso-element:footer" id="f1">
+        <div class="MsoFooter">
+            <!-- Red Line (matching header style) -->
+            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+            <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr>
+                    <td width="50%" align="left">
+                        <p style="margin: 0; line-height: 1.0;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                        </p>
+                    </td>
+                    <td width="50%" align="right">
+                        <p style="margin: 0; line-height: 1.0; text-align: right;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    ` : ''}
+    <div style="mso-element:section-pr" id="sec1">
+        <p class="MsoNormal">&nbsp;</p>
+    </div>
+</body>
     </html >
     `;
 
@@ -383,7 +428,7 @@ xmlns = 'http://www.w3.org/TR/REC-html40' >
                                     contentEditable={true}
                                     suppressContentEditableWarning={true}
                                     spellCheck={false}
-                                    className="bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
+                                    className="bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-blue-500/20 mx-auto"
                                     style={{ fontFamily: 'Times New Roman, serif' }}
                                 >
 

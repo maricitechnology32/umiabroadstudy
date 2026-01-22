@@ -20,6 +20,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
 
     // Footer info
     footerEmail: 'bhi.na.pa.10jimuwa@gmail.com',
+    footerPhone: '+977-9856017304',
 
     refNo: '2082/083',
     disNo: '401',
@@ -108,13 +109,13 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
     setFormData({ ...formData, occupations: updated });
   };
 
-  // 2. Word Document Generator Logic
+  // --- 2. Word Document Generator Logic (Standardized) ---
   const generateWordDoc = () => {
     // Generate Rows HTML
     const tableRows = formData.occupations.map((occ, index) => `
-        <tr>
-            <td style="padding: 2pt; border: 1pt solid black; text-align: center;">${index + 1}</td>
-            <td style="padding: 2pt; border: 1pt solid black;">${occ}</td>
+        <tr style="height: 20pt;">
+            <td style="border: 0.75pt solid black; padding: 1pt 5pt; text-align: center; font-family: 'Times New Roman', serif;">${index + 1}</td>
+            <td style="border: 0.75pt solid black; padding: 1pt 5pt; text-align: left; font-family: 'Times New Roman', serif;">${occ}</td>
         </tr>
     `).join('');
 
@@ -124,84 +125,114 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
         <meta charset="utf-8">
         <title>Occupation Verification</title>
         <style>
-          @page {
-              margin: 0.5in;
-          }
-          body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.3; }
-          
-          /* LAYOUT SPACERS */
-          .header-space { height: 15pt; } 
-          .footer-space { height: 15pt; }
-          
-          /* CONTENT STYLES */
-          p { margin-bottom: 8pt; text-align: justify; }
-          .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 10pt; font-weight: bold; font-size: 11pt; color: #dc2626; }
-          .meta-left { text-align: left; vertical-align: top; }
-          .meta-right { text-align: right; vertical-align: bottom; }
-          
-          .doc-title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; text-transform: capitalize; margin-top: 10pt; }
-          .doc-subtitle { text-align: center; font-size: 12pt; font-weight: bold; text-decoration: underline; margin-top: 5pt; margin-bottom: 15pt; }
-
-          /* DATA TABLE */
-          .data-table { width: 100%; border-collapse: collapse; margin-top: 5pt; margin-bottom: 10pt; }
-          .data-table th, .data-table td { border: 1pt solid black; padding: 2pt; text-align: left; vertical-align: middle; }
-          
-          /* SIGNATURE BLOCK (Right Aligned) */
-          .signature-table { width: 100%; margin-top: 40pt; border: none; }
-          .sig-td-left { width: 60%; }
-          .sig-td-right { width: 40%; text-align: left; vertical-align: bottom; }
-          
-          .signatory-name { font-weight: bold; font-size: 11pt; margin: 0; padding-bottom: 2pt; }
-          .signatory-title { font-size: 11pt; margin: 0; }
+            /* PAGE SETUP - Match PDF exactly */
+            @page WordSection1
+            {
+                size: 210.0mm 297.0mm;
+                margin: 0.4in 0.5in 0.4in 0.5in;
+                mso-header-margin: .2in;
+                mso-footer-margin: .2in;
+                mso-footer: f1;
+                mso-paper-source: 0;
+            }
+            div.WordSection1 { page: WordSection1; }
+            p.MsoFooter, li.MsoFooter, div.MsoFooter
+            {mso-style-priority:99;
+            margin:0in;
+            mso-pagination:widow-orphan;
+            tab-stops:center 3.0in right 6.0in;
+            font-size:9.0pt;
+            font-family:"Times New Roman",serif;}
+            
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Times New Roman', serif;
+                font-size: 12pt;
+                line-height: 1.15;
+            }
+            
+            /* Header Styles */
+            .header-container { width: 100%; margin-bottom: 5pt; }
+            .municipality-title { font-size: 24pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
+            .ward-office { font-size: 18pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
+            .address-line { font-size: 16pt; font-weight: bold; color: #DC2626; line-height: 1; text-align: center; }
+            
+            .ref-date-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8pt; margin-bottom: 4pt; font-weight: bold; }
+            .red-line { border-bottom: 1.5pt solid #DC2626; margin: 4pt -0.75in 10pt -0.75in; }
+            
+            /* Main Content */
+            .main-title { font-size: 16pt; font-weight: bold; text-align: center; text-decoration: underline; margin: 10pt 0 4pt 0; text-transform: uppercase; }
+            .sub-title { font-size: 16pt; font-weight: bold; text-align: center; text-decoration: underline; margin-bottom: 12pt; }
+            
+            .content-text { font-size: 12pt; text-align: justify; line-height: 1.5; margin-bottom: 8pt; }
+            
+            /* Table Styles */
+            .data-table { width: 100%; border-collapse: collapse; margin: 10pt 0; font-size: 12pt; }
+            .data-table th { border: 0.75pt solid black; padding: 2pt 5pt; text-align: center; font-weight: bold; background-color: white; }
+            .data-table td { border: 0.75pt solid black; padding: 2pt 5pt; }
+            
+            /* Signature */
+            .signature-block { margin-top: 40pt; text-align: right; font-size: 12pt; line-height: 1.15; }
+            
+            
+            /* Utils */
+            .text-red { color: #DC2626; }
+            .text-black { color: black; }
+            sup { vertical-align: super; font-size: 0.7em; line-height: 0; }
+            
         </style>
       </head>
       <body>
         
         ${formData.includeHeader ? `
-        <!-- Header with Logo and Municipality Details - Red Theme -->
-        <table style="width: 100%; margin-bottom: 3pt;">
-          <tr>
-            <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
-               <img src="${window.location.origin}/nepal_coat_of_arms.png" width="90" height="auto" />
-            </td>
-            <td style="width: 60%; text-align: center; vertical-align: middle;">
-              <div style="font-size: 20pt; font-weight: bold; color: #dc2626;">${formData.headerTitle}</div>
-              <div style="font-size: 16pt; font-weight: bold; color: #dc2626;">${formData.headerSubtitle}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress1}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress2}</div>
-            </td>
-            <td style="width: 20%;"></td>
-          </tr>
-        </table>
-        ` : `<div class="header-space"></div>`}
+        <!-- HEADER SECTION -->
+        <div class="header-container">
+            <table style="width: 100%; margin-bottom: 0;">
+                <tr>
+                    <td style="width: 20%; vertical-align: top; padding-left: 0;">
+                        <img src="${window.location.origin}/nepal_coat_of_arms.png" width="${formData.logoSize}" height="${(formData.logoSize * 1.3) / 1.42}" style="width: ${formData.logoSize}px; height: auto; display: block;" />
+                    </td>
+                    <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                        <div class="municipality-title">${formData.headerTitle}</div>
+                        <div class="ward-office">${formData.headerSubtitle}</div>
+                        <div class="address-line">${formData.headerAddress1}</div>
+                        <div class="address-line">${formData.headerAddress2}</div>
+                    </td>
+                    <td style="width: 20%;"></td>
+                </tr>
+            </table>
+            
+            <div class="ref-date-row">
+                <div style="text-align: left;">
+                    <span class="text-red">Ref. No.:</span> <span class="text-black">${formData.refNo}</span><br>
+                    <span class="text-red">Dis. No.:</span> <span class="text-black">${formData.disNo}</span>
+                </div>
+                <div style="text-align: right;">
+                    <span class="text-red">Date:</span> <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
+                </div>
+            </div>
+            
+            <!-- Red Line -->
+            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
+        </div>
+        ` : ''}
 
-        <table style="width: 100%; color: #dc2626; font-weight: bold; font-size: 10pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #dc2626; padding-bottom: 3pt;">
-          <tr>
-            <td style="text-align: left;">
-              <div><span style="color: #dc2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
-              <div><span style="color: #dc2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
-            </td>
-            <td style="text-align: right; vertical-align: bottom;">
-              <span style="color: #dc2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.date)}</span>
-            </td>
-          </tr>
-        </table>
+        <!-- MAIN CONTENT -->
+        <div class="sub-title">Occupation Verification Certificate</div>
+        <div class="sub-title">To Whom It May Concern</div>
 
-
-        <div class="doc-title">Occupation Verification Certificate</div>
-        <div class="doc-subtitle">To Whom It May Concern</div>
-
-        <p>
-          This is to certify that <strong>${formData.parentName}</strong> ${formData.relation} of 
-          <strong>${formData.studentName}</strong> the permanent resident of 
-          <strong>${formData.addressLine}</strong> is found to be engaged in the following occupations as the means to generate income.
+        <p class="content-text">
+            This is to certify that <strong>${formData.parentName}</strong> ${formData.relation} of 
+            <strong>${formData.studentName}</strong> the permanent resident of 
+            <strong>${formData.addressLine}</strong> is found to be engaged in the following occupations as the means to generate income.
         </p>
 
         <table class="data-table">
             <thead>
                 <tr>
-                    <th style="width: 50px; text-align: center;">S.N.</th>
-                    <th>Occupation</th>
+                    <th style="width: 50px; text-align: left;">S.N.</th>
+                    <th style="text-align: left;">Occupation</th>
                 </tr>
             </thead>
             <tbody>
@@ -209,31 +240,46 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
             </tbody>
         </table>
 
-        <p>
+        <p class="content-text" style="font-size: 11pt; margin-top: 10pt;">
             Note: According to the Government of Nepal, taxes are exempted for the income from Agriculture. So, it is not necessary to register on PAN. Therefore, <strong>${formData.parentName}</strong> isn't registered on PAN.
         </p>
 
-                <!-- SIGNATURE BLOCK -->
-        <table class="signature-table">
-            <tr>
-                <td class="sig-td-left"></td>
-                <td class="sig-td-right">
-                    <div style="height: 15pt;">&nbsp;</div>
-                    <div style="text-align: right;">......................................</div>
-                    <p class="signatory-name"><strong>${formData.signatoryName}</strong></p>
-                    <p class="signatory-title"><strong>${formData.signatoryDesignation}</strong></p>
-                </td>
-            </tr>
-        </table>
+        <!-- SIGNATURE -->
+        <div class="signature-block">
+            <div style="font-weight: bold; margin-bottom: 40pt;">&nbsp;</div>
+            <div style="font-weight: bold;">...................................</div>
+            <div style="font-weight: bold; margin-top: 5pt;">${formData.signatoryName}</div>
+            <div style="font-weight: bold;">${formData.signatoryDesignation}</div>
+        </div>
 
         ${formData.includeFooter ? `
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 5pt 0; border-top: 2pt solid #dc2626; background: white;">
-          <span style="font-size: 9pt; color: #dc2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+        <div style="mso-element:footer" id="f1">
+            <div class="MsoFooter">
+                <!-- Red Line (matching header style) -->
+                <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+                <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                    <tr>
+                        <td width="50%" align="left">
+                            <p style="margin: 0; line-height: 1.0;">
+                                <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                            </p>
+                        </td>
+                        <td width="50%" align="right">
+                            <p style="margin: 0; line-height: 1.0; text-align: right;">
+                                <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        ` : `<div class="footer-space"></div>`}
+        ` : ''}
 
-      </body>
-      </html>
+    <div style="mso-element:section-pr" id="sec1">
+        <p class="MsoNormal">&nbsp;</p>
+    </div>
+    </body>
+    </html>
     `;
 
     const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
@@ -369,7 +415,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                   contentEditable={true}
                   suppressContentEditableWarning={true}
                   spellCheck={false}
-                  className="print-area bg-white shadow-2xl px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] w-full sm:w-[210mm] min-h-[297mm] font-serif text-[10pt] sm:text-[12pt] leading-[1.6] text-justify relative outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
+                  className="print-area bg-white w-full sm:w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] font-serif text-[10pt] sm:text-[12pt] leading-[1.6] text-justify relative outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
                   style={{ fontFamily: "Times New Roman, serif" }}
                 >
 
@@ -402,7 +448,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                         </div>
                       </div>
 
-                      <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
+                      {/* <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div> */}
 
                       <div className="border-b-[3px] border-red-600 mb-6 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
                     </>

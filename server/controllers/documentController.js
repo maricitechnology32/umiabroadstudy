@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
-const University = require('../models/University'); // If needed for validation
+const University = require('../models/University');
+const { createNotification, notifyConsultancyAdmins } = require('../utils/notificationHelper');
 
 // @desc    Upload Application Document (Draft/Initial)
 // @route   POST /api/students/:id/documents
@@ -106,6 +107,17 @@ exports.uploadVerifiedDocument = async (req, res) => {
 
         await student.save();
 
+        // Notify Admins about new filled document
+        const io = req.app.get('io');
+        if (io) {
+            await notifyConsultancyAdmins(io, req.user.consultancyId, {
+                title: 'Document Uploaded (Filled)',
+                message: `${student.personalInfo.firstName} (or staff) uploaded ${doc.type}.`,
+                type: 'info',
+                link: `/dashboard/document-verification`
+            });
+        }
+
         res.status(200).json({ success: true, data: student.applicationDocuments });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
@@ -138,6 +150,17 @@ exports.updateDocumentStatus = async (req, res) => {
 
         doc.updatedAt = Date.now();
         await student.save();
+
+        // Notify Student about status change
+        const io = req.app.get('io');
+        if (io) {
+            await createNotification(io, student.user.toString(), {
+                title: `Document ${status}`,
+                message: `Your ${doc.type} has been ${status}. ${notes ? `Note: ${notes}` : ''}`,
+                type: status === 'Verified' ? 'success' : 'error',
+                link: `/student/profile`
+            });
+        }
 
         res.status(200).json({ success: true, data: student.applicationDocuments });
     } catch (err) {

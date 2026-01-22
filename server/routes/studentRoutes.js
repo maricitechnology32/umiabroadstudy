@@ -5,7 +5,7 @@ const {
     getMyProfile,
     updateStudentProfile,
     getStudentById
-} = require('../controllers/studentController');
+} = require('../controllers/studentControllerFixed');
 const {
     uploadApplicationDocument,
     uploadVerifiedDocument,
@@ -28,7 +28,11 @@ router.use(protect);
 const VIEW_ACCESS = ['consultancy_admin', 'manager', 'document_officer', 'receptionist', 'counselor'];
 
 // Who can EDIT profiles?
+// Who can EDIT profiles?
 const EDIT_ACCESS = ['consultancy_admin', 'manager', 'document_officer', 'receptionist', 'counselor'];
+
+// Who can VERIFY documents?
+const VERIFY_ACCESS = ['consultancy_admin', 'manager', 'document_officer'];
 
 // --- Routes ---
 
@@ -47,6 +51,6 @@ router.put('/:id', authorize(...EDIT_ACCESS, 'student'), updateStudentProfile);
 router.post('/:id/documents', authorize(...EDIT_ACCESS), uploadApplicationDocument);
 router.put('/:id/documents/:docId', authorize(...EDIT_ACCESS), updateApplicationDocument);
 router.put('/:id/documents/:docId/verify-upload', authorize(...EDIT_ACCESS), uploadVerifiedDocument);
-router.put('/:id/documents/:docId/status', authorize(...EDIT_ACCESS), updateDocumentStatus);
+router.put('/:id/documents/:docId/status', authorize(...VERIFY_ACCESS), updateDocumentStatus);
 
 module.exports = router;

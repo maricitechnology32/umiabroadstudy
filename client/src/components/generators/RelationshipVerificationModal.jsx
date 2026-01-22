@@ -1,4 +1,4 @@
-import { Download, FileText, Plus, Printer, Trash2, Users, X } from 'lucide-react';
+import { Download, FileText, Plus, Printer, Trash2, Users, X, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify, List, ListOrdered, IndentIncrease, IndentDecrease, Undo, Redo, RemoveFormatting } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getFormattedDate, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
 
@@ -205,188 +205,380 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
         setFormData({ ...formData, relatives: updatedRelatives });
     };
 
-    // 2. Word Document Generator Logic
+    // Word Document Generator - Matches PDF exactly
     const generateWordDoc = () => {
-        // Generate Rows HTML
         const tableRows = formData.relatives.map((rel, index) => `
-        <tr>
-            <td style="padding: 2pt; border: 1pt solid black; text-align: center;">${index + 1}</td>
-            <td style="padding: 2pt; border: 1pt solid black;">${rel.name}</td>
-            <td style="padding: 2pt; border: 1pt solid black;">${rel.relation}</td>
-        </tr>
-    `).join('');
+     <tr style="height: 20pt; background-color:white;">
+         <td style="border: 0.75pt solid black; padding: 1pt 2pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: left; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.name}</td>
+         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
+     </tr>
+ `).join('');
 
-        // Generate Photo Grid HTML (FOR WORD DOC)
-        // We use table cells <td> to ensure they stay in one row
+        // Generate Photo Grid Cells
         const photoCells = formData.relatives.map(rel => `
-        <td style="text-align: center; vertical-align: top; padding: 2pt;">
-            <!-- The Empty Photo Box -->
-            <div style="width: 80pt; height: 100pt; border: 1pt solid black; margin: 0 auto; display: block;"></div>
-            <!-- Caption -->
-            <div style="margin-top: 3pt; font-weight: bold; font-size: 9pt;">${rel.name}</div>
-            <div style="font-size: 9pt;">(${rel.relation})</div>
-        </td>
-    `).join('');
+         <td style="text-align: center; vertical-align: top; padding: 5pt 2pt; width: 33%;">
+             <div style="width: 80pt; height: 90pt; border: 0.75pt solid #000; margin: 0 auto; display: block;"></div>
+             <div style="margin-top: 4pt; font-weight: bold; font-size: 10pt; font-family: 'Times New Roman', serif;">${rel.name}</div>
+             <div style="font-size: 9pt; font-family: 'Times New Roman', serif;">(${rel.relation})</div>
+         </td>
+     `);
+
+        // Split photos into rows of 3
+        const photoRows = [];
+        for (let i = 0; i < photoCells.length; i += 3) {
+            photoRows.push(`<tr>${photoCells.slice(i, i + 3).join('')}</tr>`);
+        }
 
         const content = `
-      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-      <head>
-        <meta charset="utf-8">
-        <title>Relationship Verification</title>
-      <style>
-        @page {
-          margin: 0; /* Zero margin for full-width lines */
-          size: A4;
-        }
+     <!DOCTYPE html>
+     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+     <head>
+         <meta charset="utf-8">
+         <title>Relationship Verification Certificate</title>
+         <meta name=ProgId content=Word.Document>
+         <meta name=Generator content="Microsoft Word 15">
+         <meta name=Originator content="Microsoft Word 15">
+         <!--[if gte mso 9]>
+         <xml>
+             <w:WordDocument>
+                 <w:View>Print</w:View>
+                 <w:Zoom>100</w:Zoom>
+                 <w:DoNotOptimizeForBrowser/>
+             </w:WordDocument>
+         </xml>
+         <![endif]-->
+         <style>
+             /* PAGE SETUP - Match PDF exactly */
+             @page WordSection1
+             {
+                 size: 210.0mm 297.0mm;
+                 margin: 0.4in 0.5in 0.4in 0.5in;
+                 mso-header-margin: .2in;
+                 mso-footer-margin: .2in;
+                 mso-footer: f1;
+                 mso-paper-source: 0;
+             }
+             div.WordSection1 { page: WordSection1; }
+             p.MsoFooter, li.MsoFooter, div.MsoFooter
+             {mso-style-priority:99;
+             margin:0in;
+             mso-pagination:widow-orphan;
+             tab-stops:center 3.0in right 6.0in;
+             font-size:9.0pt;
+             font-family:"Times New Roman",serif;}
+             
+             body {
+                 margin: 0;
+                 padding: 0;
+                 font-family: 'Times New Roman', serif;
+                 font-size: 12pt;
+                 line-height: 1.15;
+                 -webkit-print-color-adjust: exact !important;
+                 print-color-adjust: exact !important;
+             }
+             
+             /* Header Styles - Match PDF */
+             .header-container {
+                 width: 100%;
+                 margin-bottom: 5pt;
+             }
+             
+             .municipality-title {
+                 font-size: 24pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 margin-bottom: 3pt;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .ward-office {
+                 font-size: 18pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 margin-bottom: 3pt;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .address-line {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 color: #DC2626;
+                 line-height: 1;
+                 text-align: center;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .ref-date-row {
+                 display: flex;
+                 justify-content: space-between;
+                 align-items: flex-end;
+                 margin-top: 8pt;
+                 margin-bottom: 4pt;
+                 font-weight: bold;
+             }
+             
+             .red-line {
+                 border-bottom: 1.5pt solid #DC2626;
+                 margin: 4pt -0.75in 10pt -0.75in;
+             }
+             
+             /* Main Content */
+             .main-title {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 text-align: center;
+                 text-decoration: underline;
+                 margin: 10pt 0 4pt 0;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .sub-title {
+                 font-size: 16pt;
+                 font-weight: bold;
+                 text-align: center;
+                 text-decoration: underline;
+                 margin-bottom: 12pt;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             .content-text {
+                 font-size: 12pt;
+                 text-align: justify;
+                 line-height: 1.15;
+                 margin-bottom: 6pt;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             /* Table Styles - Match PDF */
+             .income-table {
+                 width: 100%;
+                 border-collapse: collapse;
+                 margin: 6pt 0 6pt 0;
+                 font-family: 'Times New Roman', serif;
+                 font-size: 11pt;
+             }
+             
+             .income-table th {
+                 border: 0.75pt solid black;
+                 padding: 2pt 3pt;
+                 text-align: center;
+                 font-weight: bold;
+                 vertical-align: middle;
+                 background-color: #f8f8f8;
+             }
+             
+             .income-table td {
+                 border: 0.75pt solid black;
+                 padding: 1pt 4pt;
+                 vertical-align: middle;
+             }
+ 
+             .photo-table { 
+                 width: 100%; 
+                 border: none; 
+                 margin-top: 10pt;
+                 border-collapse: separate;
+                 border-spacing: 0 10pt;
+             }
+             
+             /* Signature */
+             .signature-block {
+                 margin-top: 30pt;
+                 text-align: right;
+                 font-size: 12pt;
+                 line-height: 1.15;
+             }
+             
+             /* Footer */
+             .footer-container {
+                 position: fixed;
+                 bottom: 0;
+                 left: 0.75in;
+                 right: 0.75in;
+                 padding-top: 6pt;
+                 border-top: 1.5pt solid #DC2626;
+                 background: white;
+             }
+             
+             .footer-content {
+                 display: flex;
+                 justify-content: space-between;
+                 font-size: 9pt;
+                 color: #DC2626;
+                 font-weight: bold;
+                 font-family: 'Times New Roman', serif;
+             }
+             
+             /* Superscript styling */
+             sup {
+                 vertical-align: super;
+                 font-size: 0.7em;
+                 line-height: 0;
+             }
+             
+             /* Utility */
+             .text-right {
+                 text-align: right;
+             }
+             
+             .text-center {
+                 text-align: center;
+             }
+             
+             .text-left {
+                 text-align: left;
+             }
+             
+             .text-red {
+                 color: #DC2626;
+             }
+             
+             .text-black {
+                 color: black;
+             }
+             
+             .font-bold {
+                 font-weight: bold;
+             }
+         </style>
+     </head>
+     <body style="margin: 0; padding: 0;">
+     
+     ${formData.includeHeader ? `
+     <!-- HEADER SECTION -->
+     <div class="header-container">
+         <table style="width: 100%; margin-bottom: 0;">
+             <tr>
+                 <td style="width: 20%; vertical-align: top; padding-left: 0;">
+                     <img src="${window.location.origin}/nepal_coat_of_arms.png" 
+                          width="${formData.logoSize}" 
+                          height="${(formData.logoSize * 1.3) / 1.42}"
+                          style="width: ${formData.logoSize}px; height: auto; display: block;" />
+                 </td>
+                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                     <div class="municipality-title">${formData.headerTitle}</div>
+                     <div class="ward-office">${formData.headerSubtitle}</div>
+                     <div class="address-line">${formData.headerAddress1}</div>
+                     <div class="address-line">${formData.headerAddress2}</div>
+                 </td>
+                 <td style="width: 20%;"></td>
+             </tr>
+         </table>
+         
+         <!-- Reference and Date -->
+         <div class="ref-date-row">
+             <div style="text-align: left;">
+                 <span class="text-red">Ref. No.:</span> 
+                 <span class="text-black">${formData.refNo}</span><br>
+                 <span class="text-red">Dis. No.:</span> 
+                 <span class="text-black">${formData.disNo}</span>
+             </div>
+             <div style="text-align: right;">
+                 <span class="text-red">Date:</span> 
+                 <span class="text-black">${addSuperscriptToDateString(formData.issueDate)}</span>
+             </div>
+         </div>
+         
+         <!-- Red Line -->
+         <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
+     </div>
+     ` : ''}
+     
+     <!-- MAIN CONTENT -->
+     <div class="main-title">Relationship Verification Certificate</div>
+     <div class="sub-title">To Whom It May Concern</div>
+     
+     <p class="content-text">
+         This is to certify that <strong>${formData.applicantName}</strong> a permanent resident of 
+         <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
+     </p>
+ 
+     <p class="content-text" style="font-size: 10pt;">
+         This relationship verification certificate is issued in accordance with the Local Government Operation 
+         Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
+     </p>
+     
+     <!-- RELATIONSHIP TABLE -->
+     <table class="income-table">
+         <thead>
+             <tr style="background-color:white;">
+                 <th style="width: 8%; text-align: center; background-color:white;">S.N.</th>
+                 <th style="width: 50%; background-color:white;">Name</th>
+                 <th style="width: 42%; background-color:white;">Relationship</th>
+             </tr>
+         </thead>
+         <tbody>
+             ${tableRows}
+         </tbody>
+     </table>
+ 
+     <p class="content-text" style="margin-bottom: 5pt; margin-top: 10pt;">The photographs of the persons mentioned above are attached below.</p>
+ 
+     <table class="photo-table">
+         ${photoRows.join('')}
+     </table>
+     
+     <!-- SIGNATURE -->
+     <div class="signature-block">
+         <div style="margin-bottom: 4pt;">......................................</div>
+         <div class="font-bold">${formData.signatoryName}</div>
+         <div class="font-bold">${formData.signatoryDesignation}</div>
+     </div>
+     
+     ${formData.includeFooter ? `
+     <div style="mso-element:footer" id="f1">
+         <div class="MsoFooter">
+             <!-- Red Line (matching header style) -->
+             <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                 <tr>
+                     <td width="50%" align="left">
+                         <p style="margin: 0; line-height: 1.0;">
+                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
+                         </p>
+                     </td>
+                     <td width="50%" align="right">
+                         <p style="margin: 0; line-height: 1.0; text-align: right;">
+                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                         </p>
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+     ` : ''}
+     
+     <div style="mso-element:section-pr" id="sec1">
+         <p class="MsoNormal">&nbsp;</p>
+     </div>
+     </body>
+     </html>
+     `;
 
-        body {
-          font-family: 'Times New Roman', serif;
-          font-size: 11pt;
-          line-height: 1.4;
-          text-align: justify;
-          margin: 0;
-          padding: 0;
-        }
+        // Create and download the Word document
+        const blob = new Blob(['\ufeff', content], {
+            type: 'application/msword;charset=utf-8'
+        });
 
-        .content-wrapper {
-          padding-left: 0.5in;
-          padding-right: 0.5in;
-        }
-
-        /* LAYOUT SPACERS */
-        .header-space { height: 15pt; } 
-        .footer-space { height: 15pt; }
-
-        /* CONTENT STYLES */
-        p { margin-bottom: 6pt; line-height: 1.2; text-align: justify; }
-        .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 5pt; font-weight: bold; }
-        .meta-left { text-align: left; vertical-align: top; }
-        .meta-right { text-align: right; vertical-align: bottom; }
-
-        .doc-title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; text-transform: none; margin-top: 5pt; margin-bottom: 5pt; }
-        .doc-subtitle { text-align: center; font-size: 12pt; font-weight: bold; text-decoration: underline; margin-top: 5pt; margin-bottom: 10pt; }
-
-          /* DATA TABLE */
-          .data-table { width: 100%; border-collapse: collapse; margin-top: 5pt; margin-bottom: 5pt; }
-          .data-table th, .data-table td { border: 1pt solid black; padding: 2pt; text-align: left; vertical-align: middle; }
-          
-          /* PHOTO TABLE (Ensures horizontal layout) */
-          .photo-table { width: 100%; border: none; margin-top: 5pt; page-break-inside: avoid; }
-          
-          /* SIGNATURE BLOCK */
-          .signature-table { width: 100%; margin-top: 15pt; border: none; }
-          .sig-td-left { width: 60%; }
-          .sig-td-right { width: 40%; text-align: right; vertical-align: bottom; }
-          
-          .signatory-name { font-weight: bold; font-size: 11pt; margin: 0; padding-bottom: 2pt; }
-          .signatory-title { font-size: 10pt; margin: 0; }
-        </style>
-      </head>
-      <body>
-        
-        ${formData.includeHeader ? `
-      <div class="content-wrapper" style="padding-top: 0.5in;">
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 0;">
-            <tr>
-            <td style="width: 20%; vertical-align: top; padding: 0;">
-                <img src="${logoBase64}" width="100" style="width: 100px; height: auto; display: block;" />
-            </td>
-            <td style="width: 60%; text-align: center; vertical-align: middle; padding: 0;">
-                <div style="font-size: 20pt; font-weight: bold; color: #b91c1c;">${formData.headerTitle}</div>
-                <div style="font-size: 16pt; font-weight: bold; color: #b91c1c;">${formData.headerSubtitle}</div>
-                <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress1}</div>
-                <div style="font-size: 12pt; font-weight: bold; color: #b91c1c;">${formData.headerAddress2}</div>
-            </td>
-            <td style="width: 20%;"></td>
-            </tr>
-        </table>
-
-        <table style="width: 100%; border-collapse: collapse; color: #DC2626; font-weight: bold; font-size: 10pt; margin-top: 5pt; margin-bottom: 2pt;">
-            <tr>
-                <td style="text-align: left; padding: 0;">
-                    <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
-                    <div><span style="color: #DC2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
-                </td>
-                <td style="text-align: right; vertical-align: bottom; padding: 0;">
-                    <span style="color: #DC2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.issueDate)}</span>
-                </td>
-            </tr>
-        </table>
-      </div>
-
-      <!-- Full width red line (Zero Margin) -->
-      <div style="border-bottom: 3px solid #DC2626; width: 100%; margin-bottom: 15pt;"></div>
-        ` : `<div style="height: 0.5in;"></div>`}
-
-      <div class="content-wrapper">
-        <div class="doc-title" style="text-decoration: underline; text-transform: none;">Relationship Verification Certificate</div>
-        <div class="doc-subtitle" style="text-decoration: underline;">To Whom It May Concern</div>
-
-        <p style="text-align: justify; line-height: 1.5;">
-          This is to certify that <strong>${formData.applicantName}</strong> a permanent resident of 
-          <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
-        </p>
-        <p style="text-align: justify; line-height: 1.5;">
-          This relationship verification certificate is issued in accordance with the Local Government Operation Act 
-          B.S. 2074 (2017 A.D.) Chapter 3, Section 12, Sub-section 2, Clause E (1).
-        </p>
-
-        <!-- RELATIONSHIP TABLE -->
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10pt; margin-bottom: 10pt;">
-            <thead>
-                <tr>
-                    <th style="border: 1pt solid black; padding: 2pt; background-color: #f3f4f6; text-align: center; width: 10%;">S.N.</th>
-                    <th style="border: 1pt solid black; padding: 2pt; background-color: #f3f4f6; text-align: left; width: 50%;">Name</th>
-                    <th style="border: 1pt solid black; padding: 2pt; background-color: #f3f4f6; text-align: left; width: 40%;">Relationship</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRows}
-            </tbody>
-        </table>
-
-        <p>The photographs of the persons mentioned above are attached below.</p>
-
-        <!-- PHOTO GRID (TABLE LAYOUT FOR WORD) -->
-        <table class="photo-table">
-            <tr>
-                ${photoCells}
-            </tr>
-        </table>
-
-                        <!-- SIGNATURE BLOCK -->
-        <div class="signature-block">
-            <div style="margin-bottom: 5pt;">................................................</div>
-            <strong>${formData.signatoryName}</strong><br>
-            <strong>${formData.signatoryDesignation}</strong>
-        </div>
-      </div>
-
-        ${formData.includeFooter ? `
-      <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; border-top: 3px solid #DC2626; background: white;">
-        <div style="padding: 5pt 0.5in;">
-            <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 9pt;">
-            <tr>
-                <td style="text-align: left;">Phone No.: +977-9856017304</td>
-                <td style="text-align: right;">E-mail: ${formData.footerEmail}</td>
-            </tr>
-            </table>
-        </div>
-      </div>
-        ` : `<div class="footer-space"></div>`}
-
-      </body>
-      </html>
-    `;
-
-        const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = `Relationship_Verification_${formData.applicantName.replace(/\s+/g, '_')}.doc`;
+        link.style.display = 'none';
+
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 100);
     };
 
     return (
@@ -480,85 +672,85 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                                 {/* Bold, Italic, Underline */}
                                 <button
                                     onClick={() => document.execCommand('bold')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 font-bold text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Bold (Ctrl+B)"
-                                >B</button>
+                                ><Bold size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('italic')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 italic text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Italic (Ctrl+I)"
-                                >I</button>
+                                ><Italic size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('underline')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 underline text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Underline (Ctrl+U)"
-                                >U</button>
+                                ><Underline size={14} /></button>
 
                                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                                 {/* Alignment */}
                                 <button
                                     onClick={() => document.execCommand('justifyLeft')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Align Left"
-                                >⬅</button>
+                                ><AlignLeft size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('justifyCenter')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Align Center"
-                                >⬌</button>
+                                ><AlignCenter size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('justifyRight')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Align Right"
-                                >➡</button>
+                                ><AlignRight size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('justifyFull')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Justify"
-                                >☰</button>
+                                ><AlignJustify size={14} /></button>
 
                                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                                 {/* Lists */}
                                 <button
                                     onClick={() => document.execCommand('insertUnorderedList')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Bullet List"
-                                >•</button>
+                                ><List size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('insertOrderedList')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Numbered List"
-                                >1.</button>
+                                ><ListOrdered size={14} /></button>
 
                                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                                 {/* Indent */}
                                 <button
                                     onClick={() => document.execCommand('outdent')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-xs border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Decrease Indent"
-                                >⇤</button>
+                                ><IndentDecrease size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('indent')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-xs border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Increase Indent"
-                                >⇥</button>
+                                ><IndentIncrease size={14} /></button>
 
                                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
                                 {/* Undo/Redo */}
                                 <button
                                     onClick={() => document.execCommand('undo')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Undo (Ctrl+Z)"
-                                >↩</button>
+                                ><Undo size={14} /></button>
                                 <button
                                     onClick={() => document.execCommand('redo')}
-                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-sm border border-gray-200"
+                                    className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 border border-gray-200"
                                     title="Redo (Ctrl+Y)"
-                                >↪</button>
+                                ><Redo size={14} /></button>
 
                                 <div className="w-px h-6 bg-gray-300 mx-1"></div>
 
@@ -567,7 +759,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                                     onClick={() => document.execCommand('removeFormat')}
                                     className="px-2 h-7 flex items-center justify-center rounded hover:bg-red-50 text-xs border border-gray-200 text-red-600"
                                     title="Clear Formatting"
-                                >Clear</button>
+                                ><RemoveFormatting size={14} /></button>
                             </div>
 
                             {/* Preview Container */}
@@ -577,7 +769,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                                     contentEditable={true}
                                     suppressContentEditableWarning={true}
                                     spellCheck={false}
-                                    className="bg-white shadow-lg w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
+                                    className="bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
                                     style={{ fontFamily: 'Times New Roman, serif' }}
                                 >
 

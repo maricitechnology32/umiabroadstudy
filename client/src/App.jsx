@@ -29,6 +29,7 @@ import Contact from './pages/public/Contact';
 import CareersManager from './pages/admin/CareersManager';
 import WebsiteManager from './pages/admin/WebsiteManager';
 import UniversityManager from './pages/dashboard/UniversityManager';
+import UniversityStudentList from './pages/dashboard/UniversityStudentList';
 import HelpSupport from './pages/HelpSupport';
 import TermsConditions from './pages/TermsConditions';
 import ActiveSessions from './components/security/ActiveSessions'; // Phase 2: Session Management
@@ -152,6 +153,16 @@ function App() {
             element={
               <PrivateRoute>
                 <UniversityManager />
+              </PrivateRoute>
+            }
+          />
+
+          {/* University Student List Route */}
+          <Route
+            path="/admin/universities/:universityId"
+            element={
+              <PrivateRoute>
+                <UniversityStudentList />
               </PrivateRoute>
             }
           />

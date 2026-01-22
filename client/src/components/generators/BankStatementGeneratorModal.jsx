@@ -9,6 +9,7 @@ import { getHolidays } from '../../features/holidays/holidaySlice';
 import { getTemplate, getTemplateList } from '../../config/bankTemplates';
 import { fetchNRBExchangeRate, formatExchangeRateDate } from '../../utils/nrbExchangeRate';
 import { getFormattedDate, addSuperscriptToDateString } from '../../utils/dateFormat';
+import { getCategoryBySurname, getRandomNameByCategory } from '../../utils/nepaliNames';
 
 export default function BankStatementGeneratorModal({ isOpen, onClose, student }) {
     if (!isOpen || !student) return null;
@@ -178,7 +179,7 @@ export default function BankStatementGeneratorModal({ isOpen, onClose, student }
 
     const removeLocalHoliday = (date) => {
         setLocalHolidays(localHolidays.filter(h => h !== date));
-    }; 
+    };
 
     const tileClassName = ({ date, view }) => {
         if (view !== 'month') return null;
@@ -244,9 +245,30 @@ export default function BankStatementGeneratorModal({ isOpen, onClose, student }
 
             const depositDescs = template.transactionDescriptions.deposits;
             const withdrawDescs = template.transactionDescriptions.withdrawals;
-            const desc = isDeposit
-                ? depositDescs[Math.floor(Math.random() * depositDescs.length)]
-                : withdrawDescs[Math.floor(Math.random() * withdrawDescs.length)];
+            const studentCategory = getCategoryBySurname(student.personalInfo?.lastName || '');
+
+            const getRandomDescription = (isDep) => {
+                const descs = isDep ? depositDescs : withdrawDescs;
+                let pick = descs[Math.floor(Math.random() * descs.length)];
+
+                // Personalize names if description indicates a third-party action (contains "by" but not "self")
+                if (pick.toLowerCase().includes('by') && !pick.toLowerCase().includes('self')) {
+                    const randomName = getRandomNameByCategory(studentCategory);
+                    // Standardize finding the "by " or "By " separator
+                    const separator = pick.includes('by ') ? 'by ' : (pick.includes('By ') ? 'By ' : null);
+                    if (separator) {
+                        return pick.split(separator)[0] + separator + randomName;
+                    }
+                    // Fallback for case variations without space
+                    const separatorNoSpace = pick.toLowerCase().includes('by') ? (pick.includes('by') ? 'by' : 'By') : null;
+                    if (separatorNoSpace) {
+                        return pick.split(separatorNoSpace)[0] + separatorNoSpace + ' ' + randomName;
+                    }
+                }
+                return pick;
+            };
+
+            let desc = getRandomDescription(isDeposit);
 
             generatedTxns.push({
                 date: validDate,
@@ -415,11 +437,7 @@ export default function BankStatementGeneratorModal({ isOpen, onClose, student }
                     tx.isDeposit = !tx.isDeposit;
                     tx.amount = Math.abs(tx.amount);
                     // Update description to match new type
-                    const depositDescs = template.transactionDescriptions.deposits;
-                    const withdrawDescs = template.transactionDescriptions.withdrawals;
-                    tx.desc = tx.isDeposit
-                        ? depositDescs[Math.floor(Math.random() * depositDescs.length)]
-                        : withdrawDescs[Math.floor(Math.random() * withdrawDescs.length)];
+                    tx.desc = getRandomDescription(tx.isDeposit);
                 }
 
                 // Update array

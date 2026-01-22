@@ -203,18 +203,41 @@
 //     }
 // };
 
-// // @desc    Get all students for current consultancy
-// // @route   GET /api/students
-// // @access  Private (Consultancy Admin)
-// exports.getStudents = async (req, res) => {
-//     try {
-//         const students = await Student.find({ consultancy: req.user.consultancyId })
-//             .populate('user', 'name email');
-//         res.status(200).json({ success: true, count: students.length, data: students });
-//     } catch (err) {
-//         res.status(400).json({ success: false, message: err.message });
-//     }
-// };
+// @desc    Get all students for current consultancy
+// @route   GET /api/students
+// @access  Private (Consultancy Admin)
+// @desc    Get all students for current consultancy
+// @route   GET /api/students
+// @access  Private (Consultancy Admin)
+exports.getStudents = async (req, res) => {
+    try {
+        const students = await Student.find({ consultancy: req.user.consultancyId })
+            .populate({
+                path: 'user',
+                select: 'name email role subRole'
+            })
+            .lean();
+
+        // STRICTLY Filter: Only return users who actually have the 'student' role
+        // This prevents staff members (who might have a generated student profile) from showing up
+        const validStudents = students.filter(student => {
+            if (!student.user) return false; // Orphaned record
+
+            // Check Role
+            if (student.user.role !== 'student') return false;
+
+            // Extra Safety: Check SubRole (Staff usually have subRoles)
+            if (student.user.subRole) return false;
+
+            return true;
+        });
+
+        res.status(200).json({ success: true, count: validStudents.length, data: validStudents });
+    } catch (err) {
+        console.error('getStudents Error:', err);
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
 
 // // @desc    Get current student's profile (For Student Login)
 // // @route   GET /api/students/me

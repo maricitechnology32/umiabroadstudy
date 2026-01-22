@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import { ArrowRight, Eye, Linkedin, Loader2, Mail, Target } from 'lucide-react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchAboutUs, reset } from '../../features/aboutUs/aboutUsSlice';
-import { Target, Eye, Heart, Users, Award, Globe, Loader2, Linkedin, Mail, ArrowRight } from 'lucide-react';
-import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import Navbar from '../../components/layout/Navbar';
+import { fetchAboutUs, reset } from '../../features/aboutUs/aboutUsSlice';
 import { fixImageUrl } from '../../utils/imageUtils';
-import BannerAd from '../../components/ads/BannerAd';
 
 
 const AboutUs = ({ isDashboard }) => {
@@ -36,7 +35,7 @@ const AboutUs = ({ isDashboard }) => {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primary-50">
 
                 {/* Hero Section */}
-                <section className="bg-primary-600 text-white py-12 mt-14">
+                <section className="bg-primary-600 text-white py-12 mt-32">
                     <div className="container mx-auto px-4 text-center">
                         <h1 className="text-2xl md:text-3xl font-bold mb-3">{aboutUs.title}</h1>
                         <p className="text-primary-100 max-w-2xl mx-auto leading-relaxed">
@@ -202,7 +201,7 @@ const AboutUs = ({ isDashboard }) => {
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link
-                                to="/inquiry"
+                                to="/inquiry/default"
                                 className="inline-flex items-center gap-2 px-8 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-200"
                             >
                                 Get Started

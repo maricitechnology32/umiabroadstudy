@@ -16,7 +16,7 @@ const { body, validationResult } = require('express-validator');
  */
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 requests per window
+    max: 500, // 500 requests per window
     message: {
         success: false,
         message: 'Too many login attempts. Please try again after 15 minutes.'
@@ -203,7 +203,11 @@ const setupSecurityMiddleware = (app) => {
         const sanitizeObject = (obj) => {
             if (!obj || typeof obj !== 'object') return obj;
 
-            const sanitized = Array.isArray(obj) ? [] : {};
+            if (Array.isArray(obj)) {
+                return obj.map(item => sanitizeObject(item));
+            }
+
+            const sanitized = {};
 
             for (const key in obj) {
                 // Check if key contains MongoDB operators
@@ -213,11 +217,7 @@ const setupSecurityMiddleware = (app) => {
                 }
 
                 // Recursively sanitize nested objects
-                if (typeof obj[key] === 'object' && obj[key] !== null) {
-                    sanitized[key] = sanitizeObject(obj[key]);
-                } else {
-                    sanitized[key] = obj[key];
-                }
+                sanitized[key] = sanitizeObject(obj[key]);
             }
 
             return sanitized;

@@ -136,149 +136,422 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
   // Get fiscal year labels for display
   const fiscalYearLabels = getFiscalYearLabels(startYear);
 
-  // Word Document Generator - Compact format
+  // Word Document Generator - Matches PDF exactly
   const generateWordDoc = () => {
-    // Generate Rows HTML - compact padding
+    // Parse fiscal year dates with superscript
+    const getFormattedFiscalDate = (dateObj) => {
+      const parts = parseDateParts(dateObj.toDateString()); // Reusing existing util if compatible or just formatting explicitly
+      // Note: TaxClearance imports parseDateParts but not parseFiscalDateParts? 
+      // Let's implement inline or use imports if available. 
+      // checking imports... TaxClearance imports { getThreeConsecutiveFiscalYears, getFiscalYearLabels, getDefaultStartYear } from '../../utils/nepaliFiscalYear';
+      // It does NOT import parseFiscalDateParts. I should verify if I can import it or just manually format.
+      // For now, I'll use a local formatter if needed or assume the dateObj is a Date.
+      // Actually, fiscalYearData objects have startDateObj as Date.
+      const day = dateObj.getDate();
+      const month = dateObj.toLocaleString('default', { month: 'long' });
+      const year = dateObj.getFullYear();
+      let suffix = 'th';
+      if (day % 10 === 1 && day !== 11) suffix = 'st';
+      else if (day % 10 === 2 && day !== 12) suffix = 'nd';
+      else if (day % 10 === 3 && day !== 13) suffix = 'rd';
+      return `${day}<sup>${suffix}</sup> ${month}, ${year} A.D.`;
+    };
+
+    // Generate table rows with exact PDF styling
     const tableRows = formData.incomeData.map((row, index) => `
-        <tr>
-            <td style="padding: 2pt 3pt; border: 1pt solid black; text-align: center; font-size: 9pt;">${index + 1}</td>
-            <td style="padding: 2pt 3pt; border: 1pt solid black; font-size: 9pt;">${row.source}</td>
-            <td style="padding: 2pt 3pt; border: 1pt solid black; text-align: right; font-size: 9pt;">${formatCurrency(row.amount1)}</td>
-            <td style="padding: 2pt 3pt; border: 1pt solid black; text-align: right; font-size: 9pt;">${formatCurrency(row.amount2)}</td>
-            <td style="padding: 2pt 3pt; border: 1pt solid black; text-align: right; font-size: 9pt;">${formatCurrency(row.amount3)}</td>
+        <tr style="height: 12pt;">
+            <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: center; font-size: 10pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: left; font-size: 10pt; font-family: 'Times New Roman', serif;">${row.source}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount1)}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount2)}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount3)}</td>
         </tr>
     `).join('');
 
     const content = `
-      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-      <head>
+    <!DOCTYPE html>
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
         <meta charset="utf-8">
-        <title>Tax Clearance Verification</title>
+        <title>Tax Clearance Verification Certificate</title>
+        <meta name=ProgId content=Word.Document>
+        <meta name=Generator content="Microsoft Word 15">
+        <meta name=Originator content="Microsoft Word 15">
+        <!--[if gte mso 9]>
+        <xml>
+            <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForBrowser/>
+            </w:WordDocument>
+        </xml>
+        <![endif]-->
         <style>
-          @page { margin: 0.4in 0.5in; size: A4; }
-          body { font-family: 'Times New Roman', serif; font-size: 10pt; line-height: 1.2; }
-          p { margin-bottom: 4pt; text-align: justify; }
-          .doc-title { text-align: center; font-size: 12pt; font-weight: bold; text-decoration: underline; margin-top: 5pt; margin-bottom: 3pt; }
-          .doc-subtitle { text-align: center; font-size: 10pt; font-weight: bold; text-decoration: underline; margin-bottom: 8pt; }
-          .data-table { width: 100%; border-collapse: collapse; margin-top: 3pt; margin-bottom: 6pt; font-size: 9pt; }
-          .data-table th, .data-table td { border: 1pt solid black; padding: 2pt 3pt; }
-          .data-table th { text-align: center; font-weight: bold; font-size: 8pt; }
-          .signature-block { text-align: right; margin-top: 20pt; font-size: 10pt; }
+            /* PAGE SETUP - Match PDF exactly */
+            @page WordSection1
+            {
+                size: 210.0mm 297.0mm;
+                margin: 0.4in 0.5in 0.4in 0.5in;
+                mso-header-margin: .2in;
+                mso-footer-margin: .2in;
+                mso-footer: f1;
+                mso-paper-source: 0;
+            }
+            div.WordSection1 { page: WordSection1; }
+            p.MsoFooter, li.MsoFooter, div.MsoFooter
+            {mso-style-priority:99;
+            margin:0in;
+            mso-pagination:widow-orphan;
+            tab-stops:center 3.0in right 6.0in;
+            font-size:9.0pt;
+            font-family:"Times New Roman",serif;}
+            
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Times New Roman', serif;
+                font-size: 12pt;
+                line-height: 1.15;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Header Styles - Match PDF */
+            .header-container {
+                width: 100%;
+                margin-bottom: 5pt;
+            }
+            
+            .municipality-title {
+                font-size: 24pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                margin-bottom: 3pt;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .ward-office {
+                font-size: 18pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                margin-bottom: 3pt;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .address-line {
+                font-size: 16pt;
+                font-weight: bold;
+                color: #DC2626;
+                line-height: 1;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .ref-date-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 8pt;
+                margin-bottom: 4pt;
+                font-weight: bold;
+            }
+            
+            .red-line {
+                border-bottom: 1.5pt solid #DC2626;
+                margin: 4pt -0.75in 10pt -0.75in;
+            }
+            
+            /* Main Content */
+            .main-title {
+                font-size: 16pt;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+                margin: 4pt 0 2pt 0;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .sub-title {
+                font-size: 16pt;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+                margin-bottom: 8pt;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            .content-text {
+                font-size: 12pt;
+                text-align: justify;
+                line-height: 1.1;
+                margin-bottom: 4pt;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            /* Table Styles - Match PDF */
+            .income-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 6pt 0 6pt 0;
+                font-family: 'Times New Roman', serif;
+                font-size: 10pt;
+            }
+            
+            .income-table th {
+                border: 0.75pt solid black;
+                padding: 0.5pt 3pt;
+                text-align: center;
+                font-weight: bold;
+                vertical-align: middle;
+            }
+            
+            .income-table td {
+                border: 0.75pt solid black;
+                padding: 0pt 4pt;
+                vertical-align: middle;
+            }
+            
+            .total-row {
+                font-weight: bold;
+            }
+            
+            /* Lists */
+            ol {
+                margin: 2pt 0 8pt 25pt;
+                padding: 0;
+                font-size: 12pt;
+                line-height: 1.15;
+            }
+            
+            li {
+                margin-bottom: 2pt;
+            }
+            
+            /* Signature */
+            .signature-block {
+                margin-top: 30pt;
+                text-align: right;
+                font-size: 12pt;
+                line-height: 1.15;
+            }
+            
+            /* Footer */
+            .footer-container {
+                position: fixed;
+                bottom: 0;
+                left: 0.75in;
+                right: 0.75in;
+                padding-top: 6pt;
+                border-top: 1.5pt solid #DC2626;
+                background: white;
+            }
+            
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                font-size: 9pt;
+                color: #DC2626;
+                font-weight: bold;
+                font-family: 'Times New Roman', serif;
+            }
+            
+            /* Superscript styling */
+            sup {
+                vertical-align: super;
+                font-size: 0.7em;
+                line-height: 0;
+            }
+            
+            /* Utility */
+            .text-right {
+                text-align: right;
+            }
+            
+            .text-center {
+                text-align: center;
+            }
+            
+            .text-left {
+                text-align: left;
+            }
+            
+            .text-red {
+                color: #DC2626;
+            }
+            
+            .text-black {
+                color: black;
+            }
+            
+            .font-bold {
+                font-weight: bold;
+            }
         </style>
-      </head>
-      <body>
+    </head>
+    <body style="margin: 0; padding: 0;">
+    
+    ${formData.includeHeader ? `
+    <!-- HEADER SECTION -->
+    <div class="header-container">
+        <table style="width: 100%; margin-bottom: 0;">
+            <tr>
+                <td style="width: 20%; vertical-align: top; padding-left: 0;">
+                    <img src="${window.location.origin}/nepal_coat_of_arms.png" 
+                         width="${formData.logoSize}" 
+                         height="${(formData.logoSize * 1.3) / 1.42}"
+                         style="width: ${formData.logoSize}px; height: auto; display: block;" />
+                </td>
+                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                    <div class="municipality-title">${formData.headerTitle}</div>
+                    <div class="ward-office">${formData.headerSubtitle}</div>
+                    <div class="address-line">${formData.headerAddress1}</div>
+                    <div class="address-line">${formData.headerAddress2}</div>
+                </td>
+                <td style="width: 20%;"></td>
+            </tr>
+        </table>
         
-        ${formData.includeHeader ? `
-        <table style="width: 100%; margin-bottom: 3pt;">
-          <tr>
-            <td style="width: 20%; vertical-align: top; padding-left: 3pt;">
-               <img src="${window.location.origin}/nepal_coat_of_arms.png" width="90" height="auto" />
-            </td>
-            <td style="width: 60%; text-align: center; vertical-align: middle;">
-              <div style="font-size: 20pt; font-weight: bold; color: #dc2626;">${formData.headerTitle}</div>
-              <div style="font-size: 16pt; font-weight: bold; color: #dc2626;">${formData.headerSubtitle}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress1}</div>
-              <div style="font-size: 12pt; font-weight: bold; color: #dc2626;">${formData.headerAddress2}</div>
-            </td>
-            <td style="width: 20%;"></td>
-          </tr>
-        </table>
-
-        <table style="width: 100%; color: #DC2626; font-weight: bold; font-size: 10pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #DC2626; padding-bottom: 3pt;">
-          <tr>
-              <td style="text-align: left;">
-                  <div><span style="color: #DC2626;">Ref. No.:</span> <span style="color: black;">${formData.refNo}</span></div>
-                  <div><span style="color: #DC2626;">Dis. No.:</span> <span style="color: black;">${formData.disNo}</span></div>
-              </td>
-              <td style="text-align: right; vertical-align: bottom;">
-                  <span style="color: #DC2626;">Date:</span> <span style="color: black;">${addSuperscriptToDateString(formData.date)}</span>
-              </td>
-          </tr>
-        </table>
-        ` : ''}
-
-        <div class="doc-title">Tax Clearance Verification Certificate</div>
-        <div class="doc-subtitle">To Whom It May Concern</div>
-
-        <p style="font-size: 10pt;">
-          This is to certify that <strong>${formData.parentName}</strong> ${formData.relation} of 
-          <strong> ${formData.studentName}</strong> the permanent resident of 
-          <strong>${formData.addressLine}</strong>, Nepal has been regularly paying all the government taxes up to fiscal year ${fiscalYearLabels[2]} as per government rules and regulation. 
-          The tax status is given below:
-        </p>
-
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th rowspan="2" style="width: 30px;">S.N.</th>
-                    <th rowspan="2">Income Headings</th>
-                    <th colspan="3">Annual Income Per Mentioned Fiscal Year In NPR</th>
-                </tr>
-                <tr>
-                    <th style="width: 80px;">${fiscalYearLabels[0]}</th>
-                    <th style="width: 80px;">${fiscalYearLabels[1]}</th>
-                    <th style="width: 80px;">${fiscalYearLabels[2]}</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRows}
-                <tr style="font-weight: bold;">
-                    <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt;">Total Amount (NPR)</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[0])}</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[1])}</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[2])}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt; font-weight: bold;">Tax Amount</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Nil</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Nil</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Nil</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt; font-weight: bold;">Income after Tax</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[0])}</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[1])}</td>
-                    <td style="text-align: right; border: 1pt solid black; font-size: 9pt;">${formatCurrency(totals.totalNPR[2])}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: right; padding-right: 3pt; border: 1pt solid black; font-size: 9pt; font-weight: bold;">Status</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Tax Cleared</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Tax Cleared</td>
-                    <td style="text-align: center; border: 1pt solid black; font-size: 9pt;">Tax Cleared</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p style="font-size: 8pt; text-align: justify; margin-bottom: 2pt;">
-            <strong>Note:</strong> We also state that Government Tax is exemptions for agriculture income according to the Income Tax
-            Act 2058 B.S. (2002 A.D.), Chapter 4 (11) (1). (Source: www.lawcommission.gov.np, www.ird.gov.np).
-            Therefore, no tax has been issued for their agriculture income.
-        </p>
-
-        <div class="signature-block">
-            <div style="margin-bottom: 3pt;">........................................</div>
-            <strong>${formData.signatoryName}</strong><br>
-            <strong>${formData.signatoryDesignation}</strong>
+        <!-- Reference and Date -->
+        <div class="ref-date-row">
+            <div style="text-align: left;">
+                <span class="text-red">Ref. No.:</span> 
+                <span class="text-black">${formData.refNo}</span><br>
+                <span class="text-red">Dis. No.:</span> 
+                <span class="text-black">${formData.disNo}</span>
+            </div>
+            <div style="text-align: right;">
+                <span class="text-red">Date:</span> 
+                <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
+            </div>
         </div>
-
-        ${formData.includeFooter ? `
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 3pt 0; border-top: 1.5pt solid #DC2626; background: white;">
-          <span style="font-size: 8pt; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone} | E-mail: ${formData.footerEmail}</span>
+        
+        <!-- Red Line -->
+        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 2pt; margin-bottom: 6pt; mso-margin-top-alt: 2pt; mso-margin-bottom-alt: 6pt;">&nbsp;</p>
+    </div>
+    ` : ''}
+    
+    <!-- MAIN CONTENT -->
+    <div class="main-title">Tax Clearance Verification Certificate</div>
+    <div class="sub-title">To Whom It May Concern</div>
+    
+    <p class="content-text">
+        This is to certify that <strong>${formData.parentName}</strong> ${formData.relation} of 
+        <strong> ${formData.studentName}</strong> the permanent resident of 
+        <strong>${formData.addressLine}</strong>, has been regularly paying all the government taxes up to fiscal year ${fiscalYearLabels[2]} as per government rules and regulation. 
+        The tax status is given below:
+    </p>
+    
+    <!-- INCOME TABLE -->
+    <table class="income-table">
+        <thead>
+            <tr>
+                <th rowspan="2" style="width: 40px;">S.N.</th>
+                <th rowspan="2">Income Headings</th>
+                <th colspan="3">Annual Income Per Mentioned Fiscal Year In NPR</th>
+            </tr>
+            <tr>
+                <th style="width: 90px;">${fiscalYearLabels[0]}</th>
+                <th style="width: 90px;">${fiscalYearLabels[1]}</th>
+                <th style="width: 90px;">${fiscalYearLabels[2]}</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${tableRows}
+            <!-- Total Row - NPR -->
+            <tr class="total-row" style="height: 12pt;">
+                <td colspan="2" style="text-align: right; padding-right: 8pt; font-weight: bold;">Total Amount (NPR)</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[0])}</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[1])}</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[2])}</td>
+            </tr>
+             <!-- Tax Rows -->
+             <tr style="height: 12pt;">
+                <td colspan="2" style="text-align: right; padding-right: 8pt; font-weight: bold;">Tax Amount</td>
+                <td class="text-center" style="font-weight: bold;">Nil</td>
+                <td class="text-center" style="font-weight: bold;">Nil</td>
+                <td class="text-center" style="font-weight: bold;">Nil</td>
+            </tr>
+            <tr style="height: 12pt;">
+                <td colspan="2" style="text-align: right; padding-right: 8pt; font-weight: bold;">Income after Tax</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[0])}</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[1])}</td>
+                <td class="text-right" style="font-weight: bold;">${formatCurrency(totals.totalNPR[2])}</td>
+            </tr>
+            <tr style="height: 12pt;">
+                <td colspan="2" style="text-align: right; padding-right: 8pt; font-weight: bold;">Status</td>
+                <td class="text-center" style="font-weight: bold;">Tax Cleared</td>
+                <td class="text-center" style="font-weight: bold;">Tax Cleared</td>
+                <td class="text-center" style="font-weight: bold;">Tax Cleared</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p class="content-text" style="font-size: 10pt;">
+        <strong>Note:</strong> We also state that Government Tax is exemptions for agriculture income according to the Income Tax
+        Act 2058 B.S. (2002 A.D.), Chapter 4 (11) (1). (Source: www.lawcommission.gov.np, www.ird.gov.np).
+        Therefore, no tax has been issued for their agriculture income.
+    </p>
+    
+    <!-- SIGNATURE -->
+    <div class="signature-block">
+        <div style="margin-bottom: 4pt;">......................................</div>
+        <div class="font-bold">${formData.signatoryName}</div>
+        <div class="font-bold">${formData.signatoryDesignation}</div>
+    </div>
+    
+    ${formData.includeFooter ? `
+    <div style="mso-element:footer" id="f1">
+        <div class="MsoFooter">
+            <!-- Red Line (matching header style) -->
+            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+            <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr>
+                    <td width="50%" align="left">
+                        <p style="margin: 0; line-height: 1.0;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                        </p>
+                    </td>
+                    <td width="50%" align="right">
+                        <p style="margin: 0; line-height: 1.0; text-align: right;">
+                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
         </div>
-        ` : ''}
-
-      </body>
-      </html>
+    </div>
+    ` : ''}
+    
+    <div style="mso-element:section-pr" id="sec1">
+        <p class="MsoNormal">&nbsp;</p>
+    </div>
+    </body>
+    </html>
     `;
 
-    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    // Create and download the Word document
+    const blob = new Blob(['\ufeff', content], {
+      type: 'application/msword;charset=utf-8'
+    });
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = `Tax_Clearance_${formData.studentName.replace(/\s+/g, '_')}.doc`;
+    link.style.display = 'none';
+
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+
+    // Cleanup
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 100);
   };
 
   return (
@@ -426,7 +699,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                       </div>
                     </div>
 
-                    <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
+                    <div className="border-b-[3px] border-red-600 mb-1 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
                   </>
                 )}
 
@@ -434,65 +707,65 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                   Tax Clearance Verification Certificate
                 </div>
 
-                <div className="text-center font-bold underline mb-6" style={{ fontSize: '16pt' }}>
+                <div className="text-center font-bold underline mb-4" style={{ fontSize: '16pt' }}>
                   To Whom It May Concern
                 </div>
 
-                <p className="mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
+                <p className="mb-2 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
                   This is to certify that <strong>{formData.parentName}</strong> {formData.relation} of
                   <strong>   {formData.studentName}</strong> the permanent resident of
-                  <strong> {formData.addressLine}</strong>, Nepal has been regularly paying all the government taxes up to fiscal year {fiscalYearLabels[2]} as per government rules and regulation.
+                  <strong> {formData.addressLine}</strong>,  has been regularly paying all the government taxes up to fiscal year {fiscalYearLabels[2]} as per government rules and regulation.
                   The tax status is given below:
                 </p>
 
                 {/* TABLE PREVIEW */}
-                <table className="w-full border-collapse border border-black mb-1 text-right leading-none" style={{ fontSize: '12pt' }}>
+                <table className="w-full border-collapse border border-black mb-1 text-right leading-none" style={{ fontSize: '10pt' }}>
                   <thead>
                     <tr className="text-center">
-                      <th rowSpan="2" className="border border-black px-1 py-[1px] w-8">S.N.</th>
-                      <th rowSpan="2" className="border border-black px-1 py-[1px] text-left">Income Headings</th>
-                      <th colSpan="3" className="border border-black px-1 py-[1px]">Annual Income Per Mentioned Fiscal Year In NPR</th>
+                      <th rowSpan="2" className="border border-black px-1 py-0 w-8">S.N.</th>
+                      <th rowSpan="2" className="border border-black px-1 py-0 text-left">Income Headings</th>
+                      <th colSpan="3" className="border border-black px-1 py-0">Annual Income Per Mentioned Fiscal Year In NPR</th>
                     </tr>
                     <tr className="text-center">
-                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[0]}</th>
-                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[1]}</th>
-                      <th className="border border-black px-1 py-[1px]">{fiscalYearLabels[2]}</th>
+                      <th className="border border-black px-1 py-0">{fiscalYearLabels[0]}</th>
+                      <th className="border border-black px-1 py-0">{fiscalYearLabels[1]}</th>
+                      <th className="border border-black px-1 py-0">{fiscalYearLabels[2]}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {formData.incomeData.map((row, idx) => (
                       <tr key={idx}>
-                        <td className="border border-black px-1 py-[1px] text-center">{idx + 1}</td>
-                        <td className="border border-black px-1 py-[1px] text-left">{row.source}</td>
-                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount1)}</td>
-                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount2)}</td>
-                        <td className="border border-black px-1 py-[1px]">{formatCurrency(row.amount3)}</td>
+                        <td className="border border-black px-1 py-0 text-center">{idx + 1}</td>
+                        <td className="border border-black px-1 py-0 text-left">{row.source}</td>
+                        <td className="border border-black px-1 py-0">{formatCurrency(row.amount1)}</td>
+                        <td className="border border-black px-1 py-0">{formatCurrency(row.amount2)}</td>
+                        <td className="border border-black px-1 py-0">{formatCurrency(row.amount3)}</td>
                       </tr>
                     ))}
                     {/* TOTALS */}
                     <tr className="font-bold">
-                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right">Total Amount (NPR)</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[0])}</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[1])}</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[2])}</td>
+                      <td colSpan="2" className="border border-black px-1 py-0 text-right">Total Amount (NPR)</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[0])}</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[1])}</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[2])}</td>
                     </tr>
-                    <tr>
-                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Tax Amount</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Nil</td>
+                    <tr className="font-bold">
+                      <td colSpan="2" className="border border-black px-1 py-0 text-right">Tax Amount</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Nil</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Nil</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Nil</td>
                     </tr>
-                    <tr>
-                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Income after Tax</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[0])}</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[1])}</td>
-                      <td className="border border-black px-1 py-[1px]">{formatCurrency(totals.totalNPR[2])}</td>
+                    <tr className="font-bold">
+                      <td colSpan="2" className="border border-black px-1 py-0 text-right">Income after Tax</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[0])}</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[1])}</td>
+                      <td className="border border-black px-1 py-0 font-bold">{formatCurrency(totals.totalNPR[2])}</td>
                     </tr>
-                    <tr>
-                      <td colSpan="2" className="border border-black px-1 py-[1px] text-right font-bold">Status</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
-                      <td className="border border-black px-1 py-[1px] text-center">Tax Cleared</td>
+                    <tr className="font-bold">
+                      <td colSpan="2" className="border border-black px-1 py-0 text-right">Status</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Tax Cleared</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Tax Cleared</td>
+                      <td className="border border-black px-1 py-0 text-center font-bold">Tax Cleared</td>
                     </tr>
                   </tbody>
                 </table>
