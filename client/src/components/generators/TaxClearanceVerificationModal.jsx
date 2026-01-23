@@ -20,7 +20,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
     // Document options
     includeHeader: true,
     includeFooter: true,
-    logoSize: 136,
+    logoSize: 174,
 
     // Header info (will be dynamically set from student)
     headerTitle: 'Machhapuchhre Rural Municipality',
@@ -160,11 +160,11 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
     // Generate table rows with exact PDF styling
     const tableRows = formData.incomeData.map((row, index) => `
         <tr style="height: 12pt;">
-            <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: center; font-size: 10pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
-            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: left; font-size: 10pt; font-family: 'Times New Roman', serif;">${row.source}</td>
-            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount1)}</td>
-            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount2)}</td>
-            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 10pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount3)}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: center; font-size: 12pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: left; font-size: 12pt; font-family: 'Times New Roman', serif;">${row.source}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 12pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount1)}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 12pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount2)}</td>
+            <td style="border: 0.75pt solid black; padding: 0pt 4pt; text-align: right; font-size: 12pt; font-family: 'Times New Roman', serif;">${formatCurrency(row.amount3)}</td>
         </tr>
     `).join('');
 
@@ -223,7 +223,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             }
             
             .municipality-title {
-                font-size: 24pt;
+                font-size: 28pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
@@ -233,7 +233,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             }
             
             .ward-office {
-                font-size: 18pt;
+                font-size: 20pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
@@ -243,7 +243,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             }
             
             .address-line {
-                font-size: 16pt;
+                font-size: 18pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
@@ -258,6 +258,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 margin-top: 8pt;
                 margin-bottom: 4pt;
                 font-weight: bold;
+                font-size: 16pt;
             }
             
             .red-line {
@@ -298,7 +299,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 border-collapse: collapse;
                 margin: 6pt 0 6pt 0;
                 font-family: 'Times New Roman', serif;
-                font-size: 10pt;
+                font-size: 12pt;
             }
             
             .income-table th {
@@ -405,7 +406,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                          height="${(formData.logoSize * 1.3) / 1.42}"
                          style="width: ${formData.logoSize}px; height: auto; display: block;" />
                 </td>
-                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 12pt;">
                     <div class="municipality-title">${formData.headerTitle}</div>
                     <div class="ward-office">${formData.headerSubtitle}</div>
                     <div class="address-line">${formData.headerAddress1}</div>
@@ -416,18 +417,33 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
         </table>
         
         <!-- Reference and Date -->
-        <div class="ref-date-row">
-            <div style="text-align: left;">
-                <span class="text-red">Ref. No.:</span> 
-                <span class="text-black">${formData.refNo}</span><br>
-                <span class="text-red">Dis. No.:</span> 
-                <span class="text-black">${formData.disNo}</span>
-            </div>
-            <div style="text-align: right;">
-                <span class="text-red">Date:</span> 
-                <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
-            </div>
-        </div>
+    <!-- Reference and Date -->
+    <!-- Reference and Date - Robust 2x2 Table Arrangement -->
+    <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2pt; margin-bottom: 0px; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+        <tr>
+            <td width="50%" align="left" valign="top" style="padding: 0;">
+                <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Ref. No.:</span> 
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.refNo}</span>
+                </p>
+            </td>
+            <td width="50%" align="right" valign="top" style="padding: 0;"></td>
+        </tr>
+        <tr>
+            <td width="50%" align="left" valign="top" style="padding: 0;">
+                <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Dis. No.:</span> 
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.disNo}</span>
+                </p>
+            </td>
+            <td width="50%" align="right" valign="top" style="padding: 0; text-align: right;">
+                <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Date:</span> 
+                    <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${addSuperscriptToDateString(formData.date)}</span>
+                </p>
+            </td>
+        </tr>
+    </table>
         
         <!-- Red Line -->
         <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 2pt; margin-bottom: 6pt; mso-margin-top-alt: 2pt; mso-margin-bottom-alt: 6pt;">&nbsp;</p>
@@ -435,8 +451,13 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
     ` : ''}
     
     <!-- MAIN CONTENT -->
-    <div class="main-title">Tax Clearance Verification Certificate</div>
-    <div class="sub-title">To Whom It May Concern</div>
+    <p align="center" style="margin: 0; margin-bottom: 2pt; text-align: center; line-height: 1.0;">
+        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; text-decoration: underline;">Tax Clearance Verification Certificate</span>
+    </p>
+
+    <p align="center" style="margin: 0; margin-bottom: 12pt; text-align: center; line-height: 1.0;">
+        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; text-decoration: underline;">To Whom It May Concern</span>
+    </p>
     
     <p class="content-text">
         This is to certify that <strong>${formData.parentName}</strong> ${formData.relation} of 
@@ -490,7 +511,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
         </tbody>
     </table>
     
-    <p class="content-text" style="font-size: 10pt;">
+    <p class="content-text" style="font-size: 12pt;">
         <strong>Note:</strong> We also state that Government Tax is exemptions for agriculture income according to the Income Tax
         Act 2058 B.S. (2002 A.D.), Chapter 4 (11) (1). (Source: www.lawcommission.gov.np, www.ird.gov.np).
         Therefore, no tax has been issued for their agriculture income.
@@ -510,14 +531,14 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
             <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
                 <tr>
-                    <td width="50%" align="left">
+                    <td width="40%" align="left">
                         <p style="margin: 0; line-height: 1.0;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold; white-space: nowrap;">Phone No.: ${formData.footerPhone}</span>
                         </p>
                     </td>
-                    <td width="50%" align="right">
+                    <td width="60%" align="right">
                         <p style="margin: 0; line-height: 1.0; text-align: right;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold; white-space: nowrap;">E-mail: ${formData.footerEmail}</span>
                         </p>
                     </td>
                 </tr>
@@ -673,17 +694,19 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 {/* Conditional Header - Red Theme */}
                 {formData.includeHeader && (
                   <>
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="w-32">
+                    <div className="relative mb-4 min-h-[140px]">
+                      {/* Logo - Absolute Left */}
+                      <div className="absolute -left-6 top-0">
                         <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                       </div>
-                      <div className="text-center flex-1">
-                        <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                        <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                        <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                        <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
+
+                      {/* Text - Centered (Full Width) */}
+                      <div className="text-center w-full px-4">
+                        <div className="font-bold text-[#DC2626]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '6px' }}>{formData.headerTitle}</div>
+                        <div className="font-bold text-[#DC2626]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
+                        <div className="font-bold text-[#DC2626]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerAddress1}</div>
+                        <div className="font-bold text-[#DC2626]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                       </div>
-                      <div className="w-32"></div>
                     </div>
 
                     <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
@@ -719,7 +742,7 @@ export default function TaxClearanceVerificationModal({ isOpen, onClose, student
                 </p>
 
                 {/* TABLE PREVIEW */}
-                <table className="w-full border-collapse border border-black mb-1 text-right leading-none" style={{ fontSize: '10pt' }}>
+                <table className="w-full border-collapse border border-black mb-1 text-right leading-none" style={{ fontSize: '12pt' }}>
                   <thead>
                     <tr className="text-center">
                       <th rowSpan="2" className="border border-black px-1 py-0 w-8">S.N.</th>

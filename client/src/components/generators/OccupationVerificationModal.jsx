@@ -10,7 +10,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
     // Document options
     includeHeader: true,
     includeFooter: true,
-    logoSize: 136,
+    logoSize: 174,
 
     // Header info
     headerTitle: 'Bheemdatta Municipality',
@@ -141,8 +141,9 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
             margin:0in;
             mso-pagination:widow-orphan;
             tab-stops:center 3.0in right 6.0in;
-            font-size:9.0pt;
-            font-family:"Times New Roman",serif;}
+            font-size:14.0pt;
+            font-family:"Times New Roman",serif;
+            }
             
             body {
                 margin: 0;
@@ -154,11 +155,11 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
             
             /* Header Styles */
             .header-container { width: 100%; margin-bottom: 5pt; }
-            .municipality-title { font-size: 24pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
-            .ward-office { font-size: 18pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
-            .address-line { font-size: 16pt; font-weight: bold; color: #DC2626; line-height: 1; text-align: center; }
+            .municipality-title { font-size: 28pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
+            .ward-office { font-size: 24pt; font-weight: bold; color: #DC2626; line-height: 1; margin-bottom: 3pt; text-align: center; }
+            .address-line { font-size: 20pt; font-weight: bold; color: #DC2626; line-height: 1; text-align: center; }
             
-            .ref-date-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8pt; margin-bottom: 4pt; font-weight: bold; }
+            .ref-date-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8pt; margin-bottom: 4pt; font-weight: bold; font-size: 16pt; }
             .red-line { border-bottom: 1.5pt solid #DC2626; margin: 4pt -0.75in 10pt -0.75in; }
             
             /* Main Content */
@@ -203,15 +204,32 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                 </tr>
             </table>
             
-            <div class="ref-date-row">
-                <div style="text-align: left;">
-                    <span class="text-red">Ref. No.:</span> <span class="text-black">${formData.refNo}</span><br>
-                    <span class="text-red">Dis. No.:</span> <span class="text-black">${formData.disNo}</span>
-                </div>
-                <div style="text-align: right;">
-                    <span class="text-red">Date:</span> <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
-                </div>
-            </div>
+            <!-- Reference and Date - Robust 2x2 Table Arrangement -->
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2pt; margin-bottom: 0px; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr>
+                    <td width="50%" align="left" valign="top" style="padding: 0;">
+                        <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Ref. No.:</span> 
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.refNo}</span>
+                        </p>
+                    </td>
+                    <td width="50%" align="right" valign="top" style="padding: 0;"></td>
+                </tr>
+                <tr>
+                    <td width="50%" align="left" valign="top" style="padding: 0;">
+                        <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Dis. No.:</span> 
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.disNo}</span>
+                        </p>
+                    </td>
+                    <td width="50%" align="right" valign="top" style="padding: 0; text-align: right;">
+                        <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Date:</span> 
+                            <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${addSuperscriptToDateString(formData.date)}</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
             
             <!-- Red Line -->
             <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
@@ -240,7 +258,7 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
             </tbody>
         </table>
 
-        <p class="content-text" style="font-size: 11pt; margin-top: 10pt;">
+        <p class="content-text" style="font-size: 12pt; margin-top: 10pt;">
             Note: According to the Government of Nepal, taxes are exempted for the income from Agriculture. So, it is not necessary to register on PAN. Therefore, <strong>${formData.parentName}</strong> isn't registered on PAN.
         </p>
 
@@ -261,12 +279,12 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                     <tr>
                         <td width="50%" align="left">
                             <p style="margin: 0; line-height: 1.0;">
-                                <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                                <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
                             </p>
                         </td>
                         <td width="50%" align="right">
                             <p style="margin: 0; line-height: 1.0; text-align: right;">
-                                <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                                <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
                             </p>
                         </td>
                     </tr>
@@ -422,26 +440,28 @@ export default function OccupationVerificationModal({ isOpen, onClose, student }
                   {/* Conditional Header - Red Theme with Logo */}
                   {formData.includeHeader && (
                     <>
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="w-32">
+                      <div className="relative mb-4 min-h-[140px]">
+                        {/* Logo - Absolute Left */}
+                        <div className="absolute -left-6 top-0">
                           <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                         </div>
-                        <div className="text-center flex-1">
-                          <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
+
+                        {/* Text - Centered (Full Width) */}
+                        <div className="text-center w-full px-4">
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '6px' }}>{formData.headerTitle}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerAddress1}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                         </div>
-                        <div className="w-32"></div>
                       </div>
 
-                      <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
-                        <div className="text-red-600">
-                          <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
-                          <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
+                      <div className="flex justify-between mb-1" style={{ fontSize: '16pt', lineHeight: '1.1', fontWeight: 'bold' }}>
+                        <div style={{ color: '#741313ff' }}>
+                          <div style={{ marginBottom: '2px' }}>Ref. No.: <span style={{ color: 'black', fontWeight: 'bold' }}>{formData.refNo}</span></div>
+                          <div>Dis. No.: <span style={{ color: 'black', fontWeight: 'bold' }}>{formData.disNo}</span></div>
                         </div>
-                        <div className="self-end text-red-600">
-                          Date: <span className="text-black">{(() => {
+                        <div className="self-end" style={{ color: '#741313ff' }}>
+                          Date: <span style={{ color: 'black', fontWeight: 'bold' }}>{(() => {
                             const d = parseDateParts(formData.date);
                             return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
                           })()}</span>

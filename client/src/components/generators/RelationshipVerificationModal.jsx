@@ -28,7 +28,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
         // Document options
         includeHeader: true,
         includeFooter: true,
-        logoSize: 136, // Logo size in pixels (adjustable)
+        logoSize: 174, // Logo size in pixels (adjustable)
 
         // Header info
         // Header info
@@ -209,9 +209,9 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
     const generateWordDoc = () => {
         const tableRows = formData.relatives.map((rel, index) => `
      <tr style="height: 20pt; background-color:white;">
-         <td style="border: 0.75pt solid black; padding: 1pt 2pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
-         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: left; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.name}</td>
-         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
+         <td style="border: 0.75pt solid black; padding: 1pt 2pt; text-align: center; font-size: 12pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: left; font-size: 12pt; font-family: 'Times New Roman', serif;">${rel.name}</td>
+         <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: center; font-size: 12pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
      </tr>
  `).join('');
 
@@ -219,8 +219,8 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
         const photoCells = formData.relatives.map(rel => `
          <td style="text-align: center; vertical-align: top; padding: 5pt 2pt; width: 33%;">
              <div style="width: 80pt; height: 90pt; border: 0.75pt solid #000; margin: 0 auto; display: block;"></div>
-             <div style="margin-top: 4pt; font-weight: bold; font-size: 10pt; font-family: 'Times New Roman', serif;">${rel.name}</div>
-             <div style="font-size: 9pt; font-family: 'Times New Roman', serif;">(${rel.relation})</div>
+             <div style="margin-top: 4pt; font-weight: bold; font-size: 12pt; font-family: 'Times New Roman', serif;">${rel.name}</div>
+             <div style="font-size: 12pt; font-family: 'Times New Roman', serif;">(${rel.relation})</div>
          </td>
      `);
 
@@ -265,7 +265,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
              margin:0in;
              mso-pagination:widow-orphan;
              tab-stops:center 3.0in right 6.0in;
-             font-size:9.0pt;
+             font-size:12.0pt;
              font-family:"Times New Roman",serif;}
              
              body {
@@ -285,7 +285,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
              }
              
              .municipality-title {
-                 font-size: 24pt;
+                 font-size: 28pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -295,7 +295,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
              }
              
              .ward-office {
-                 font-size: 18pt;
+                 font-size: 20pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -305,7 +305,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
              }
              
              .address-line {
-                 font-size: 16pt;
+                 font-size: 18pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -360,7 +360,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                  border-collapse: collapse;
                  margin: 6pt 0 6pt 0;
                  font-family: 'Times New Roman', serif;
-                 font-size: 11pt;
+                 font-size: 12pt;
              }
              
              .income-table th {
@@ -408,7 +408,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
              .footer-content {
                  display: flex;
                  justify-content: space-between;
-                 font-size: 9pt;
+                 font-size: 14pt;
                  color: #DC2626;
                  font-weight: bold;
                  font-family: 'Times New Roman', serif;
@@ -460,7 +460,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                           height="${(formData.logoSize * 1.3) / 1.42}"
                           style="width: ${formData.logoSize}px; height: auto; display: block;" />
                  </td>
-                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 12pt;">
                      <div class="municipality-title">${formData.headerTitle}</div>
                      <div class="ward-office">${formData.headerSubtitle}</div>
                      <div class="address-line">${formData.headerAddress1}</div>
@@ -498,7 +498,7 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
          <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
      </p>
  
-     <p class="content-text" style="font-size: 10pt;">
+     <p class="content-text" style="font-size: 12pt;">
          This relationship verification certificate is issued in accordance with the Local Government Operation 
          Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
      </p>
@@ -539,12 +539,12 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                  <tr>
                      <td width="50%" align="left">
                          <p style="margin: 0; line-height: 1.0;">
-                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
+                             <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
                          </p>
                      </td>
                      <td width="50%" align="right">
                          <p style="margin: 0; line-height: 1.0; text-align: right;">
-                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                             <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
                          </p>
                      </td>
                  </tr>
@@ -776,31 +776,43 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                                     {/* Conditional Header */}
                                     {formData.includeHeader && (
                                         <>
-                                            <div className="flex items-center justify-between mb-1">
-                                                <div className="w-32">
+                                            <div className="relative mb-2 min-h-[110px]">
+                                                {/* Logo - Absolute Left */}
+                                                <div className="absolute -left-6 top-0">
                                                     <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                                                 </div>
-                                                <div className="text-center flex-1">
-                                                    <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                                                    <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                                                    <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                                                    <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
+
+                                                {/* Text - Centered (Full Width) */}
+                                                <div className="text-center w-full px-4">
+                                                    <div className="font-bold text-[#CC0000]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerTitle}</div>
+                                                    <div className="font-bold text-[#CC0000]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerSubtitle}</div>
+                                                    <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerAddress1}</div>
+                                                    <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                                                 </div>
-                                                <div className="w-32"></div> {/* Spacer for balance */}
                                             </div>
 
-                                            <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
-                                                <div className="text-red-800">
-                                                    <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
-                                                    <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
-                                                </div>
-                                                <div className="self-end text-red-800">
-                                                    Date: <span className="text-black">{(() => {
-                                                        const d = parseDateParts(formData.issueDate);
-                                                        return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
-                                                    })()}</span>
-                                                </div>
-                                            </div>
+                                            {/* Reference and Date - Robust 2x2 Table Arrangement (PDF Preview) */}
+                                            <table className="w-full border-collapse mb-0 font-bold" style={{ fontSize: '16pt', color: '#CC0000', lineHeight: '1.0' }}>
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="text-left p-0" style={{ width: '50%' }}>
+                                                            Ref. No.: <span className="text-black font-bold">{formData.refNo}</span>
+                                                        </td>
+                                                        <td className="text-right p-0" style={{ width: '50%' }}></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="text-left p-0" style={{ width: '50%' }}>
+                                                            Dis. No.: <span className="text-black font-bold">{formData.disNo}</span>
+                                                        </td>
+                                                        <td className="text-right p-0" style={{ width: '50%', verticalAlign: 'bottom' }}>
+                                                            Date: <span className="text-black font-bold">{(() => {
+                                                                const d = parseDateParts(formData.issueDate);
+                                                                return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
+                                                            })()}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
 
                                             <div className="border-b-[3px] border-red-800 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
                                         </>
@@ -852,10 +864,10 @@ export default function RelationshipVerificationModal({ isOpen, onClose, student
                                             <div key={idx} className="text-center w-24">
                                                 {/* Empty placeholder box with dashed border */}
                                                 <div className="h-28 w-20 mx-auto border-2 border-dashed border-gray-400 bg-white mb-1 flex items-center justify-center">
-                                                    <span className="text-[8pt] text-gray-300">Photo</span>
+                                                    <span className="text-[12pt] text-gray-300">Photo</span>
                                                 </div>
-                                                <p className="font-bold leading-tight text-[9pt]">{rel.name}</p>
-                                                <p className="text-[8pt] text-gray-500">({rel.relation})</p>
+                                                <p className="font-bold leading-tight text-[12pt]">{rel.name}</p>
+                                                <p className="text-[12pt] text-gray-500">({rel.relation})</p>
                                             </div>
                                         ))}
                                     </div>

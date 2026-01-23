@@ -1,3 +1,5 @@
+
+
 import { Download, FileText, Printer, Users, X, Plus, Trash2, Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, RemoveFormatting } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getFormattedDate, addSuperscriptToDateString, parseDateParts } from '../../utils/dateFormat';
@@ -10,7 +12,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         // Document options
         includeHeader: true,
         includeFooter: true,
-        logoSize: 136,
+        logoSize: 174, // Reduced default
 
         // Header (Dynamic from student)
         headerTitle: 'Machhapuchhre Rural Municipality',
@@ -96,22 +98,22 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         window.print();
     };
 
-    // Word Document Generator - Matches PDF exactly
+    // Word Document Generator - Compressed for single A4 page
     const generateWordDoc = () => {
         const tableRows = formData.relatives.map((rel, index) => `
-    <tr style="height: 20pt;">
-        <td style="border: 0.75pt solid black; padding: 1pt 2pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
-        <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: left; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.name}</td>
-        <td style="border: 0.75pt solid black; padding: 1pt 4pt; text-align: center; font-size: 11pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
+    <tr style="height: 12pt;">
+        <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: left; font-size: 12pt; font-family: 'Times New Roman', serif;">${index + 1}</td>
+        <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: left; font-size: 12pt; font-family: 'Times New Roman', serif; font-weight: bold;">${rel.name}</td>
+        <td style="border: 0.75pt solid black; padding: 0pt 2pt; text-align: left; font-size: 12pt; font-family: 'Times New Roman', serif;">${rel.relation}</td>
     </tr>
-`).join('');
+ `).join('');
 
-        // Generate Photo Grid Cells
+        // Generate Photo Grid Cells - Compressed
         const photoCells = formData.relatives.map(rel => `
-        <td style="text-align: center; vertical-align: top; padding: 5pt 2pt; width: 33%;">
-            <div style="width: 80pt; height: 90pt; border: 0.75pt solid #000; margin: 0 auto; display: block;"></div>
-            <div style="margin-top: 4pt; font-weight: bold; font-size: 10pt; font-family: 'Times New Roman', serif;">${rel.name}</div>
-            <div style="font-size: 9pt; font-family: 'Times New Roman', serif;">(${rel.relation})</div>
+        <td style="text-align: center; vertical-align: top; padding: 2pt 1pt; width: 33%;">
+            <div style="width: 60pt; height: 70pt; border: 0.75pt solid #000; margin: 0 auto; display: block;"></div>
+            <div style="margin-top: 2pt; font-weight: bold; font-size: 12pt; font-family: 'Times New Roman', serif; line-height: 1.0;">${rel.name}</div>
+            <div style="font-size: 12pt; font-family: 'Times New Roman', serif; line-height: 1.0;">(${rel.relation})</div>
         </td>
     `);
 
@@ -143,9 +145,9 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
             @page WordSection1
             {
                 size: 210.0mm 297.0mm;
-                margin: 0.4in 0.5in 0.4in 0.5in;
-                mso-header-margin: .2in;
-                mso-footer-margin: .2in;
+                margin: 0.3in 0.5in 0.3in 0.5in;
+                mso-header-margin: .1in;
+                mso-footer-margin: .1in;
                 mso-footer: f1;
                 mso-paper-source: 0;
             }
@@ -155,7 +157,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
             margin:0in;
             mso-pagination:widow-orphan;
             tab-stops:center 3.0in right 6.0in;
-            font-size:9.0pt;
+            font-size:12.0pt;
             font-family:"Times New Roman",serif;}
             
             body {
@@ -163,42 +165,42 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                 padding: 0;
                 font-family: 'Times New Roman', serif;
                 font-size: 12pt;
-                line-height: 1.15;
+                line-height: 1.0;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
             
-            /* Header Styles - Match PDF */
+            /* Header Styles - Compact */
             .header-container {
                 width: 100%;
-                margin-bottom: 5pt;
+                margin-bottom: 2pt;
             }
             
             .municipality-title {
-                font-size: 24pt;
+                font-size: 28pt;
                 font-weight: bold;
                 color: #DC2626;
-                line-height: 1;
-                margin-bottom: 3pt;
+                line-height: 1.0;
+                margin-bottom: 0pt;
                 text-align: center;
                 font-family: 'Times New Roman', serif;
             }
             
             .ward-office {
-                font-size: 18pt;
+                font-size: 20pt;
                 font-weight: bold;
                 color: #DC2626;
-                line-height: 1;
-                margin-bottom: 3pt;
+                line-height: 1.0;
+                margin-bottom: 0pt;
                 text-align: center;
                 font-family: 'Times New Roman', serif;
             }
             
             .address-line {
-                font-size: 16pt;
+                font-size: 18pt;
                 font-weight: bold;
                 color: #DC2626;
-                line-height: 1;
+                line-height: 1.0;
                 text-align: center;
                 font-family: 'Times New Roman', serif;
             }
@@ -207,98 +209,109 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
-                margin-top: 8pt;
-                margin-bottom: 4pt;
+                margin-top: 2pt;
+                margin-bottom: 0pt;
                 font-weight: bold;
+                font-size: 16pt;
             }
             
             .red-line {
                 border-bottom: 1.5pt solid #DC2626;
-                margin: 4pt -0.75in 10pt -0.75in;
+                margin: 2pt -0.75in 8pt -0.75in;
             }
             
-            /* Main Content */
+            /* Main Content - Compact */
             .main-title {
                 font-size: 16pt;
                 font-weight: bold;
                 text-align: center;
                 text-decoration: underline;
-                margin: 10pt 0 4pt 0;
+                margin: 6pt 0 2pt 0;
                 font-family: 'Times New Roman', serif;
             }
             
             .sub-title {
-                font-size: 16pt;
+                font-size: 14pt;
                 font-weight: bold;
                 text-align: center;
                 text-decoration: underline;
-                margin-bottom: 12pt;
+                margin-bottom: 8pt;
                 font-family: 'Times New Roman', serif;
             }
             
             .content-text {
                 font-size: 12pt;
                 text-align: justify;
-                line-height: 1.15;
-                margin-bottom: 6pt;
+                line-height: 1.0;
+                margin-bottom: 4pt;
                 font-family: 'Times New Roman', serif;
             }
             
-            /* Table Styles - Match PDF */
+            /* Table Styles - Compact */
             .income-table {
                 width: 100%;
                 border-collapse: collapse;
-                margin: 6pt 0 6pt 0;
+                margin: 4pt 0 4pt 0;
                 font-family: 'Times New Roman', serif;
-                font-size: 11pt;
+                font-size: 12pt;
             }
             
             .income-table th {
                 border: 0.75pt solid black;
-                padding: 2pt 3pt;
-                text-align: center;
+                padding: 0pt 2pt;
+                text-align: left;
                 font-weight: bold;
                 vertical-align: middle;
-                background-color: #f8f8f8;
+                font-size: 12pt;
+                height: 12pt;
             }
             
             .income-table td {
                 border: 0.75pt solid black;
-                padding: 1pt 4pt;
+                padding: 0pt 2pt;
                 vertical-align: middle;
+                font-size: 12pt;
+                height: 12pt;
             }
 
             .photo-table { 
                 width: 100%; 
                 border: none; 
-                margin-top: 10pt;
+                margin-top: 6pt;
                 border-collapse: separate;
-                border-spacing: 0 10pt;
+                border-spacing: 0 4pt;
+                font-size: 12pt;
             }
             
-            /* Signature */
+            .photo-table td {
+                padding: 1pt 0.5pt;
+                font-size: 12pt;
+            }
+            
+            /* Signature - Compact */
             .signature-block {
-                margin-top: 30pt;
+                margin-top: 20pt;
                 text-align: right;
                 font-size: 12pt;
-                line-height: 1.15;
+                line-height: 1.0;
             }
             
-            /* Footer */
+            /* Footer - Compact */
             .footer-container {
                 position: fixed;
                 bottom: 0;
-                left: 0.75in;
-                right: 0.75in;
-                padding-top: 6pt;
+                left: 0.5in;
+                right: 0.5in;
+                padding-top: 4pt;
                 border-top: 1.5pt solid #DC2626;
                 background: white;
+                font-size: 14pt;
             }
             
             .footer-content {
                 display: flex;
                 justify-content: space-between;
-                font-size: 9pt;
+                font-size: 14pt;
                 color: #DC2626;
                 font-weight: bold;
                 font-family: 'Times New Roman', serif;
@@ -307,7 +320,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
             /* Superscript styling */
             sup {
                 vertical-align: super;
-                font-size: 0.7em;
+                font-size: 0.6em;
                 line-height: 0;
             }
             
@@ -340,7 +353,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
     <body style="margin: 0; padding: 0;">
     
     ${formData.includeHeader ? `
-    <!-- HEADER SECTION -->
+    <!-- HEADER SECTION - Compact -->
     <div class="header-container">
         <table style="width: 100%; margin-bottom: 0;">
             <tr>
@@ -350,7 +363,7 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                          height="${(formData.logoSize * 1.3) / 1.42}"
                          style="width: ${formData.logoSize}px; height: auto; display: block;" />
                 </td>
-                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 5pt;">
                     <div class="municipality-title">${formData.headerTitle}</div>
                     <div class="ward-office">${formData.headerSubtitle}</div>
                     <div class="address-line">${formData.headerAddress1}</div>
@@ -360,26 +373,39 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
             </tr>
         </table>
         
-        <!-- Reference and Date -->
-        <div class="ref-date-row">
-            <div style="text-align: left;">
-                <span class="text-red">Ref. No.:</span> 
-                <span class="text-black">${formData.refNo}</span><br>
-                <span class="text-red">Dis. No.:</span> 
-                <span class="text-black">${formData.disNo}</span>
-            </div>
-            <div style="text-align: right;">
-                <span class="text-red">Date:</span> 
-                <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
-            </div>
-        </div>
+        <!-- Reference and Date - Robust 2x2 Table Arrangement -->
+        <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2pt; margin-bottom: 0px; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+            <tr>
+                <td width="50%" align="left" valign="top" style="padding: 0;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Ref. No.:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.refNo}</span>
+                    </p>
+                </td>
+                <td width="50%" align="right" valign="top" style="padding: 0;"></td>
+            </tr>
+            <tr>
+                <td width="50%" align="left" valign="top" style="padding: 0;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Dis. No.:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.disNo}</span>
+                    </p>
+                </td>
+                <td width="50%" align="right" valign="top" style="padding: 0; text-align: right;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Date:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${addSuperscriptToDateString(formData.date)}</span>
+                    </p>
+                </td>
+            </tr>
+        </table>
         
         <!-- Red Line -->
-        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
+        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 2pt; margin-bottom: 8pt; mso-margin-top-alt: 2pt; mso-margin-bottom-alt: 8pt;">&nbsp;</p>
     </div>
     ` : ''}
     
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT - Compact -->
     <div class="main-title">Relationship Verification Certificate</div>
     <div class="sub-title">To Whom It May Concern</div>
     
@@ -388,18 +414,18 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         <strong>${formData.addressLine}</strong> has the following relationship with the following family members.
     </p>
 
-    <p class="content-text" style="font-size: 10pt;">
+    <p class="content-text">
         This relationship verification certificate is issued in accordance with the Local Government Operation 
         Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
     </p>
     
-    <!-- RELATIONSHIP TABLE -->
+    <!-- RELATIONSHIP TABLE - Compact -->
     <table class="income-table">
         <thead>
-            <tr>
-                <th style="width: 8%; text-align: center;">S.N.</th>
-                <th style="width: 50%;">Name</th>
-                <th style="width: 42%;">Relationship</th>
+            <tr style="height: 12pt;">
+                <th style="width: 8%; text-align: left;">S.N.</th>
+                <th style="width: 50%; text-align: left;">Name</th>
+                <th style="width: 42%; text-align: left;">Relationship</th>
             </tr>
         </thead>
         <tbody>
@@ -407,15 +433,15 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
         </tbody>
     </table>
 
-    <p class="content-text" style="margin-bottom: 5pt; margin-top: 10pt;">The photographs of the persons mentioned above are attached below.</p>
+    <p class="content-text" style="margin-bottom: 4pt; margin-top: 6pt;">The photographs of the persons mentioned above are attached below.</p>
 
     <table class="photo-table">
         ${photoRows.join('')}
     </table>
     
-    <!-- SIGNATURE -->
+    <!-- SIGNATURE - Compact -->
     <div class="signature-block">
-        <div style="margin-bottom: 4pt;">......................................</div>
+        <div style="margin-bottom: 2pt;">......................................</div>
         <div class="font-bold">${formData.signatoryName}</div>
         <div class="font-bold">${formData.signatoryDesignation}</div>
     </div>
@@ -424,17 +450,17 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
     <div style="mso-element:footer" id="f1">
         <div class="MsoFooter">
             <!-- Red Line (matching header style) -->
-            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
+            <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 2pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 2pt;">&nbsp;</p>
             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
                 <tr>
-                    <td width="50%" align="left">
+                    <td width="40%" align="left">
                         <p style="margin: 0; line-height: 1.0;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold; white-space: nowrap;">Phone No.: ${formData.footerPhone}</span>
                         </p>
                     </td>
-                    <td width="50%" align="right">
+                    <td width="60%" align="right">
                         <p style="margin: 0; line-height: 1.0; text-align: right;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold; white-space: nowrap;">E-mail: ${formData.footerEmail}</span>
                         </p>
                     </td>
                 </tr>
@@ -583,39 +609,51 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 spellCheck={false}
-                                className="print-area bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[10px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
-                                style={{ fontFamily: 'Times New Roman, serif' }}
+                                className="print-area bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
+                                style={{ fontFamily: "'Times New Roman', Times, serif" }}
                             >
                                 {/* Conditional Header - Red Theme */}
                                 {formData.includeHeader && (
                                     <>
-                                        <div className="flex items-center justify-between mb-1">
-                                            <div className="w-32">
+                                        <div className="relative mb-2 min-h-[110px]"> {/* Reduced height */}
+                                            {/* Logo - Absolute Left */}
+                                            <div className="absolute -left-6 top-0">
                                                 <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                                             </div>
-                                            <div className="text-center flex-1">
-                                                <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
-                                            </div>
-                                            <div className="w-32"></div>
-                                        </div>
 
-                                        <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
-                                            <div className="text-red-600">
-                                                <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
-                                                <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
-                                            </div>
-                                            <div className="self-end text-red-600">
-                                                Date: <span className="text-black">{(() => {
-                                                    const d = parseDateParts(formData.date);
-                                                    return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
-                                                })()}</span>
+                                            {/* Text - Centered (Full Width) */}
+                                            <div className="text-center w-full px-4">
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerTitle}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerSubtitle}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerAddress1}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                                             </div>
                                         </div>
 
-                                        <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
+                                        {/* Reference and Date - Robust 2x2 Table Arrangement (PDF Preview) */}
+                                        <table className="w-full border-collapse mb-0 font-bold" style={{ fontSize: '16pt', color: '#CC0000', lineHeight: '1.0' }}>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="text-left p-0" style={{ width: '50%' }}>
+                                                        Ref. No.: <span className="text-black font-bold">{formData.refNo}</span>
+                                                    </td>
+                                                    <td className="text-right p-0" style={{ width: '50%' }}></td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="text-left p-0" style={{ width: '50%' }}>
+                                                        Dis. No.: <span className="text-black font-bold">{formData.disNo}</span>
+                                                    </td>
+                                                    <td className="text-right p-0" style={{ width: '50%', verticalAlign: 'bottom' }}>
+                                                        Date: <span className="text-black font-bold">{(() => {
+                                                            const d = parseDateParts(formData.date);
+                                                            return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
+                                                        })()}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div className="border-b-[3px] border-[#CC0000] mb-2 -mx-[0.5in] sm:-mx-[1in] mt-0.5"></div>
                                     </>
                                 )}
 
@@ -623,55 +661,55 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
                                     Relationship Verification Certificate
                                 </div>
 
-                                <div className="text-center font-bold underline mb-6" style={{ fontSize: '16pt' }}>
+                                <div className="text-center font-bold underline mb-2" style={{ fontSize: '16pt' }}>
                                     To Whom It May Concern
                                 </div>
 
-                                <p className="mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
+                                <p className="mb-2 text-justify leading-snug" style={{ fontSize: '12pt', lineHeight: '1.0' }}>
                                     This is to certify that <strong>{formData.applicantName}</strong> the permanent resident of
                                     <strong> {formData.addressLine}</strong> has the following relationship with the following family members.
                                 </p>
 
-                                <p className="mt-2 mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
+                                <p className="mt-1 mb-2 text-justify leading-snug" style={{ fontSize: '12pt', lineHeight: '1.0' }}>
                                     This relationship verification certificate is issued in accordance with the Local Government Operation
                                     Act B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (1).
                                 </p>
 
-                                {/* Table Preview */}
-                                <table className="w-full border-collapse border border-black mb-1 text-left leading-none" style={{ fontSize: '12pt' }}>
+                                {/* Table Preview - Compressed */}
+                                <table className="w-full border-collapse border border-black mb-1 text-left leading-none" style={{ fontSize: '12pt', lineHeight: '1.0' }}>
                                     <thead>
-                                        <tr className="">
-                                            <th className="border border-black px-1 py-0.5 text-center w-8">S.N.</th>
-                                            <th className="border border-black px-1 py-0.5">Name</th>
-                                            <th className="border border-black px-1 py-0.5">Relationship</th>
+                                        <tr className="h-4">
+                                            <th className="border border-black px-1 py-0 text-left w-8 h-4">S.N.</th>
+                                            <th className="border border-black px-1 py-0 text-left h-4">Name</th>
+                                            <th className="border border-black px-1 py-0 text-left h-4">Relationship</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {formData.relatives.map((rel, idx) => (
-                                            <tr key={idx}>
-                                                <td className="border border-black px-1 py-0.5 text-center">{idx + 1}</td>
-                                                <td className="border border-black px-1 py-0.5 font-bold">{rel.name}</td>
-                                                <td className="border border-black px-1 py-0.5">{rel.relation}</td>
+                                            <tr key={idx} className="h-4">
+                                                <td className="border border-black px-1 py-0 text-left h-4 leading-none">{idx + 1}</td>
+                                                <td className="border border-black px-1 py-0 font-bold h-4 leading-none text-left">{rel.name}</td>
+                                                <td className="border border-black px-1 py-0 h-4 leading-none text-left">{rel.relation}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
 
-                                <p className="mb-1 text-[9pt]">The photographs of the persons mentioned above are attached below.</p>
+                                <p className="mb-1 text-[12pt]">The photographs of the persons mentioned above are attached below.</p>
 
                                 {/* Photo Grid Preview - Compressed */}
-                                <div className="grid grid-cols-3 gap-1 justify-center mb-1">
+                                <div className="grid grid-cols-3 gap-2 justify-center mb-2">
                                     {formData.relatives.map((rel, idx) => (
                                         <div key={idx} className="text-center">
-                                            <div className="h-14 w-12 mx-auto border border-black bg-gray-50 mb-0.5"></div>
-                                            <p className="font-bold leading-tight text-[7px]">{rel.name}</p>
-                                            <p className="text-[6px] text-gray-500">({rel.relation})</p>
+                                            <div className="mx-auto border border-black bg-gray-50 mb-1" style={{ width: '60pt', height: '70pt' }}></div>
+                                            <p className="font-bold leading-tight text-[12pt]" style={{ fontFamily: "'Times New Roman', serif" }}>{rel.name}</p>
+                                            <p className="text-[12pt] text-gray-500" style={{ fontFamily: "'Times New Roman', serif" }}>({rel.relation})</p>
                                         </div>
                                     ))}
                                 </div>
 
                                 {/* SIGNATURE - Reduced Margin for Compression */}
-                                <div className="mt-8 text-right" style={{ fontSize: '12pt' }}>
+                                <div className="mt-4 text-right" style={{ fontSize: '12pt', lineHeight: '1.0' }}>
                                     <div className="font-bold">......................................</div>
                                     <div className="font-bold">{formData.signatoryName}</div>
                                     <div className="font-bold">{formData.signatoryDesignation}</div>
@@ -679,9 +717,9 @@ export default function RelationshipVerificationMarriedModal({ isOpen, onClose, 
 
                                 {/* Conditional Footer - Red Theme */}
                                 {formData.includeFooter && (
-                                    <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-red-600 px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
-                                        <span className="font-bold text-red-600 whitespace-nowrap" style={{ fontSize: '14pt' }}>Phone No.: {formData.footerPhone}</span>
-                                        <span className="font-bold text-red-600 whitespace-nowrap" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
+                                    <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-[#CC0000] px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
+                                        <span className="font-bold text-[#CC0000] whitespace-nowrap" style={{ fontSize: '14pt' }}>Phone No.: {formData.footerPhone}</span>
+                                        <span className="font-bold text-[#CC0000] whitespace-nowrap" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
                                     </div>
                                 )}
                             </div>

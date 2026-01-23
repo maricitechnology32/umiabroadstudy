@@ -18,7 +18,7 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
         // Document options
         includeHeader: true,
         includeFooter: true,
-        logoSize: 136,
+        logoSize: 174,
 
         // Header (Dynamic from student)
         // Header (Dynamic from student)
@@ -132,7 +132,7 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
             margin:0in;
             mso-pagination:widow-orphan;
             tab-stops:center 3.0in right 6.0in;
-            font-size:9.0pt;
+            font-size:14.0pt;
             font-family:"Times New Roman",serif;}
             
             body {
@@ -152,27 +152,27 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
             }
             
             .municipality-title {
-                font-size: 24pt;
+                font-size: 28pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
-                margin-bottom: 3pt;
+                margin-bottom: 0pt;
                 text-align: center;
                 font-family: 'Times New Roman', serif;
             }
             
             .ward-office {
-                font-size: 18pt;
+                font-size: 20pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
-                margin-bottom: 3pt;
+                margin-bottom: 0pt;
                 text-align: center;
                 font-family: 'Times New Roman', serif;
             }
             
             .address-line {
-                font-size: 16pt;
+                font-size: 18pt;
                 font-weight: bold;
                 color: #DC2626;
                 line-height: 1;
@@ -184,14 +184,15 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
-                margin-top: 8pt;
-                margin-bottom: 4pt;
+                margin-top: 2pt;
+                margin-bottom: 0pt;
                 font-weight: bold;
+                font-size: 16pt;
             }
             
             .red-line {
                 border-bottom: 1.5pt solid #DC2626;
-                margin: 4pt -0.75in 10pt -0.75in;
+                margin: 2pt -0.75in 8pt -0.75in;
             }
             
             /* Main Content */
@@ -243,7 +244,7 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
             .footer-content {
                 display: flex;
                 justify-content: space-between;
-                font-size: 9pt;
+                font-size: 14pt;
                 color: #DC2626;
                 font-weight: bold;
                 font-family: 'Times New Roman', serif;
@@ -305,22 +306,35 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
             </tr>
         </table>
         
-        <!-- Reference and Date -->
-        <div class="ref-date-row">
-            <div style="text-align: left;">
-                <span class="text-red">Ref. No.:</span> 
-                <span class="text-black">${formData.refNo}</span><br>
-                <span class="text-red">Dis. No.:</span> 
-                <span class="text-black">${formData.disNo}</span>
-            </div>
-            <div style="text-align: right;">
-                <span class="text-red">Date:</span> 
-                <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
-            </div>
-        </div>
+        <!-- Reference and Date - Robust 2x2 Table Arrangement -->
+        <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2pt; margin-bottom: 0px; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+            <tr>
+                <td width="50%" align="left" valign="top" style="padding: 0;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold;">Ref. No.:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.refNo}</span>
+                    </p>
+                </td>
+                <td width="50%" align="right" valign="top" style="padding: 0;"></td>
+            </tr>
+            <tr>
+                <td width="50%" align="left" valign="top" style="padding: 0;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold;">Dis. No.:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.disNo}</span>
+                    </p>
+                </td>
+                <td width="50%" align="right" valign="top" style="padding: 0; text-align: right;">
+                    <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold;">Date:</span> 
+                        <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${addSuperscriptToDateString(formData.date)}</span>
+                    </p>
+                </td>
+            </tr>
+        </table>
         
         <!-- Red Line -->
-        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
+        <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 2pt; margin-bottom: 8pt; mso-margin-top-alt: 2pt; mso-margin-bottom-alt: 8pt;">&nbsp;</p>
     </div>
     ` : ''}
     
@@ -357,14 +371,14 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
             <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
             <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
                 <tr>
-                    <td width="50%" align="left">
+                    <td width="40%" align="left">
                         <p style="margin: 0; line-height: 1.0;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold; white-space: nowrap;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
                         </p>
                     </td>
-                    <td width="50%" align="right">
+                    <td width="60%" align="right">
                         <p style="margin: 0; line-height: 1.0; text-align: right;">
-                            <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                            <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #CC0000; font-weight: bold; white-space: nowrap;">E-mail: ${formData.footerEmail}</span>
                         </p>
                     </td>
                 </tr>
@@ -513,39 +527,51 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
                                 spellCheck={false}
-                                className="print-area bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[11px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
+                                className="print-area bg-white w-[210mm] min-w-[210mm] min-h-[297mm] px-[0.5in] sm:px-[1in] pb-[0.5in] sm:pb-[1in] pt-[0.25in] sm:pt-[0.25in] text-[12px] font-serif leading-relaxed text-justify relative focus:outline-none focus:ring-2 focus:ring-red-500/20 mx-auto"
                                 style={{ fontFamily: 'Times New Roman, serif' }}
                             >
                                 {/* Conditional Header - Red Theme */}
                                 {formData.includeHeader && (
                                     <>
-                                        <div className="flex items-center justify-between mb-1">
-                                            <div className="w-32">
+                                        <div className="relative mb-2 min-h-[120px]">
+                                            {/* Logo - Absolute Left */}
+                                            <div className="absolute -left-6 top-0">
                                                 <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                                             </div>
-                                            <div className="text-center flex-1">
-                                                <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                                                <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
-                                            </div>
-                                            <div className="w-32"></div>
-                                        </div>
 
-                                        <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
-                                            <div className="text-red-600">
-                                                <div style={{ marginBottom: '2px' }}>Ref. No.: <span className="text-black">{formData.refNo}</span></div>
-                                                <div>Dis. No.: <span className="text-black">{formData.disNo}</span></div>
-                                            </div>
-                                            <div className="self-end text-red-600">
-                                                Date: <span className="text-black">{(() => {
-                                                    const d = parseDateParts(formData.date);
-                                                    return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
-                                                })()}</span>
+                                            {/* Text - Centered (Full Width) */}
+                                            <div className="text-center w-full px-4">
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerTitle}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerSubtitle}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '2px' }}>{formData.headerAddress1}</div>
+                                                <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                                             </div>
                                         </div>
 
-                                        <div className="border-b-[3px] border-red-600 mb-2 -mx-[0.5in] sm:-mx-[1in] mt-1"></div>
+                                        {/* Reference and Date - Robust 2x2 Table Arrangement (PDF Preview) */}
+                                        <table className="w-full border-collapse mb-0 font-bold" style={{ fontSize: '16pt', color: '#CC0000', lineHeight: '1.0' }}>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="text-left p-0" style={{ width: '50%' }}>
+                                                        Ref. No.: <span className="text-black font-bold">{formData.refNo}</span>
+                                                    </td>
+                                                    <td className="text-right p-0" style={{ width: '50%' }}></td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="text-left p-0" style={{ width: '50%' }}>
+                                                        Dis. No.: <span className="text-black font-bold">{formData.disNo}</span>
+                                                    </td>
+                                                    <td className="text-right p-0" style={{ width: '50%', verticalAlign: 'bottom' }}>
+                                                        Date: <span className="text-black font-bold">{(() => {
+                                                            const d = parseDateParts(formData.date);
+                                                            return <>{d.day}<sup>{d.suffix}</sup> {d.month}, {d.year}</>;
+                                                        })()}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div className="border-b-[3px] border-[#CC0000] mb-2 -mx-[0.5in] sm:-mx-[1in] mt-0.5"></div>
                                     </>
                                 )}
 
@@ -553,11 +579,11 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
                                     Date of Birth Verification Certificate
                                 </div>
 
-                                <div className="text-center font-bold underline mb-6" style={{ fontSize: '16pt' }}>
+                                <div className="text-center font-bold underline mb-3" style={{ fontSize: '16pt' }}>
                                     To Whom It May Concern
                                 </div>
 
-                                <p className="mb-4 text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
+                                <p className="mb-2 text-justify leading-snug" style={{ fontSize: '12pt' }}>
                                     This is to certify that <strong>{formData.applicantName}</strong> daughter of
                                     <strong> {formData.fatherName}</strong> and <strong>{formData.motherName}</strong>
                                     {' '}daughter-in-law of <strong>{formData.fatherInLawName}</strong> and
@@ -566,13 +592,13 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
                                     <strong> B.S. {formData.dobBS} ({formData.dobAD} A.D.)</strong>.
                                 </p>
 
-                                <p className="text-justify leading-relaxed" style={{ fontSize: '12pt' }}>
+                                <p className="text-justify leading-snug" style={{ fontSize: '12pt' }}>
                                     This birth verification certificate is issued in accordance with the Local Government Operation Act
                                     B.S. 2074 (2017 A.D.), Chapter 3, Section 12, Sub-section 2, Clause E (7).
                                 </p>
 
                                 {/* SIGNATURE */}
-                                <div className="mt-16 text-right" style={{ fontSize: '12pt' }}>
+                                <div className="mt-8 text-right" style={{ fontSize: '12pt' }}>
                                     <div className="font-bold">............................................</div>
                                     <div className="font-bold">{formData.signatoryName}</div>
                                     <div className="font-bold">{formData.signatoryDesignation}</div>
@@ -580,9 +606,9 @@ export default function DateOfBirthVerificationMarriedModal({ isOpen, onClose, s
 
                                 {/* Conditional Footer - Standardized Full Width */}
                                 {formData.includeFooter && (
-                                    <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-red-600 px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
-                                        <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>Phone No.: {formData.footerPhone}</span>
-                                        <span className="font-bold text-red-600" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
+                                    <div className="absolute bottom-4 left-0 right-0 pt-2 border-t-[3px] border-[#CC0000] px-[0.5in] sm:px-[1in] flex justify-between items-center bg-white">
+                                        <span className="font-bold text-[#CC0000]" style={{ fontSize: '14pt' }}>Phone No.: {formData.footerPhone}</span>
+                                        <span className="font-bold text-[#CC0000]" style={{ fontSize: '14pt' }}>E-mail: {formData.footerEmail}</span>
                                     </div>
                                 )}
                             </div>

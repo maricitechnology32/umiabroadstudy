@@ -20,7 +20,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
     // Document options
     includeHeader: true,
     includeFooter: true,
-    logoSize: 136, // Logo size in pixels (adjustable)
+    logoSize: 174, // Logo size in pixels (adjustable)
 
     // Header info
     headerTitle: 'Bheemdatta Municipality',
@@ -118,7 +118,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
              margin:0in;
              mso-pagination:widow-orphan;
              tab-stops:center 3.0in right 6.0in;
-             font-size:9.0pt;
+             font-size:14.0pt;
              font-family:"Times New Roman",serif;}
              
              body {
@@ -138,7 +138,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
              }
              
              .municipality-title {
-                 font-size: 24pt;
+                 font-size: 28pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -148,7 +148,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
              }
              
              .ward-office {
-                 font-size: 18pt;
+                 font-size: 20pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -158,7 +158,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
              }
              
              .address-line {
-                 font-size: 16pt;
+                 font-size: 18pt;
                  font-weight: bold;
                  color: #DC2626;
                  line-height: 1;
@@ -173,6 +173,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                  margin-top: 8pt;
                  margin-bottom: 4pt;
                  font-weight: bold;
+                 font-size: 16pt;
              }
              
              .red-line {
@@ -188,6 +189,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                  text-decoration: underline;
                  margin: 10pt 0 4pt 0;
                  font-family: 'Times New Roman', serif;
+
              }
              
              .sub-title {
@@ -255,7 +257,7 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                           height="${(formData.logoSize * 1.3) / 1.42}"
                           style="width: ${formData.logoSize}px; height: auto; display: block;" />
                  </td>
-                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 10pt;">
+                 <td style="width: 60%; text-align: center; vertical-align: top; padding: 0 12pt;">
                      <div class="municipality-title">${formData.headerTitle}</div>
                      <div class="ward-office">${formData.headerSubtitle}</div>
                      <div class="address-line">${formData.headerAddress1}</div>
@@ -266,21 +268,35 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
          </table>
          
          <!-- Reference and Date -->
-         <div class="ref-date-row">
-             <div style="text-align: left;">
-                 <span class="text-red">Ref. No.:</span> 
-                 <span class="text-black">${formData.refNo}</span><br>
-                 <span class="text-red">Dis. No.:</span> 
-                 <span class="text-black">${formData.disNo}</span>
-             </div>
-             <div style="text-align: right;">
-                 <span class="text-red">Date:</span> 
-                 <span class="text-black">${addSuperscriptToDateString(formData.date)}</span>
-             </div>
-         </div>
+          <!-- Reference and Date - Robust 2x2 Table Arrangement -->
+          <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2pt; margin-bottom: 0px; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+              <tr>
+                  <td width="50%" align="left" valign="top" style="padding: 0;">
+                      <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Ref. No.:</span> 
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.refNo}</span>
+                      </p>
+                  </td>
+                  <td width="50%" align="right" valign="top" style="padding: 0;"></td>
+              </tr>
+              <tr>
+                  <td width="50%" align="left" valign="top" style="padding: 0;">
+                      <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Dis. No.:</span> 
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${formData.disNo}</span>
+                      </p>
+                  </td>
+                  <td width="50%" align="right" valign="top" style="padding: 0; text-align: right;">
+                      <p style="margin: 0; line-height: 1.0; mso-line-height-rule: exactly;">
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Date:</span> 
+                          <span style="font-size: 16.0pt; font-family: 'Times New Roman',serif; font-weight: bold; color: black;">${addSuperscriptToDateString(formData.date)}</span>
+                      </p>
+                  </td>
+              </tr>
+          </table>
          
          <!-- Red Line -->
-         <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; margin-bottom: 12pt;">&nbsp;</p>
+         <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 4pt; margin-bottom: 12pt; mso-margin-top-alt: 4pt; mso-margin-bottom-alt: 12pt;">&nbsp;</p>
      </div>
      ` : ''}
      
@@ -327,14 +343,14 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
              <p style="margin-left: -70.0pt; margin-right: -70.0pt; border-bottom: 3.0pt solid #DC2626; font-size: 1pt; line-height: 1pt; mso-line-height-rule: exactly; margin-top: 0pt; margin-bottom: 4pt; mso-margin-top-alt: 0pt; mso-margin-bottom-alt: 4pt;">&nbsp;</p>
              <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;">
                  <tr>
-                     <td width="50%" align="left">
+                     <td width="40%" align="left">
                          <p style="margin: 0; line-height: 1.0;">
-                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
+                             <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold; white-space: nowrap;">Phone No.: ${formData.footerPhone || '+977-9856017304'}</span>
                          </p>
                      </td>
-                     <td width="50%" align="right">
+                     <td width="60%" align="right">
                          <p style="margin: 0; line-height: 1.0; text-align: right;">
-                             <span style="font-size: 9.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold;">E-mail: ${formData.footerEmail}</span>
+                             <span style="font-size: 14.0pt; font-family: 'Times New Roman',serif; color: #DC2626; font-weight: bold; white-space: nowrap;">E-mail: ${formData.footerEmail}</span>
                          </p>
                      </td>
                  </tr>
@@ -499,17 +515,19 @@ export default function SurnameVerificationModal({ isOpen, onClose, student }) {
                   {/* Conditional Header - Red Theme with Logo */}
                   {formData.includeHeader && (
                     <>
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="w-32">
+                      <div className="relative mb-4 min-h-[140px]">
+                        {/* Logo - Absolute Left */}
+                        <div className="absolute -left-6 top-0">
                           <img src="/nepal_coat_of_arms.png" alt="Logo" style={{ width: `${formData.logoSize}px`, height: `${(formData.logoSize * 1.3) / 1.42}px` }} />
                         </div>
-                        <div className="text-center flex-1">
-                          <div className="font-bold text-red-700" style={{ fontSize: '24pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerTitle}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '18pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9', marginBottom: '4px' }}>{formData.headerAddress1}</div>
-                          <div className="font-bold text-red-700" style={{ fontSize: '16pt', lineHeight: '0.9' }}>{formData.headerAddress2}</div>
+
+                        {/* Text - Centered (Full Width) */}
+                        <div className="text-center w-full px-4">
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '28pt', lineHeight: '1.0', marginBottom: '6px' }}>{formData.headerTitle}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '20pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerSubtitle}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0', marginBottom: '4px' }}>{formData.headerAddress1}</div>
+                          <div className="font-bold text-[#CC0000]" style={{ fontSize: '18pt', lineHeight: '1.0' }}>{formData.headerAddress2}</div>
                         </div>
-                        <div className="w-32"></div>
                       </div>
 
                       <div className="flex justify-between font-bold mb-1" style={{ fontSize: '16pt', lineHeight: '1.1' }}>
